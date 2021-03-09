@@ -1,8 +1,26 @@
 {
-  "Logo": {
-    "description": "Auto imported from components/Logo.vue"
+  "BottomMenu": {
+    "description": "Auto imported from components/BottomMenu.vue"
   },
-  "VuetifyLogo": {
-    "description": "Auto imported from components/VuetifyLogo.vue"
+  "LazyBottomMenu": {
+    "description": "Auto imported from components/BottomMenu.vue"
+  },
+  "UserFormEmail": {
+    "description": "Auto imported from components/user/userFormEmail.vue"
+  },
+  "LazyUserFormEmail": {
+    "description": "Auto imported from components/user/userFormEmail.vue"
+  },
+  "UserFormName": {
+    "description": "Auto imported from components/user/userFormName.vue"
+  },
+  "LazyUserFormName": {
+    "description": "Auto imported from components/user/userFormName.vue"
+  },
+  "UserFormPassword": {
+    "description": "Auto imported from components/user/userFormPassword.vue"
+  },
+  "LazyUserFormPassword": {
+    "description": "Auto imported from components/user/userFormPassword.vue"
   }
 }

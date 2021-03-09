@@ -1,11 +1,8 @@
 import Vue from 'vue'
 
-const components = {
-  Logo: () => import('../../components/Logo.vue' /* webpackChunkName: "components/logo" */).then(c => c.default || c),
-  VuetifyLogo: () => import('../../components/VuetifyLogo.vue' /* webpackChunkName: "components/vuetify-logo" */).then(c => c.default || c)
+const globalComponents = {
 }
 
-for (const name in components) {
-  Vue.component(name, components[name])
-  Vue.component('Lazy' + name, components[name])
+for (const name in globalComponents) {
+  Vue.component(name, globalComponents[name])
 }

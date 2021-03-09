@@ -11,4 +11,4 @@ export default ({ $axios }) => {
   $axios.onError((e) => {
     console.log(e.response)
   })
- }
+}

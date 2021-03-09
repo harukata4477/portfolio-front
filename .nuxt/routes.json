@@ -1,5 +1,19 @@
 [
   {
+    "name": "login",
+    "path": "/login",
+    "component": "/app/pages/login.vue",
+    "chunkName": "pages/login",
+    "_name": "_10ba8d22"
+  },
+  {
+    "name": "signup",
+    "path": "/signup",
+    "component": "/app/pages/signup.vue",
+    "chunkName": "pages/signup",
+    "_name": "_490e6182"
+  },
+  {
     "name": "index",
     "path": "/",
     "component": "/app/pages/index.vue",
