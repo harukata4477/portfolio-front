@@ -24,13 +24,11 @@
           v-model="isValid"
           ref="form"
         >
-          <user-form-name :name.sync="params.user.name" />
           <user-form-email :email.sync="params.user.email" />
           <user-form-password :password.sync="params.user.password" />
         </v-form>
         <v-btn
           :disabled="!isValid"
-          :loading="loading"
           block
           color="info"
           class="white--text"
@@ -52,26 +50,19 @@ export default {
   data () {
     return {
       isValid: false,
-      params: { user: { name: '', email: '', password: '' } },
-      loading: false,
+      params: { user: { email: '', password: '' } },
     }
   },
   methods: {
     signup () {
       this.$axios.post('auth/', this.params.user).then((res) => {
         localStorage.setItem("X-Access-Token", res.headers['x-access-token']);
-        this.loading = true
-        setTimeout(() => {
-          this.formReset()
-          this.loading = false
-        }, 1500)
+        localStorage.setItem("id", res.data.data.id);
+        this.$refs.form.reset()
+        this.params = { user: { email: '', password: '' } }
+        window.location.href = `/`
       })
     },
-    formReset () {
-      this.$refs.form.reset()
-      this.params = { user: { name: '', email: '', password: '' } }
-      this.$router.push('/')
-    }
   },
 }
 </script>

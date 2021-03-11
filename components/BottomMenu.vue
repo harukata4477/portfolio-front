@@ -19,7 +19,7 @@
       </button>
     </div>
     <div style="width: 25%;">
-      <button @click="$router.push(`/users/${users.id}`)" class="account" style="color: #fff; text-align: center; margin: 0 auto; width: 100%; padding: 4px; line-height: 1; font-weight: bold;">
+      <button @click="$router.push(`/users/${current_id}`)" class="account" style="color: #fff; text-align: center; margin: 0 auto; width: 100%; padding: 4px; line-height: 1; font-weight: bold;">
         <v-icon color="white" style="font-size: 30px;">mdi-account</v-icon>
         <p class="mb-0" style="font-size: 10px;">Myアカウント</p>
       </button>
@@ -31,15 +31,12 @@
 export default {
   data () {
     return {
-      users: ''
+      users: '',
+      current_id: 0,
     }
   },
   created () {
-    this.$axios.$get('api/users/me', {
-      headers:{
-        authorization: localStorage.getItem('access-token')
-      }
-    }).then(res => this.users = res)
+   this.current_id = localStorage.getItem('id')
   }
 }
 </script>

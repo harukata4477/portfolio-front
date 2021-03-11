@@ -28,7 +28,7 @@ export default {
         'X-Access-Token': localStorage.getItem('X-Access-Token')
       }
     }).then(res => {
-      localStorage.setItem("X-Access-Token", res.headers['x-access-token']);
+      // localStorage.setItem("X-Access-Token", res.headers['x-access-token']);
       this.respo = res
     })
   },

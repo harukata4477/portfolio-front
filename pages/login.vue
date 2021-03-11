@@ -29,7 +29,6 @@
         </v-form>
         <v-btn
           :disabled="!isValid"
-          :loading="loading"
           block
           color="info"
           class="white--text"
@@ -52,25 +51,18 @@ export default {
     return {
       isValid: false,
       params: { user: { email: '', password: '' } },
-      loading: false,
     }
   },
   methods: {
     login () {
       this.$axios.post('auth/sign_in', this.params.user).then((res) => {
         localStorage.setItem("X-Access-Token", res.headers['x-access-token']);
-        this.loading = true
-        setTimeout(() => {
-          this.formReset()
-          this.loading = false
-        }, 1500)
+        localStorage.setItem("id", res.data.data.id);
+        this.$refs.form.reset()
+        this.params = { user: { email: '', password: '' } }
+        window.location.href = `/`
       })
     },
-    formReset () {
-      this.$refs.form.reset()
-      this.params = { user: { email: '', password: '' } }
-      this.$router.push('/')
-    }
   },
 }
 </script>

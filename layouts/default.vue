@@ -38,7 +38,7 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn outlined 
-          style="color: #fff; font-weight: bold;" @click="$router.push('/users/login')">ログイン</v-btn>
+          style="color: #fff; font-weight: bold;" @click="$router.push('/login')">ログイン</v-btn>
       
     </v-app-bar>
 

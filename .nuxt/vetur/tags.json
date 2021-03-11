@@ -11,16 +11,16 @@
   "LazyUserFormEmail": {
     "description": "Auto imported from components/user/userFormEmail.vue"
   },
-  "UserFormName": {
-    "description": "Auto imported from components/user/userFormName.vue"
-  },
-  "LazyUserFormName": {
-    "description": "Auto imported from components/user/userFormName.vue"
-  },
   "UserFormPassword": {
     "description": "Auto imported from components/user/userFormPassword.vue"
   },
   "LazyUserFormPassword": {
     "description": "Auto imported from components/user/userFormPassword.vue"
+  },
+  "UsersCard": {
+    "description": "Auto imported from components/users/UsersCard.vue"
+  },
+  "LazyUsersCard": {
+    "description": "Auto imported from components/users/UsersCard.vue"
   }
 }
