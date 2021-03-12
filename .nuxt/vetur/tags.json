@@ -5,6 +5,24 @@
   "LazyBottomMenu": {
     "description": "Auto imported from components/BottomMenu.vue"
   },
+  "RoomsFormDeadlineDate": {
+    "description": "Auto imported from components/rooms/RoomsFormDeadlineDate.vue"
+  },
+  "LazyRoomsFormDeadlineDate": {
+    "description": "Auto imported from components/rooms/RoomsFormDeadlineDate.vue"
+  },
+  "RoomsFormDeadlineTime": {
+    "description": "Auto imported from components/rooms/RoomsFormDeadlineTime.vue"
+  },
+  "LazyRoomsFormDeadlineTime": {
+    "description": "Auto imported from components/rooms/RoomsFormDeadlineTime.vue"
+  },
+  "RoomsFormTitle": {
+    "description": "Auto imported from components/rooms/RoomsFormTitle.vue"
+  },
+  "LazyRoomsFormTitle": {
+    "description": "Auto imported from components/rooms/RoomsFormTitle.vue"
+  },
   "UserFormEmail": {
     "description": "Auto imported from components/user/userFormEmail.vue"
   },

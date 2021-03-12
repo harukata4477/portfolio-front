@@ -1,44 +1,44 @@
 <template>
   <div>
-  <v-container fluid>
-    <v-row
-      align="center"
-      justify="center"
-    >
-      <v-col
-        cols="12"
-        class="my-8 text-center"
+    <v-container fluid>
+      <v-row
+        align="center"
+        justify="center"
       >
-        <h1 class="text-h5 font-weight-bold">
-          ログイン
-        </h1>
-      </v-col>
+        <v-col
+          cols="12"
+          class="my-8 text-center"
+        >
+          <h1 class="text-h5 font-weight-bold">
+            ログイン
+          </h1>
+        </v-col>
 
-      <v-card
-        flat
-        width="80%"
-        max-width="320"
-        color="transparent"
-      >
-        <v-form
-          v-model="isValid"
-          ref="form"
+        <v-card
+          flat
+          width="80%"
+          max-width="320"
+          color="transparent"
         >
-          <user-form-email :email.sync="params.user.email" />
-          <user-form-password :password.sync="params.user.password" />
-        </v-form>
-        <v-btn
-          :disabled="!isValid"
-          block
-          color="info"
-          class="white--text"
-          @click="login"
-        >
-          登録する
-        </v-btn>
-      </v-card>
-    </v-row>
-  </v-container>
+          <v-form
+            v-model="isValid"
+            ref="form"
+          >
+            <user-form-email :email.sync="params.user.email" />
+            <user-form-password :password.sync="params.user.password" />
+          </v-form>
+          <v-btn
+            :disabled="!isValid"
+            block
+            color="info"
+            class="white--text"
+            @click="login"
+          >
+            登録する
+          </v-btn>
+        </v-card>
+      </v-row>
+    </v-container>
     <nuxt-link to="/signup">新規登録</nuxt-link>
   </div>
 </template>

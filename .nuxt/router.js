@@ -5,12 +5,15 @@ import { interopDefault } from './utils'
 import scrollBehavior from './router.scrollBehavior.js'
 
 const _10ba8d22 = () => interopDefault(import('../pages/login.vue' /* webpackChunkName: "pages/login" */))
+const _310ef581 = () => interopDefault(import('../pages/rooms/index.vue' /* webpackChunkName: "pages/rooms/index" */))
 const _490e6182 = () => interopDefault(import('../pages/signup.vue' /* webpackChunkName: "pages/signup" */))
 const _c91b56de = () => interopDefault(import('../pages/users/index.vue' /* webpackChunkName: "pages/users/index" */))
+const _1884055d = () => interopDefault(import('../pages/rooms/create.vue' /* webpackChunkName: "pages/rooms/create" */))
 const _19565593 = () => interopDefault(import('../pages/users/edits/_id.vue' /* webpackChunkName: "pages/users/edits/_id" */))
 const _fc1e33e8 = () => interopDefault(import('../pages/users/follows/_id.vue' /* webpackChunkName: "pages/users/follows/_id" */))
 const _c240fab4 = () => interopDefault(import('../pages/users/likes/_id.vue' /* webpackChunkName: "pages/users/likes/_id" */))
 const _7e88b3bd = () => interopDefault(import('../pages/users/posts/_id.vue' /* webpackChunkName: "pages/users/posts/_id" */))
+const _132e6429 = () => interopDefault(import('../pages/rooms/_id.vue' /* webpackChunkName: "pages/rooms/_id" */))
 const _1c03718e = () => interopDefault(import('../pages/users/_id.vue' /* webpackChunkName: "pages/users/_id" */))
 const _2dfb1658 = () => interopDefault(import('../pages/index.vue' /* webpackChunkName: "pages/index" */))
 
@@ -35,6 +38,10 @@ export const routerOptions = {
     component: _10ba8d22,
     name: "login"
   }, {
+    path: "/rooms",
+    component: _310ef581,
+    name: "rooms"
+  }, {
     path: "/signup",
     component: _490e6182,
     name: "signup"
@@ -42,6 +49,10 @@ export const routerOptions = {
     path: "/users",
     component: _c91b56de,
     name: "users"
+  }, {
+    path: "/rooms/create",
+    component: _1884055d,
+    name: "rooms-create"
   }, {
     path: "/users/edits/:id?",
     component: _19565593,
@@ -58,6 +69,10 @@ export const routerOptions = {
     path: "/users/posts/:id?",
     component: _7e88b3bd,
     name: "users-posts-id"
+  }, {
+    path: "/rooms/:id",
+    component: _132e6429,
+    name: "rooms-id"
   }, {
     path: "/users/:id",
     component: _1c03718e,
