@@ -1,8 +1,8 @@
 <template>
-  <div style="margin-bottom: 60px;"> 
+  <div class="mt-14 mb-10 pb-5"> 
 
     <div class="user_header" >
-      <v-row class="rooms_top mt-5 mb-5 ml-3">
+      <v-row class="rooms_top pt-5 pb-3 ml-3 mr-3">
         <v-btn
           text
           color="info accent-4"
@@ -19,7 +19,7 @@
         style="width: 90%; margin: 25px auto 0 auto"
       >
         <v-text-field
-          v-model="search_goal"
+          v-model="search_title"
           placeholder="Room 検索"
           required
           prepend-inner-icon="mdi-magnify"
@@ -31,121 +31,58 @@
       </div>
     </div>
     
-    <div class="rooms" v-for="(room,i) in rooms" :key="`room-${i}`">
-      <v-card
-        class="mx-auto mt-3"
-        width="90%"
-        max-width="600"
-      >
-        <v-card-text class="pb-0">
-          <div class="room_header">
-            <div class="room_id">room:{{room.id}}</div>
-          </div>
-          <p style="font-weight: bold;" class="room_title display-1 text--primary mb-2 mt-2" >
-            <span v-if="room.done == true" style="color: #2196f3;">{{room.goal}}</span>
-            <span v-else>{{room.goal}}</span>
-          </p>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn
-            text
-            color="info accent-4"
-            style="font-weight: bold;"
-            @click="`${$router.push(`/targets/${room.id}`)}`"
-          >
-          <v-icon color="info" style="font-size: 18px; margin-right: 2px;">mdi-application</v-icon>
-            ルームへ
-          </v-btn>
+    <rooms-card v-for="room in rooms" :key="room.id" :room="room" />
 
-          <v-btn
-            text
-            color="info accent-4"
-            style="font-weight: bold;"
-            @click="$router.push(`/rooms/${room.id}`)"
-            class="ml-0"
-          >
-            <v-icon color="info" style="font-size: 18px; margin-right: 2px;">mdi-pencil</v-icon>
-              編集・詳細
-          </v-btn>
-
-          <v-btn
-            text
-            color="info accent-4"
-            style="font-weight: bold;"
-            class="ml-0"
-            @click="destroy(room.id)"
-          >
-            <v-icon color="info" style="font-size: 18px; margin-right: 2px;">mdi-delete-empty</v-icon>
-              削除
-          </v-btn>
-        </v-card-actions>
-
- 
-      </v-card>
-
-    </div>
-
+    <v-footer width="100%" style="background-color: rgba(0, 126, 255); position: fixed;  bottom: 0; left: 0; padding: 12px 0; z-index: 2;">
+      <bottom-menu />
+    </v-footer>
   </div>
 </template>
 
 <script>
 export default {
+
   data () {
     return {
       rooms:[],
-      goal:'',
       users: [],
-      search_goal: '',
+      search_title: '',
 
     }
   },
+
   created () {
     this.$axios.$get('api/rooms', {
       headers:{
-        authorization: localStorage.getItem('access-token')
+        'X-Access-Token': localStorage.getItem('X-Access-Token')
       }
     }).then(res => {
-      this.rooms = res
+      this.rooms = res.data.attributes.rooms
     })
   },
+
   methods:{
-    async destroy(id){
-      const confirmation = window.confirm("本当に削除して良いのですか？");
-      if (confirmation){
-        await this.$axios.$delete(`api/rooms/${id}`, {
-          headers:{
-            authorization: localStorage.getItem('access-token')
-          }
-        }).then(
-        )
-        await this.$axios.$get('api/rooms', {
-          headers:{
-            authorization: localStorage.getItem('access-token')
-          }
-        }).then(res => {
-          this.rooms = res
-        })
-      }
-    },
+
     async onSearch(){
-      if(this.search_goal){
-        await this.$axios.$get(`api/rooms/search/${this.search_goal}`, {
+      if(this.search_title){
+        await this.$axios.$get(`api/rooms/search/${this.search_title}`, {
           headers:{
-            authorization: localStorage.getItem('access-token')
+            'X-Access-Token': localStorage.getItem('X-Access-Token')
           }
         }).then(res => {
-            this.rooms = res
+          this.rooms = res.data.attributes.rooms
         })
       }else{
         await this.$axios.$get(`api/rooms/`, {
           headers:{
-            authorization: localStorage.getItem('access-token')
+            'X-Access-Token': localStorage.getItem('X-Access-Token')
           }
         }).then(res => {
-            this.rooms = res
+            this.rooms = res.data.attributes.rooms
         })
       }
     }
+
   }
 }
 </script>

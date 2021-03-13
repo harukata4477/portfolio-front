@@ -17,7 +17,7 @@
       <template v-slot:activator="{ on, attrs }">
         <v-text-field
           v-model="setTime"
-          label="時間"
+          label="time"
           readonly
           outlined
           v-bind="attrs"

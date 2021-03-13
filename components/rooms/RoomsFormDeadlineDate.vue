@@ -11,7 +11,7 @@
       <template v-slot:activator="{ on, attrs }">
         <v-text-field
           v-model="setDate"
-          label="日付"
+          label="day"
           outlined
           readonly
           v-bind="attrs"

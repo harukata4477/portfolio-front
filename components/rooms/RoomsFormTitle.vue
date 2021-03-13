@@ -2,8 +2,6 @@
   <v-text-field
     v-model="setTitle"
     :rules="rules"
-    label="目標・目的"
-    placeholder="目標・目的"
     outlined
   />
 </template>

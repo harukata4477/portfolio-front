@@ -5,6 +5,24 @@
   "LazyBottomMenu": {
     "description": "Auto imported from components/BottomMenu.vue"
   },
+  "Header": {
+    "description": "Auto imported from components/Header.vue"
+  },
+  "LazyHeader": {
+    "description": "Auto imported from components/Header.vue"
+  },
+  "RoomsCard": {
+    "description": "Auto imported from components/rooms/RoomsCard.vue"
+  },
+  "LazyRoomsCard": {
+    "description": "Auto imported from components/rooms/RoomsCard.vue"
+  },
+  "RoomsDetailForm": {
+    "description": "Auto imported from components/rooms/RoomsDetailForm.vue"
+  },
+  "LazyRoomsDetailForm": {
+    "description": "Auto imported from components/rooms/RoomsDetailForm.vue"
+  },
   "RoomsFormDeadlineDate": {
     "description": "Auto imported from components/rooms/RoomsFormDeadlineDate.vue"
   },

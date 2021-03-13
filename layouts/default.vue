@@ -1,6 +1,6 @@
 <template>
   <v-app dark>
-    <v-navigation-drawer
+    <!-- <v-navigation-drawer
       v-model="drawer"
       :clipped="clipped"
       fixed
@@ -34,19 +34,44 @@
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" class="white--text"/>
       <v-toolbar-title class="display-1 white--text" align="center" @click="$router.push('/rooms/')" style="cursor:pointer; display: flex; align-items: center;" >  
-        <p style="margin: 0 5px 0 2px; font-weight: bold; font-family: 'Roboto'; display: flex; align-items: center;">I<v-icon style="color: #fff; font-size: 35px; margin-bottom: 2px;">mdi-disqus</v-icon>ealSelf</p>
+        <p style="margin: 0 5px 0 2px; font-weight: bold; font-family: 'Roboto'; display: flex; align-items: center;">Post&nbsp;Map</p>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn outlined 
           style="color: #fff; font-weight: bold;" @click="$router.push('/login')">ログイン</v-btn>
       
-    </v-app-bar>
+    </v-app-bar> -->
+  <v-card class="overflow-hidden" min-height="100vh">
+    <v-app-bar
+      :collapse="!collapseOnScroll"
+      absolute
+      color="info"
+      dark
+      scroll-target="#scrolling-techniques-6"
+    >
+      <v-app-bar-nav-icon></v-app-bar-nav-icon>
 
+      <v-toolbar-title>Post Map</v-toolbar-title>
+
+      <v-spacer></v-spacer>
+
+      <v-checkbox
+        v-model="collapseOnScroll"
+        color="white"
+        hide-details
+      ></v-checkbox>
+    </v-app-bar>
+    <v-sheet
+      id="scrolling-techniques-6"
+      class="overflow-y-auto"
+      max-height="100vh"
+    >
     <v-container
       fluid
       class="my-container"
+      min-height="100vh"
     >
-        <v-main class="main" style="padding: 44px 0 0">
+        <v-main class="main">
           <nuxt />
         </v-main>
       <v-navigation-drawer
@@ -62,10 +87,9 @@
         <calendar style="height: 49vh; overflow: hidden;"/>
       </v-navigation-drawer>
     </v-container>
+    </v-sheet>
+  </v-card>
 
-    <v-footer width="100%" style="background-color: rgba(0, 126, 255); position: fixed;  bottom: 0; left: 0; padding: 12px 0; z-index: 2;">
-      <bottom-menu />
-    </v-footer>
   </v-app>
 </template>
 
@@ -75,6 +99,7 @@ export default {
   components: { BottomMenu },
     data () {
     return {
+      collapseOnScroll: true,
       clipped: false,
       drawer: false,
       fixed: false,
