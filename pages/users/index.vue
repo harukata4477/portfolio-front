@@ -1,7 +1,7 @@
 <template>
   <div
     max-width="450"
-    class="mx-auto mb-13"
+    class="mx-auto mt-12 mb-10 pb-5"
   >
   <div class="user_header" style="border-bottom: solid 1px #eee;">
     <div 
@@ -51,6 +51,9 @@
     </v-list>
     <template v-if="currentPage == totalPage"></template>
     <p @click="userMore" v-else style="cursor: pointer; text-align: center; margin: 10px 0;">もっとみる</p>
+    <v-footer width="100%" style="background-color: rgba(0, 126, 255); position: fixed;  bottom: 0; left: 0; padding: 12px 0; z-index: 2;">
+      <bottom-menu />
+    </v-footer>
   </div>
 </template>
 

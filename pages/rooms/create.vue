@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mt-12 mb-10 pb-5">
     <v-container fluid>
       <v-row
         align="center"
@@ -48,6 +48,10 @@
         </v-card>
       </v-row>
     </v-container>
+
+    <v-footer width="100%" style="background-color: rgba(0, 126, 255); position: fixed;  bottom: 0; left: 0; padding: 12px 0; z-index: 2;">
+      <bottom-menu />
+    </v-footer>
   </div>
 </template>
 

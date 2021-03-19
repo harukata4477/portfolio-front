@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-16">
+  <div class="mt-12 mb-10 pb-5">
     <div class="user_header">
       <div class="user_header_left">
         <p class="user_header_left_title">投稿一覧</p>
@@ -120,6 +120,9 @@
     </v-row>
     
     <button class="user_to_index" @click="$router.push('/users/')"><v-icon class="user_to_index_icon">mdi-home</v-icon>&nbsp;一覧ページ</button>
+    <v-footer width="100%" style="background-color: rgba(0, 126, 255); position: fixed;  bottom: 0; left: 0; padding: 12px 0; z-index: 2;">
+      <bottom-menu />
+    </v-footer>
   </div>
 </template>
 

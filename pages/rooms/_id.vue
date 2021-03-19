@@ -6,7 +6,7 @@
       <v-alert style="position: fixed; top: 70px; z-index: 20; width: 95%; margin-left: 12px;" color="info" type="success" v-model="doneAlert" transition="slide-y-transition">
         このルームが達成されました。
       </v-alert>
-      <v-alert style="position: fixed; top: 70px; z-index: 20; width: 95%; margin-left: 12px;" color ="purple" type="success" v-model="notYetAlert" transition="slide-y-transition">
+      <v-alert style="position: fixed; top: 70px; z-index: 20; width: 95%; margin-left: 12px;" color ="" type="success" v-model="notYetAlert" transition="slide-y-transition">
         このルームが未達成されました。
       </v-alert>
       <div style="position: absolute; top: 0; display: flex; align-items: center; padding: 10px; z-index: 10;">
