@@ -21,6 +21,13 @@
     "_name": "_490e6182"
   },
   {
+    "name": "test",
+    "path": "/test",
+    "component": "/app/pages/test.vue",
+    "chunkName": "pages/test",
+    "_name": "_4b01347c"
+  },
+  {
     "name": "users",
     "path": "/users",
     "component": "/app/pages/users/index.vue",

@@ -260,9 +260,11 @@ export default {
 }
 .content{
   width: 100px;
+  text-align: center;
 }
 .content_img{
   max-width: 130px;
+  margin: auto;
 }
 .user_to_index{
   border-bottom: 1px solid blue;
@@ -283,7 +285,8 @@ export default {
 }
 @media (min-width: 530px){
   .content_img{
-    max-width: 500px;
+    max-width: 350px;
+    margin: auto;
   }
   .menu_notice{
     display: none;

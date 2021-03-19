@@ -5,6 +5,18 @@
   "LazyBottomMenu": {
     "description": "Auto imported from components/BottomMenu.vue"
   },
+  "ContentsFormNewContent": {
+    "description": "Auto imported from components/contents/contentsFormNewContent.vue"
+  },
+  "LazyContentsFormNewContent": {
+    "description": "Auto imported from components/contents/contentsFormNewContent.vue"
+  },
+  "RoomEditForm": {
+    "description": "Auto imported from components/rooms/RoomEditForm.vue"
+  },
+  "LazyRoomEditForm": {
+    "description": "Auto imported from components/rooms/RoomEditForm.vue"
+  },
   "RoomsFormDeadlineDate": {
     "description": "Auto imported from components/rooms/RoomsFormDeadlineDate.vue"
   },

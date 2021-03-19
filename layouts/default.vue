@@ -34,7 +34,7 @@
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" class="white--text"/>
       <v-toolbar-title class="display-1 white--text" align="center" @click="$router.push('/rooms/')" style="cursor:pointer; display: flex; align-items: center;" >  
-        <p style="margin: 0 5px 0 2px; font-weight: bold; font-family: 'Roboto'; display: flex; align-items: center;">I<v-icon style="color: #fff; font-size: 35px; margin-bottom: 2px;">mdi-disqus</v-icon>ealSelf</p>
+        <p style="margin: 0 5px 0 2px; font-weight: bold; font-family: 'Roboto'; display: flex; align-items: center;">Post Map</p>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn outlined 

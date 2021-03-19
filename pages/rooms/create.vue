@@ -75,6 +75,15 @@ export default {
           'X-Access-Token': localStorage.getItem('X-Access-Token')
         }
       }).then(res => {
+        const params = {
+            room_id: res.room_id,
+            content: [{"name": "タイトル入力"}]
+          }
+          this.$axios.$post(`api/contents/`, params, {
+            headers:{
+              'X-Access-Token': localStorage.getItem('X-Access-Token')
+            }
+          })
         this.$router.push('/rooms/')
       })
     }
