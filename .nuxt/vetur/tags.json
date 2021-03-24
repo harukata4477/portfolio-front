@@ -17,6 +17,42 @@
   "LazyContentsFormNewContent": {
     "description": "Auto imported from components/contents/contentsFormNewContent.vue"
   },
+  "PostsEdit": {
+    "description": "Auto imported from components/posts/PostsEdit.vue"
+  },
+  "LazyPostsEdit": {
+    "description": "Auto imported from components/posts/PostsEdit.vue"
+  },
+  "PostsFormSelect": {
+    "description": "Auto imported from components/posts/PostsFormSelect.vue"
+  },
+  "LazyPostsFormSelect": {
+    "description": "Auto imported from components/posts/PostsFormSelect.vue"
+  },
+  "PostsFormTitle": {
+    "description": "Auto imported from components/posts/PostsFormTitle.vue"
+  },
+  "LazyPostsFormTitle": {
+    "description": "Auto imported from components/posts/PostsFormTitle.vue"
+  },
+  "PostsModal": {
+    "description": "Auto imported from components/posts/PostsModal.vue"
+  },
+  "LazyPostsModal": {
+    "description": "Auto imported from components/posts/PostsModal.vue"
+  },
+  "UserFormEmail": {
+    "description": "Auto imported from components/user/userFormEmail.vue"
+  },
+  "LazyUserFormEmail": {
+    "description": "Auto imported from components/user/userFormEmail.vue"
+  },
+  "UserFormPassword": {
+    "description": "Auto imported from components/user/userFormPassword.vue"
+  },
+  "LazyUserFormPassword": {
+    "description": "Auto imported from components/user/userFormPassword.vue"
+  },
   "RoomEditForm": {
     "description": "Auto imported from components/rooms/RoomEditForm.vue"
   },
@@ -52,18 +88,6 @@
   },
   "LazyRoomsFormTitle": {
     "description": "Auto imported from components/rooms/RoomsFormTitle.vue"
-  },
-  "UserFormEmail": {
-    "description": "Auto imported from components/user/userFormEmail.vue"
-  },
-  "LazyUserFormEmail": {
-    "description": "Auto imported from components/user/userFormEmail.vue"
-  },
-  "UserFormPassword": {
-    "description": "Auto imported from components/user/userFormPassword.vue"
-  },
-  "LazyUserFormPassword": {
-    "description": "Auto imported from components/user/userFormPassword.vue"
   },
   "UsersCard": {
     "description": "Auto imported from components/users/UsersCard.vue"

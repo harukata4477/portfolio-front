@@ -1,10 +1,10 @@
 <template>
   <div style="margin-bottom: 80px;"> 
     <div class="user_header" >
-      <v-alert style="position: fixed; top: 70px; z-index: 20; width: 95%;" type="success" v-model="updateAlert" transition="slide-y-transition">
+      <v-alert style="position: fixed; top: 70px; z-index: 30; width: 95%;" type="success" v-model="updateAlert" transition="slide-y-transition">
         更新されました。
       </v-alert>
-      <v-alert style="position: fixed; top: 70px; z-index: 20; width: 95%;" color="error" type="success" v-model="deleteAlert" transition="slide-y-transition">
+      <v-alert style="position: fixed; top: 70px; z-index: 30; width: 95%;" color="error" type="success" v-model="deleteAlert" transition="slide-y-transition">
         削除されました。
       </v-alert>
       <v-row class="rooms_top mt-5 mb-5 ml-3">

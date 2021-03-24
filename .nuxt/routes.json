@@ -35,11 +35,25 @@
     "_name": "_c91b56de"
   },
   {
+    "name": "posts-create",
+    "path": "/posts/create",
+    "component": "/app/pages/posts/create.vue",
+    "chunkName": "pages/posts/create",
+    "_name": "_626c9da2"
+  },
+  {
     "name": "rooms-create",
     "path": "/rooms/create",
     "component": "/app/pages/rooms/create.vue",
     "chunkName": "pages/rooms/create",
     "_name": "_1884055d"
+  },
+  {
+    "name": "posts-edits-id",
+    "path": "/posts/edits/:id?",
+    "component": "/app/pages/posts/edits/_id.vue",
+    "chunkName": "pages/posts/edits/_id",
+    "_name": "_2f28c41e"
   },
   {
     "name": "users-edits-id",
@@ -68,6 +82,13 @@
     "component": "/app/pages/users/posts/_id.vue",
     "chunkName": "pages/users/posts/_id",
     "_name": "_7e88b3bd"
+  },
+  {
+    "name": "posts-id",
+    "path": "/posts/:id?",
+    "component": "/app/pages/posts/_id.vue",
+    "chunkName": "pages/posts/_id",
+    "_name": "_37bd3a04"
   },
   {
     "name": "rooms-id",

@@ -92,7 +92,7 @@
 
             <v-card-actions>
               <div @click="$router.push(`/users/${users[a].id}`)" class="user" style="display: flex;">
-                <v-img :src="`http://localhost:3000${users[a].avatar.url}`" class="user_img"></v-img>
+                <v-img :src="`http://localhost:3000${users[a].image.url}`" class="user_img"></v-img>
                 <p class="user_name">{{users[a].name}}</p>
               </div>
 
@@ -120,9 +120,7 @@
     </v-row>
     
     <button class="user_to_index" @click="$router.push('/users/')"><v-icon class="user_to_index_icon">mdi-home</v-icon>&nbsp;一覧ページ</button>
-    <v-footer width="100%" style="background-color: rgba(0, 126, 255); position: fixed;  bottom: 0; left: 0; padding: 12px 0; z-index: 2;">
-      <bottom-menu />
-    </v-footer>
+
   </div>
 </template>
 

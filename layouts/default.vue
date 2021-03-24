@@ -1,6 +1,6 @@
 <template>
   <v-app dark>
-    <!-- <v-navigation-drawer
+    <v-navigation-drawer
       v-model="drawer"
       :clipped="clipped"
       fixed
@@ -33,35 +33,15 @@
       style="right: 0;"
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" class="white--text"/>
-      <v-toolbar-title class="display-1 white--text" align="center" @click="$router.push('/rooms/')" style="cursor:pointer; display: flex; align-items: center;" >  
-        <p style="margin: 0 5px 0 2px; font-weight: bold; font-family: 'Roboto'; display: flex; align-items: center;">Post Map</p>
+      <v-toolbar-title class="display-1 white--text" align="center" @click="$router.push('/rooms/')" style="cursor:pointer; display: flex; align-items: center;" > 
         <p style="margin: 0 5px 0 2px; font-weight: bold; font-family: 'Roboto'; display: flex; align-items: center;">Post&nbsp;Map</p>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn outlined 
           style="color: #fff; font-weight: bold;" @click="$router.push('/login')">ログイン</v-btn>
       
-    </v-app-bar> -->
-  <v-card class="overflow-hidden" min-height="100vh">
-    <v-app-bar
-      :collapse="!collapseOnScroll"
-      absolute
-      color="info"
-      dark
-      scroll-target="#scrolling-techniques-6"
-    >
-      <v-app-bar-nav-icon></v-app-bar-nav-icon>
-
-      <v-toolbar-title>Post Map</v-toolbar-title>
-
-      <v-spacer></v-spacer>
-
-      <v-checkbox
-        v-model="collapseOnScroll"
-        color="white"
-        hide-details
-      ></v-checkbox>
     </v-app-bar>
+  <v-card class="overflow-hidden" min-height="100vh">
     <v-sheet
       id="scrolling-techniques-6"
       class="overflow-y-auto"
@@ -73,6 +53,14 @@
       min-height="100vh"
     >
         <v-main class="main">
+          <div style="display: flex; align-items: center;" v-if="~$route.path.indexOf('/posts/')">
+          <v-spacer></v-spacer>
+            <div class="like">
+              <v-icon  color="warning">mdi-thumb-up</v-icon>
+              <!-- <v-icon color="warning">mdi-thumb-up-outline</v-icon> -->
+            </div>
+            <v-icon v-if="side == false" @click="side = !side" color="info">mdi-message-reply-text</v-icon>
+          </div>
           <nuxt />
         </v-main>
       <v-navigation-drawer
@@ -83,14 +71,26 @@
         fixed
         mobile-breakpoint="960"
         class="aside"
+        v-model="side"
       >
-        <memo />
-        <calendar style="height: 49vh; overflow: hidden;"/>
+        <!-- <memo />
+        <calendar style="height: 49vh; overflow: hidden;"/> -->
+        <div style="display: flex;" v-if="~$route.path.indexOf('/posts/')">
+          <p>Live</p>
+          <img style="width: 50px; height: 50px;" src="/live2.gif"/>
+          <p>{{$route.path}}</p>
+        </div>
+        <template v-else>
+          <p>お尻</p>
+          <p>{{$route.path}}</p>
+        </template>
       </v-navigation-drawer>
     </v-container>
     </v-sheet>
   </v-card>
-
+  <v-footer width="100%" style="background-color: rgba(0, 126, 255); position: fixed;  bottom: 0; left: 0; padding: 12px 0; z-index: 2;">
+    <bottom-menu />
+  </v-footer>
   </v-app>
 </template>
 
@@ -104,6 +104,7 @@ export default {
       clipped: false,
       drawer: false,
       fixed: false,
+      side: false,
       items: [
         {
           icon: 'mdi-home',
