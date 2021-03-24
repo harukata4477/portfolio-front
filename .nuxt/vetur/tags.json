@@ -29,6 +29,12 @@
   "LazyPostsFormSelect": {
     "description": "Auto imported from components/posts/PostsFormSelect.vue"
   },
+  "PostsFormTagList": {
+    "description": "Auto imported from components/posts/PostsFormTagList.vue"
+  },
+  "LazyPostsFormTagList": {
+    "description": "Auto imported from components/posts/PostsFormTagList.vue"
+  },
   "PostsFormTitle": {
     "description": "Auto imported from components/posts/PostsFormTitle.vue"
   },
@@ -40,18 +46,6 @@
   },
   "LazyPostsModal": {
     "description": "Auto imported from components/posts/PostsModal.vue"
-  },
-  "UserFormEmail": {
-    "description": "Auto imported from components/user/userFormEmail.vue"
-  },
-  "LazyUserFormEmail": {
-    "description": "Auto imported from components/user/userFormEmail.vue"
-  },
-  "UserFormPassword": {
-    "description": "Auto imported from components/user/userFormPassword.vue"
-  },
-  "LazyUserFormPassword": {
-    "description": "Auto imported from components/user/userFormPassword.vue"
   },
   "RoomEditForm": {
     "description": "Auto imported from components/rooms/RoomEditForm.vue"
@@ -88,6 +82,18 @@
   },
   "LazyRoomsFormTitle": {
     "description": "Auto imported from components/rooms/RoomsFormTitle.vue"
+  },
+  "UserFormEmail": {
+    "description": "Auto imported from components/user/userFormEmail.vue"
+  },
+  "LazyUserFormEmail": {
+    "description": "Auto imported from components/user/userFormEmail.vue"
+  },
+  "UserFormPassword": {
+    "description": "Auto imported from components/user/userFormPassword.vue"
+  },
+  "LazyUserFormPassword": {
+    "description": "Auto imported from components/user/userFormPassword.vue"
   },
   "UsersCard": {
     "description": "Auto imported from components/users/UsersCard.vue"

@@ -37,7 +37,7 @@
             <v-list-item-subtitle v-if="following.profile == ''"></v-list-item-subtitle>
             <v-list-item-subtitle v-if="following.profile" v-html="following.profile"></v-list-item-subtitle>
           </v-list-item-content>
-          <template v-if="currentUser.id == $route.params.id">
+          <template v-if="currentUser_id == $route.params.id">
             <v-btn @click="unfollow(following.id)" small color="info" class="unfollow">フォロー済み</v-btn>
           </template>
         </v-list-item>
@@ -56,7 +56,7 @@ export default {
   data() {
     return {
       title: 'フォロー中',
-      currentUser: {},
+      currentUser_id: 0,
       items: [],
       followings: [],
  
@@ -65,13 +65,9 @@ export default {
     }
   },
   created() {
-    this.$axios.$get(`api/follows/${this.$route.params.id}`, {
-        headers:{
-          'X-Access-Token': localStorage.getItem('X-Access-Token')
-        }
-      }).then(res => {
+    this.$axios.$get(`api/follows/${this.$route.params.id}`).then(res => {
         this.followings = res.data.attributes.followings
-        this.currentUser = res.data.attributes.current_user
+        this.currentUser_id = localStorage.getItem('id')
         this.currentPage = res.pagination.current_page
         this.totalPage = res.pagination.total_pages
     })
@@ -106,7 +102,7 @@ export default {
 
           this.followings.push(res.data.attributes.followings[i])
         }
-        this.currentUser = res.data.attributes.current_user
+        this.currentUser_id = localStorage.getItem('id')
         this.currentPage = res.pagination.current_page
         this.totalPage = res.pagination.total_pages
     })

@@ -24,18 +24,43 @@
           prepend-inner-icon="mdi-magnify"
           filled
           rounded
+          hide-details
+          class="mb-3 "
           dense
           @keypress.enter="onSearch"
         ></v-text-field>
       </div>
-      <!-- <ul class="type">
-        <li @click="all">全て</li>
-        <li v-for="tag in tags" @click="tag_search(tag.name)">{{tag.name}}&nbsp;({{tag.count}})</li>
-      </ul> -->
+
+      <v-sheet
+        class="mx-auto mb-3"
+      >
+        <v-slide-group
+          multiple
+          show-arrows
+        >
+          <v-slide-item
+            v-for=" (tag, c) in tags"
+            :key="`tag-${c}`"
+          >
+            <v-btn
+              class="mx-2"
+              color="info"
+              style="font-weight: bold;"
+              small
+              depressed
+              rounded
+              @click="tagSearch(1,tag.name)"
+            >
+              {{ tag.name }}({{tag.taggings_count}})
+            </v-btn>
+          </v-slide-item>
+        </v-slide-group>
+      </v-sheet>
+
     </div>
 
     <p>新規投稿</p>
-      <v-row dense class="mb-6 mt-3">
+      <v-row dense class="mt-3">
         <v-col
           v-for="(post, a) in posts"
           :key="`post-${a}`"
@@ -50,8 +75,11 @@
               background-color="gray"
               min-height="160px"
               gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-              :src="`/img/img${a}.svg`"
+              :src="`/img/img${post.kind}.svg`"
             >
+            <div class="tag_list" v-for="(tag, b) in post.tag_list" :key="`tag-${b}`">
+              <p class="tag pl-1 pr-1 mb-0 mr-1" v-text="tag"></p>
+            </div>
               <v-card-title style="font-size: 15px; font-weight: bold; line-height: 1.5;" v-text="post.title"></v-card-title>
             </v-img>
 
@@ -74,6 +102,22 @@
         </v-col>
 
       </v-row>
+      <div class="text-center mt-5 mb-16">
+        <v-pagination
+          v-if="judge"
+          v-model="page"
+          :length="this.totalPage"
+          :total-visible="7"
+          @input = "tagSearch(page)"
+        ></v-pagination>
+        <v-pagination
+          v-else
+          v-model="page"
+          :length="this.totalPage"
+          :total-visible="7"
+          @input = "onSearch(page)"
+        ></v-pagination>
+      </div>
 
   </div>
 </template>
@@ -85,28 +129,40 @@ export default {
       users: [],
       rooms: [],
       posts: [],
+      tags: [],
       
+      name: '',
       search_title: '',
 
+      currentPage: '',
+      totalPage: '',
+      page: 1,
+
+      judge: false,
       createForm: false,
       selectedItem: false,
     }
   },
   created() {
 
-    this.$axios.$get('api/posts', {
-        headers:{
-          'X-Access-Token': localStorage.getItem('X-Access-Token')
+    this.$axios.$get('api/tags').then(res => {
+        for (let i = 0; i < res.data.length; i++){
+          this.tags.push(res.data[i].attributes.tags)   
         }
-      }).then(res => {
+    })
+
+    this.$axios.$get('api/posts').then(res => {
         for (let i = 0; i < res.data.length; i++){
           this.posts.push({
             id: res.data[i].attributes.id,
             title: res.data[i].attributes.title,
-            updated_at: res.data[i].attributes.updated_at
+            kind: res.data[i].attributes.kind,
+            tag_list: res.data[i].attributes.tag_list,
           })
           this.users.push(res.data[i].attributes.users)
         }
+        this.currentPage = res.pagination.current_page
+        this.totalPage = res.pagination.total_pages
     })
 
 
@@ -121,6 +177,30 @@ export default {
 
   },
   methods: {
+    async tagSearch(page, name){
+      this.page = page
+      if(name){
+        this.name = name
+      }else{
+
+      }
+      await this.$axios.$get(`api/tags/${this.name}?page=${this.page}`).then(res => {
+        this.posts = []
+          this.users = []
+          for (let i = 0; i < res.data.length; i++){
+            this.posts.push({
+              id: res.data[i].attributes.posts.id,
+              title: res.data[i].attributes.posts.title,
+              kind: res.data[i].attributes.posts.kind,
+              tag_list: res.data[i].attributes.posts.tag_list,
+            })
+            this.users.push(res.data[i].attributes.users)
+          }
+          this.currentPage = res.pagination.current_page
+          this.totalPage = res.pagination.total_pages
+          this.judge = true
+      })
+    }, 
     all(){
       this.search_title = ''
       this.onSearch()
@@ -134,26 +214,26 @@ export default {
       this.room_id = id
     },
 
-    back(){
-      if(this.first_page == true){
+    // back(){
+    //   if(this.first_page == true){
 
-      } else{
-        this.nowPage--
-        this.onSearch(this.nowPage)
-      }
-    },
-    next(){
-      if(this.last_page == true){
+    //   } else{
+    //     this.nowPage--
+    //     this.onSearch(this.nowPage)
+    //   }
+    // },
+    // next(){
+    //   if(this.last_page == true){
 
-      } else{
-        this.nowPage++
-        this.onSearch(this.nowPage)
-      }
-    },
-    page(a){
-      this.nowPage = a
-      this.onSearch(this.nowPage)
-    },
+    //   } else{
+    //     this.nowPage++
+    //     this.onSearch(this.nowPage)
+    //   }
+    // },
+    // page(a){
+    //   this.nowPage = a
+    //   this.onSearch(this.nowPage)
+    // },
 
     // async create(){
     //   const params = {
@@ -170,76 +250,76 @@ export default {
     //     this.$router.push(`/${this.room_id}/`)
     //   )
     // },
-    async onSearch(){
+    async onSearch(page){
+      this.page = page
       if(this.search_title){
-        this.$axios.$get(`api/posts/search/${this.search_title}`, {
-          headers:{
-            'X-Access-Token': localStorage.getItem('X-Access-Token')
-          }
-        }).then(res => {
+        this.$axios.$get(`api/posts/search/${this.search_title}?page=${this.page}`).then(res => {
           this.posts = []
           this.users = []
           for (let i = 0; i < res.data.length; i++){
             this.posts.push({
               id: res.data[i].attributes.id,
               title: res.data[i].attributes.title,
-              updated_at: res.data[i].attributes.updated_at
+              kind: res.data[i].attributes.kind,
+              tag_list: res.data[i].attributes.tag_list,
             })
             this.users.push(res.data[i].attributes.users)
           }
+            this.currentPage = res.pagination.current_page
+            this.totalPage = res.pagination.total_pages
         })
       }else{
-        this.$axios.$get(`api/posts/`, {
-          headers:{
-            'X-Access-Token': localStorage.getItem('X-Access-Token')
-          }
-        }).then(res => {
+        this.$axios.$get(`api/posts/?page=${this.page}`).then(res => {
           this.posts = []
           this.users = []
           for (let i = 0; i < res.data.length; i++){
             this.posts.push({
               id: res.data[i].attributes.id,
               title: res.data[i].attributes.title,
-              updated_at: res.data[i].attributes.updated_at
+              kind: res.data[i].attributes.kind,
+              tag_list: res.data[i].attributes.tag_list,
             })
             this.users.push(res.data[i].attributes.users)
           }
+            this.currentPage = res.pagination.current_page
+            this.totalPage = res.pagination.total_pages
         })
       }
+      this.judge = false
     },
-    async like(id){
-      const params = {
-        post_id: id
-      }
-      await this.$axios.$post(`api/likes/`, params, {
-          headers:{
-            authorization: localStorage.getItem('access-token')
-          }
-      })
-      await this.$axios.$get('api/posts/likes', {
-          headers:{
-              authorization: localStorage.getItem('access-token')
-          }
-      }).then(res => {
-          this.like_judges = res.like_judges
-          this.like_counts = res.like_counts
-      })
-    },
-    async unlike(id){
-      await this.$axios.$delete(`api/likes/${id}`, {
-          headers:{
-              authorization: localStorage.getItem('access-token')
-          }
-      })
-      await this.$axios.$get('api/posts/likes', {
-          headers:{
-              authorization: localStorage.getItem('access-token')
-          }
-      }).then(res => {
-          this.like_judges = res.like_judges
-          this.like_counts = res.like_counts
-      })
-    }
+    // async like(id){
+    //   const params = {
+    //     post_id: id
+    //   }
+    //   await this.$axios.$post(`api/likes/`, params, {
+    //       headers:{
+    //         authorization: localStorage.getItem('access-token')
+    //       }
+    //   })
+    //   await this.$axios.$get('api/posts/likes', {
+    //       headers:{
+    //           authorization: localStorage.getItem('access-token')
+    //       }
+    //   }).then(res => {
+    //       this.like_judges = res.like_judges
+    //       this.like_counts = res.like_counts
+    //   })
+    // },
+    // async unlike(id){
+    //   await this.$axios.$delete(`api/likes/${id}`, {
+    //       headers:{
+    //           authorization: localStorage.getItem('access-token')
+    //       }
+    //   })
+    //   await this.$axios.$get('api/posts/likes', {
+    //       headers:{
+    //           authorization: localStorage.getItem('access-token')
+    //       }
+    //   }).then(res => {
+    //       this.like_judges = res.like_judges
+    //       this.like_counts = res.like_counts
+    //   })
+    // }
   },
 }
 </script>
@@ -287,138 +367,17 @@ export default {
   width: 14vw;
   overflow: scroll;
 }
-/* .rooms{
-  cursor: pointer;
-  width: 200%;
-  margin: 0 auto;
-  height: 400px;
-  overflow: hidden;
+.tag_list{
   position: absolute;
-  top: -50%;
-  left: -50%;
-  transform: scale(0.5) ;
-  padding: 10px 0;
+  top: 5px;
+  right: 5px;
+  overflow: scroll;
 }
-.rooms_title{
-  border: solid 1px #333;
-  display: table;
-  margin: 0 auto;
-  text-align: center;
-  padding: 10px;
+.tag{
+  font-size: 10px; 
+  font-weight: bold; 
   border-radius: 10px;
-  position: relative;
-  font-weight: bold;
-  background-color: #eee;
-  color: #333;
+  background: rgb(91, 164, 248); 
+  display:inline-block;
 }
-.rooms_title::after{
-  border-right: solid 2px rgb(189, 188, 188);
-  height: 20px;
-  position: absolute;
-  bottom: -20px;
-  right: 50%;
-  content: "";
-}
-.rooms_inner{
-  margin: 0 auto;
-  margin-top: 18px;
-  text-align: center;
-  position: relative;
-  display: table;
-  height: 50vh;
-  color: #333;
-}
-.rooms_inner_content{
-  margin: 18px 0 50px 0;
-  position: relative;
-  display: inline-block;
-  padding: 0 5px;
-  vertical-align: top;
-}
-.rooms_inner_content_title{
-  position: relative;
-  margin: 0;
-  border: solid 1px #333;
-  padding: 6px;
-  font-size: 13px;
-  font-weight: bold;
-  border-radius: 10px;
-  text-align: center;
-  min-width: 150px;
-  word-break: break-all;
-  cursor: pointer;
-  background-color: #eee;
-  transition: 0.2s;
-} */
-/* 
-.done_bg{
-  position: absolute;
-  top: 0;
-  left: 0;
-  border-radius: 10px;
-  background-color: rgba(0, 126, 255, 0.44);
-  width:100%;
-  height: 100%;
-}
-.rooms_inner_content::before{
-  border-top: solid 2px rgb(189, 188, 188);
-  height: 20px;
-  width: 100%;
-  position: absolute;
-  top: -20px;
-  right: 0;
-  content: "";
-}
-.rooms_inner_content:first-child::before{
-  border-top: solid 2px rgb(189, 188, 188);
-  width: 100%;
-  position: absolute;
-  top: -20px;
-  left: 50%;
-  content: "";
-}
-.rooms_inner_content:last-child::before{
-  border-top: solid 2px rgb(189, 188, 188);
-  width: 100%;
-  position: absolute;
-  top: -20px;
-  right: 50%;
-  content: "";
-}
-.rooms_inner_content:first-child .rooms_inner_content_title::before{
-  border-top: none;
-  height: 0;
-  width: 0;
-  position: unset;
-  top: 0;
-  content: "";
-}
-.rooms_inner_content:last-child .rooms_inner_content_title::before{
-  border-top: none;
-  height: 0;
-  width: 0;
-  position: unset;
-  top: 0;
-  content: "";
-}
-.rooms_inner_content_title::after{
-  border-right: solid 2px rgb(189, 188, 188);
-  height: 20px;
-  position: absolute;
-  top: -20px;
-  right: 50%;
-  content: "";
-}
-.rooms_inner_content_text{
-  display: flex;
-  align-items: center;
-  margin: 0;
-  padding: 5px 10px 5px 20px;
-  border-left: solid 2px rgb(189, 188, 188);
-  border-bottom: solid 2px rgb(189, 188, 188);
-  font-size: 10px;
-  max-width: 140px;
-  word-break: break-all;
-  text-align: left;
-} */
 </style>

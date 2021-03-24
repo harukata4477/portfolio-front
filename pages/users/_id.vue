@@ -88,7 +88,7 @@ export default {
         'X-Access-Token': localStorage.getItem('X-Access-Token')
       }
     }).then(res => {
-        this.currentUser = res.data.attributes.current_user
+        this.currentUser = {id: localStorage.getItem('id')}
         this.follow_judge = res.data.attributes.follow_judge
 
         var contents = []

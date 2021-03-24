@@ -62,11 +62,7 @@ export default {
     }
   },
   created(){
-    this.$axios.$get(`api/posts/${this.$route.params.id}`, {
-        headers:{
-          'X-Access-Token': localStorage.getItem('X-Access-Token')
-        }
-      }).then(res => {
+    this.$axios.$get(`api/posts/${this.$route.params.id}`).then(res => {
       this.contents = res.data.attributes.contents.content
       this.postContents = res.data.attributes.post_contents
       var date = new Date(res.data.attributes.updated_at)
@@ -82,30 +78,6 @@ export default {
     })
   },
   methods:{
-    async create(){
-      let formData = new FormData
-        formData.append('post_id', this.$route.params.id)
-        formData.append('kind', this.kindSelect)
-        formData.append('order_num', this.postContents.length + 1)
-        formData.append('title', this.title)
-        formData.append('sub_title', this.sub_title)
-        formData.append('text', this.text)
-        formData.append('picture', this.picture)
-
-      await this.$axios.$post('api/post_contents/', formData, {
-        headers:{
-          'X-Access-Token': localStorage.getItem('X-Access-Token')
-        }
-      })
-      this.title = ''
-      this.sub_title = ''
-      this.text = ''
-      this.picture = ''
-      this.kindSelect = ''
-    },
-    update(){
-
-    },
   }
 }
 </script>

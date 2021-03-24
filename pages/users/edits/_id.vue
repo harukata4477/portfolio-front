@@ -122,7 +122,7 @@ export default {
         'X-Access-Token': localStorage.getItem('X-Access-Token')
       }
     }).then(res => {
-      this.currentUser = res.data.attributes.current_user
+      this.currentUser = {id: localStorage.getItem('id')}
 
       this.name = res.data.attributes.name
       this.email = res.data.attributes.email
