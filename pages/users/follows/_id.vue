@@ -65,12 +65,15 @@ export default {
     }
   },
   created() {
-    this.$axios.$get(`api/follows/${this.$route.params.id}`).then(res => {
-        this.followings = res.data.attributes.followings
-        this.currentUser_id = localStorage.getItem('id')
-        this.currentPage = res.pagination.current_page
-        this.totalPage = res.pagination.total_pages
-    })
+    if(localStorage.getItem('X-Access-Token')){
+    }else{
+      this.$axios.$get(`api/follows/${this.$route.params.id}`).then(res => {
+          this.followings = res.data.attributes.followings
+          this.currentUser_id = localStorage.getItem('id')
+          this.currentPage = res.pagination.current_page
+          this.totalPage = res.pagination.total_pages
+      })
+    }
 
     if(localStorage.getItem('id') == this.$route.params.id){
       this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: '投稿一覧', link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`},{title: `設定`, link: `/users/edits/${this.$route.params.id}`}]

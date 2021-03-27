@@ -77,7 +77,7 @@
         <calendar style="height: 49vh; overflow: hidden;"/> -->
         <div style="display: flex;" v-if="~$route.path.indexOf('/posts/')">
           <p>Live</p>
-          <img style="width: 50px; height: 50px;" src="/live2.gif"/>
+          <vue-loading type="bubbles" color="yellow" :size="{ width: '50px', height: '50px'}"></vue-loading>
           <p>{{$route.path}}</p>
         </div>
         <template v-else>
@@ -95,9 +95,10 @@
 </template>
 
 <script>
+import { VueLoading } from 'vue-loading-template';
 import BottomMenu from '../components/BottomMenu.vue'
 export default {
-  components: { BottomMenu },
+  components: { BottomMenu,VueLoading },
     data () {
     return {
       collapseOnScroll: true,

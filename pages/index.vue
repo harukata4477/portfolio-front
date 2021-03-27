@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="user_header" >
-      <v-row class="rooms_top mt-5 ml-3">
+    <div class="user_header mt-5">
+      <v-row class="rooms_top ml-1">
         <v-btn
           text
           color="info accent-4"
@@ -90,12 +90,15 @@
               </div>
 
               <v-spacer></v-spacer>
-              <!-- {{like_counts[a]}} -->
-              <!-- <v-btn icon >
+              {{like_counts[a]}}
+              <v-btn icon v-if="paginationJudge">
+                <v-icon v-if="like_judges[a]" @click="tagUnlike(posts[a].id)" style="color: red;">mdi-heart</v-icon>
+                <v-icon v-else @click="tagLike(posts[a].id)" @>mdi-heart</v-icon>
+              </v-btn>
+              <v-btn icon v-else>
                 <v-icon v-if="like_judges[a]" @click="unlike(posts[a].id)" style="color: red;">mdi-heart</v-icon>
                 <v-icon v-else @click="like(posts[a].id)" @>mdi-heart</v-icon>
-              </v-btn> -->
-              <v-icon>mdi-heart</v-icon>
+              </v-btn>
 
             </v-card-actions>
           </v-card>
@@ -104,7 +107,7 @@
       </v-row>
       <div class="text-center mt-5 mb-16">
         <v-pagination
-          v-if="judge"
+          v-if="paginationJudge"
           v-model="page"
           :length="this.totalPage"
           :total-visible="7"
@@ -118,7 +121,6 @@
           @input = "onSearch(page)"
         ></v-pagination>
       </div>
-
   </div>
 </template>
 
@@ -130,7 +132,8 @@ export default {
       rooms: [],
       posts: [],
       tags: [],
-      
+      like_counts: [],
+      like_judges: [],      
       name: '',
       search_title: '',
 
@@ -138,9 +141,10 @@ export default {
       totalPage: '',
       page: 1,
 
-      judge: false,
+      paginationJudge: false,
       createForm: false,
       selectedItem: false,
+
     }
   },
   created() {
@@ -150,43 +154,80 @@ export default {
           this.tags.push(res.data[i].attributes.tags)   
         }
     })
+    this.index()
 
-    this.$axios.$get('api/posts').then(res => {
+  },
+  methods: {
+    async index(){
+      this.posts = []
+      this.users = []
+      this.like_counts = []
+      this.like_judges = []
+      if(localStorage.getItem('X-Access-Token')){
+        this.$axios.$get(`api/posts?page=${this.page}`, {
+            headers:{
+              'X-Access-Token': localStorage.getItem('X-Access-Token')
+            }
+          }).then(res => {
+          for (let i = 0; i < res.data.length; i++){
+            this.posts.push({
+              id: res.data[i].attributes.id,
+              title: res.data[i].attributes.title,
+              kind: res.data[i].attributes.kind,
+              tag_list: res.data[i].attributes.tag_list,
+            })
+            this.like_counts.push(res.data[i].attributes.likes.length),
+            this.like_judges.push(res.data[i].attributes.like_judges),
+            this.users.push(res.data[i].attributes.users)
+          }
+          this.currentPage = res.pagination.current_page
+          this.totalPage = res.pagination.total_pages
+        })
+      }else{
+        this.$axios.$get(`api/posts?page=${this.page}`).then(res => {
+          for (let i = 0; i < res.data.length; i++){
+            this.posts.push({
+              id: res.data[i].attributes.id,
+              title: res.data[i].attributes.title,
+              kind: res.data[i].attributes.kind,
+              tag_list: res.data[i].attributes.tag_list,
+            })
+            this.like_counts.push(res.data[i].attributes.likes.length),
+            this.users.push(res.data[i].attributes.users)
+          }
+          this.currentPage = res.pagination.current_page
+          this.totalPage = res.pagination.total_pages
+        })
+      }
+    },
+
+    async tagIndex(){
+      this.posts = []
+      this.users = []
+      this.like_counts = []
+      this.like_judges = []
+      if(localStorage.getItem('X-Access-Token')){
+        await this.$axios.$get(`api/tags/${this.name}?page=${this.page}`, {
+          headers:{
+            'X-Access-Token': localStorage.getItem('X-Access-Token')
+          }
+        }).then(res => {
         for (let i = 0; i < res.data.length; i++){
           this.posts.push({
-            id: res.data[i].attributes.id,
-            title: res.data[i].attributes.title,
-            kind: res.data[i].attributes.kind,
-            tag_list: res.data[i].attributes.tag_list,
+            id: res.data[i].attributes.posts.id,
+            title: res.data[i].attributes.posts.title,
+            kind: res.data[i].attributes.posts.kind,
+            tag_list: res.data[i].attributes.posts.tag_list,
           })
+          this.like_counts.push(res.data[i].attributes.likes.length),
+          this.like_judges.push(res.data[i].attributes.like_judges),
           this.users.push(res.data[i].attributes.users)
         }
         this.currentPage = res.pagination.current_page
         this.totalPage = res.pagination.total_pages
-    })
-
-
-    // this.$axios.$get('api/posts/likes', {
-    //       headers:{
-    //           authorization: localStorage.getItem('access-token')
-    //       }
-    // }).then(res => {
-    //     this.like_judges = res.like_judges
-    //     this.like_counts = res.like_counts
-    // })
-
-  },
-  methods: {
-    async tagSearch(page, name){
-      this.page = page
-      if(name){
-        this.name = name
+        })
       }else{
-
-      }
-      await this.$axios.$get(`api/tags/${this.name}?page=${this.page}`).then(res => {
-        this.posts = []
-          this.users = []
+        await this.$axios.$get(`api/tags/${this.name}?page=${this.page}`).then(res => {
           for (let i = 0; i < res.data.length; i++){
             this.posts.push({
               id: res.data[i].attributes.posts.id,
@@ -194,13 +235,24 @@ export default {
               kind: res.data[i].attributes.posts.kind,
               tag_list: res.data[i].attributes.posts.tag_list,
             })
+            this.like_counts.push(res.data[i].attributes.likes.length),
             this.users.push(res.data[i].attributes.users)
           }
           this.currentPage = res.pagination.current_page
           this.totalPage = res.pagination.total_pages
-          this.judge = true
-      })
+        })
+      }
+      this.paginationJudge = true
+    },
+
+    async tagSearch(page, tagName){
+      this.page = page
+      if(tagName){
+        this.name = tagName
+      }
+      this.tagIndex()
     }, 
+    
     all(){
       this.search_title = ''
       this.onSearch()
@@ -214,48 +266,17 @@ export default {
       this.room_id = id
     },
 
-    // back(){
-    //   if(this.first_page == true){
-
-    //   } else{
-    //     this.nowPage--
-    //     this.onSearch(this.nowPage)
-    //   }
-    // },
-    // next(){
-    //   if(this.last_page == true){
-
-    //   } else{
-    //     this.nowPage++
-    //     this.onSearch(this.nowPage)
-    //   }
-    // },
-    // page(a){
-    //   this.nowPage = a
-    //   this.onSearch(this.nowPage)
-    // },
-
-    // async create(){
-    //   const params = {
-    //     title: this.title,
-    //     text: this.text,
-    //     room_id: this.room_id,
-    //   }
-
-    //   this.$axios.$post('api/posts/', params, {
-    //     headers:{
-    //       authorization: localStorage.getItem('access-token')
-    //     }
-    //   }).then(
-    //     this.$router.push(`/${this.room_id}/`)
-    //   )
-    // },
+    async test(num){
+      console.log(this.like_counts[num]++)
+    },
     async onSearch(page){
+      this.posts = []
+      this.users = []
+      this.like_counts = []
+      this.like_judges = []
       this.page = page
       if(this.search_title){
         this.$axios.$get(`api/posts/search/${this.search_title}?page=${this.page}`).then(res => {
-          this.posts = []
-          this.users = []
           for (let i = 0; i < res.data.length; i++){
             this.posts.push({
               id: res.data[i].attributes.id,
@@ -263,63 +284,124 @@ export default {
               kind: res.data[i].attributes.kind,
               tag_list: res.data[i].attributes.tag_list,
             })
+            this.like_counts.push(res.data[i].attributes.likes.length),
+            this.like_judges.push(res.data[i].attributes.like_judges),
             this.users.push(res.data[i].attributes.users)
           }
-            this.currentPage = res.pagination.current_page
-            this.totalPage = res.pagination.total_pages
+          this.currentPage = res.pagination.current_page
+          this.totalPage = res.pagination.total_pages
         })
       }else{
-        this.$axios.$get(`api/posts/?page=${this.page}`).then(res => {
-          this.posts = []
-          this.users = []
-          for (let i = 0; i < res.data.length; i++){
-            this.posts.push({
-              id: res.data[i].attributes.id,
-              title: res.data[i].attributes.title,
-              kind: res.data[i].attributes.kind,
-              tag_list: res.data[i].attributes.tag_list,
-            })
-            this.users.push(res.data[i].attributes.users)
-          }
-            this.currentPage = res.pagination.current_page
-            this.totalPage = res.pagination.total_pages
-        })
+        this.index()
       }
-      this.judge = false
+      this.paginationJudge = false
     },
-    // async like(id){
-    //   const params = {
-    //     post_id: id
-    //   }
-    //   await this.$axios.$post(`api/likes/`, params, {
-    //       headers:{
-    //         authorization: localStorage.getItem('access-token')
-    //       }
-    //   })
-    //   await this.$axios.$get('api/posts/likes', {
-    //       headers:{
-    //           authorization: localStorage.getItem('access-token')
-    //       }
-    //   }).then(res => {
-    //       this.like_judges = res.like_judges
-    //       this.like_counts = res.like_counts
-    //   })
-    // },
-    // async unlike(id){
-    //   await this.$axios.$delete(`api/likes/${id}`, {
-    //       headers:{
-    //           authorization: localStorage.getItem('access-token')
-    //       }
-    //   })
-    //   await this.$axios.$get('api/posts/likes', {
-    //       headers:{
-    //           authorization: localStorage.getItem('access-token')
-    //       }
-    //   }).then(res => {
-    //       this.like_judges = res.like_judges
-    //       this.like_counts = res.like_counts
-    //   })
-    // }
+    async likeRes(){ 
+      this.like_counts = []
+      this.like_judges = []
+      if(this.search_title){
+          this.$axios.$get(`api/posts/search/${this.search_title}?page=${this.page}`, {
+          headers:{
+            'X-Access-Token': localStorage.getItem('X-Access-Token')
+          }
+        }).then(res => {
+            for (let i = 0; i < res.data.length; i++){
+              this.like_counts.push(res.data[i].attributes.likes.length),
+              this.like_judges.push(res.data[i].attributes.like_judges)
+            }
+          })
+        }else{
+          this.$axios.$get(`api/posts?page=${this.page}`, {
+          headers:{
+            'X-Access-Token': localStorage.getItem('X-Access-Token')
+          }
+        }).then(res => {
+            for (let i = 0; i < res.data.length; i++){
+              this.like_counts.push(res.data[i].attributes.likes.length),
+              this.like_judges.push(res.data[i].attributes.like_judges)
+            }
+          })
+        } 
+    },
+    async like(id){
+      if(localStorage.getItem('X-Access-Token')){
+        const params = {
+          post_id: id,
+        }
+        await this.$axios.$post(`api/likes/`, params, {
+          headers:{
+            'X-Access-Token': localStorage.getItem('X-Access-Token')
+          }
+        }).then(
+
+        )
+        this.likeRes()
+      }
+    },
+    async unlike(id){
+      if(localStorage.getItem('X-Access-Token')){
+
+        await this.$axios.$delete(`api/likes/${id}`, {
+          headers:{
+            'X-Access-Token': localStorage.getItem('X-Access-Token')
+          }
+        })
+        this.likeRes()
+      }
+    },
+    async tagLikeRes(){ 
+      if(this.search_title){
+        await this.$axios.$get(`api/tags/${this.name}?page=${this.page}`, {
+          headers:{
+            'X-Access-Token': localStorage.getItem('X-Access-Token')
+          }
+        }).then(res => {
+            this.like_counts = []
+            this.like_judges = []
+            for (let i = 0; i < res.data.length; i++){
+              this.like_counts.push(res.data[i].attributes.likes.length),
+              this.like_judges.push(res.data[i].attributes.like_judges)
+            }
+          })
+        }else{
+          await this.$axios.$get(`api/tags/${this.name}?page=${this.page}`, {
+          headers:{
+            'X-Access-Token': localStorage.getItem('X-Access-Token')
+          }
+        }).then(res => {
+            this.like_counts = []
+            this.like_judges = []
+            for (let i = 0; i < res.data.length; i++){
+              this.like_counts.push(res.data[i].attributes.likes.length),
+              this.like_judges.push(res.data[i].attributes.like_judges)
+            }
+          })
+        } 
+    },
+    async tagLike(id){
+      if(localStorage.getItem('X-Access-Token')){
+        const params = {
+          post_id: id,
+        }
+        await this.$axios.$post(`api/likes/`, params, {
+          headers:{
+            'X-Access-Token': localStorage.getItem('X-Access-Token')
+          }
+        })
+        this.tagLikeRes()
+      }
+    },
+    async tagUnlike(id){
+      if(localStorage.getItem('X-Access-Token')){
+
+        await this.$axios.$delete(`api/likes/${id}`, {
+          headers:{
+            'X-Access-Token': localStorage.getItem('X-Access-Token')
+          }
+        })
+        this.tagLikeRes()
+      }
+    },
   },
 }
 </script>

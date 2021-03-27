@@ -73,18 +73,36 @@ export default {
     }
   },
   created () {
-    this.$axios.$get(`api/users/`, {
-      headers:{
-        'X-Access-Token': localStorage.getItem('X-Access-Token')
-      }
-    }).then(res => {
+    if (localStorage.getItem('X-Access-Token')){
+      this.$axios.$get(`api/users/`, {
+        headers:{
+          'X-Access-Token': localStorage.getItem('X-Access-Token')
+        }
+      }).then(res => {
+        this.currentPage = res.pagination.current_page
+        this.totalPage = res.pagination.total_pages
+        this.currentUser = {id: localStorage.getItem('id')}
+        this.users = []
+  
+        var contents = res.data
+        for (let i = 0; i < contents.length; i++){
+          this.users.push({
+            id: contents[i].attributes.id,
+            image: contents[i].attributes.image.url,
+            name: contents[i].attributes.name,
+            profile: contents[i].attributes.profile,
+            follow_judge: contents[i].attributes.follow_judge
+          })
+        }
+      })
+    }else{
+      this.$axios.$get(`api/users/`).then(res => {
       this.currentPage = res.pagination.current_page
       this.totalPage = res.pagination.total_pages
-      this.currentUser = res.data[0].attributes.current_user
+      this.currentUser = {id: localStorage.getItem('id')}
       this.users = []
 
-      var contents = []
-      contents = res.data
+      var contents = res.data
       for (let i = 0; i < contents.length; i++){
         this.users.push({
           id: contents[i].attributes.id,
@@ -95,6 +113,7 @@ export default {
         })
       }
     })
+    }
   },
   methods: {
 

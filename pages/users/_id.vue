@@ -83,32 +83,52 @@ export default {
     }
   },
   created() {
-    this.$axios.$get(`api/users/${this.$route.params.id}`, {
-      headers:{
-        'X-Access-Token': localStorage.getItem('X-Access-Token')
-      }
-    }).then(res => {
-        this.currentUser = {id: localStorage.getItem('id')}
-        this.follow_judge = res.data.attributes.follow_judge
-
-        var contents = []
-        contents.push(res.data.attributes.image.url)
-        contents.push(res.data.attributes.name)
-        contents.push(res.data.attributes.email)
-        contents.push(res.data.attributes.profile)
-        for(let i = 0; i < this.names.length; i++){
-          this.users.push({
-            name: this.names[i],
-            content: contents[i]
-        })
-      }
-
-      if(this.currentUser.id == this.$route.params.id){
-        this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: '投稿一覧', link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`},{title: `設定`, link: `/users/edits/${this.$route.params.id}`}]
-      }else{
-        this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: '投稿一覧', link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`}]
-      }
-    })
+    if(localStorage.getItem('X-Access-Token')){
+      this.$axios.$get(`api/users/${this.$route.params.id}`, {
+        headers:{
+          'X-Access-Token': localStorage.getItem('X-Access-Token')
+        }
+      }).then(res => {
+          this.currentUser = {id: localStorage.getItem('id')}
+          this.follow_judge = res.data.attributes.follow_judge
+  
+          var contents = []
+          contents.push(res.data.attributes.image.url)
+          contents.push(res.data.attributes.name)
+          contents.push(res.data.attributes.email)
+          contents.push(res.data.attributes.profile)
+          for(let i = 0; i < this.names.length; i++){
+            this.users.push({
+              name: this.names[i],
+              content: contents[i]
+          })
+        }
+  
+      })
+    }else{
+      this.$axios.$get(`api/users/${this.$route.params.id}`).then(res => {
+          this.currentUser = {id: localStorage.getItem('id')}
+          this.follow_judge = res.data.attributes.follow_judge
+  
+          var contents = []
+          contents.push(res.data.attributes.image.url)
+          contents.push(res.data.attributes.name)
+          contents.push(res.data.attributes.email)
+          contents.push(res.data.attributes.profile)
+          for(let i = 0; i < this.names.length; i++){
+            this.users.push({
+              name: this.names[i],
+              content: contents[i]
+          })
+        }
+  
+      })
+    }
+    if(this.currentUser.id == this.$route.params.id){
+      this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: '投稿一覧', link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`},{title: `設定`, link: `/users/edits/${this.$route.params.id}`}]
+    }else{
+      this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: '投稿一覧', link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`}]
+    }
   },
 
   methods:{
