@@ -83,8 +83,9 @@ export default {
       like_counts: [],
       like_judges: [],
 
-      total_count:0,
-      current_page:0,
+      total_count:1,
+      current_page:1,
+      totalPage:1,
       page: 1,
     }
   },

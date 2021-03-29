@@ -55,10 +55,6 @@
         <v-main class="main">
           <div style="display: flex; align-items: center;" v-if="~$route.path.indexOf('/posts/')">
           <v-spacer></v-spacer>
-            <div class="like">
-              <v-icon  color="warning">mdi-thumb-up</v-icon>
-              <!-- <v-icon color="warning">mdi-thumb-up-outline</v-icon> -->
-            </div>
             <v-icon v-if="side == false" @click="side = !side" color="info">mdi-message-reply-text</v-icon>
           </div>
           <nuxt />
@@ -75,10 +71,10 @@
       >
         <!-- <memo />
         <calendar style="height: 49vh; overflow: hidden;"/> -->
-        <div style="display: flex;" v-if="~$route.path.indexOf('/posts/')">
-          <p>Live</p>
-          <vue-loading type="bubbles" color="yellow" :size="{ width: '50px', height: '50px'}"></vue-loading>
-          <p>{{$route.path}}</p>
+        <div style="display: block;" v-if="~$route.path.indexOf('/posts/')">
+          <!-- <p>{{$route.path}}</p> -->
+          <messages-form type="type" :messageId="$route.params.id" />
+          <!-- <messages-form :id="$route.params.id" /> -->
         </div>
         <template v-else>
           <p>お尻</p>
@@ -97,8 +93,9 @@
 <script>
 import { VueLoading } from 'vue-loading-template';
 import BottomMenu from '../components/BottomMenu.vue'
+import MessagesForm from '../components/messages/MessagesForm.vue';
 export default {
-  components: { BottomMenu,VueLoading },
+  components: { BottomMenu,VueLoading,MessagesForm },
     data () {
     return {
       collapseOnScroll: true,

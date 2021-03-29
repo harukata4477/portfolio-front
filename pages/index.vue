@@ -137,8 +137,8 @@ export default {
       name: '',
       search_title: '',
 
-      currentPage: '',
-      totalPage: '',
+      currentPage: 1,
+      totalPage: 1,
       page: 1,
 
       paginationJudge: false,

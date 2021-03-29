@@ -1,5 +1,9 @@
 <template>
   <div class="post mt-3 mb-16">
+    <div class="like">
+      <p v-if="like_judge" @click="unlike" class="mb-0" style="display: flex; align-items: center; cursor:pointer;">{{likes}}<v-icon class="pb-1 pl-1" style="margin-left: auto; display: flex;" color="orange">mdi-thumb-up</v-icon></p>
+      <p v-else class="mb-0" @click="like" style="display: flex; align-items: center; center; cursor:pointer;">{{likes}}<v-icon class="pb-1 pl-1" style="margin-left: auto; display: flex;" color="gray">mdi-thumb-up-outline</v-icon></p>
+    </div>
     <div class="post_header">
       <h1 class="post_header_title display-1 mb-6">{{post.title}}</h1>
 
@@ -11,7 +15,7 @@
       
     </div>
     <div class="mind_map">
-      <Mindmap style="height: 70vh" :zoomable="judge" :draggable="false" :keyboard="false" :nodeClick="false" :showUndo="false" :showNodeAdd="false" :contextMenu="false" :download="false" :strokeWidth="1" :fitView="false"  v-model="contents"></Mindmap>
+      <Mindmap type="type" style="height: 70vh" :zoomable="judge" :draggable="false" :keyboard="false" :nodeClick="false" :showUndo="false" :showNodeAdd="false" :contextMenu="false" :download="false" :strokeWidth="1" :fitView="false"  v-model="contents"></Mindmap>
       <div class="mind_map_move">
         <v-icon @click="judge = !judge" v-if="judge" color="info">mdi-cursor-default</v-icon>
         <v-icon @click="judge = !judge" v-else color="info">mdi-cursor-default-outline</v-icon>
@@ -36,13 +40,10 @@
 
 <script>
 import Mindmap from '@hellowuxin/mindmap'
-import PostsModal from '../../components/posts/PostsModal.vue'
-import PostsFormTitle from '../../components/posts/PostsFormTitle.vue'
+
 export default {
   components: {
     Mindmap,
-    PostsModal,
-    PostsFormTitle,
   },
   data(){
     return{ 
@@ -56,28 +57,96 @@ export default {
       kindSelect: '',
       postContents: [],
       judge: false,
+      likes:0,
+      like_judge:false,
 
       isValid: false,
       editForm: false,
     }
   },
   created(){
-    this.$axios.$get(`api/posts/${this.$route.params.id}`).then(res => {
-      this.contents = res.data.attributes.contents.content
-      this.postContents = res.data.attributes.post_contents
-      var date = new Date(res.data.attributes.updated_at)
-      var year = date.getFullYear();
-      var month = date.getMonth() + 1 ;
-      var day = date.getDate();
-      var updated_at = year + '/' + month + '/' + day
-      this.post = {
-        id: res.data.attributes.id,
-        title: res.data.attributes.title,
-        updated_at: updated_at,
-      }
-    })
+    if(localStorage.getItem('id')){
+      this.$axios.$get(`api/posts/${this.$route.params.id}`, {
+        headers:{
+          'X-Access-Token': localStorage.getItem('X-Access-Token')
+        }
+      }).then(res => {
+        this.contents = res.data.attributes.contents.content
+        this.postContents = res.data.attributes.post_contents
+        var date = new Date(res.data.attributes.updated_at)
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1 ;
+        var day = date.getDate();
+        var updated_at = year + '/' + month + '/' + day
+        this.post = {
+          id: res.data.attributes.id,
+          title: res.data.attributes.title,
+          updated_at: updated_at,
+        },
+        this.likes = res.data.attributes.likes.length
+        this.like_judge = res.data.attributes.like_judges
+      })
+    }else{
+      this.$axios.$get(`api/posts/${this.$route.params.id}`).then(res => {
+        this.contents = res.data.attributes.contents.content
+        this.postContents = res.data.attributes.post_contents
+        var date = new Date(res.data.attributes.updated_at)
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1 ;
+        var day = date.getDate();
+        var updated_at = year + '/' + month + '/' + day
+        this.post = {
+          id: res.data.attributes.id,
+          title: res.data.attributes.title,
+          updated_at: updated_at,
+        },
+        this.likes = res.data.attributes.likes.length
+        this.like_judge = res.data.attributes.like_judges
+      })
+    }
   },
   methods:{
+    async likeIndex(){
+      if(localStorage.getItem('id')){
+        await this.$axios.$get(`api/posts/${this.$route.params.id}`, {
+          headers:{
+            'X-Access-Token': localStorage.getItem('X-Access-Token')
+          }
+        }).then(res => {
+          this.likes = res.data.attributes.likes.length
+          this.like_judge = res.data.attributes.like_judges
+        })
+      }else{
+        await this.$axios.$get(`api/posts/${this.$route.params.id}`).then(res => {
+          this.likes = res.data.attributes.likes.length
+          this.like_judge = res.data.attributes.like_judges
+        })
+      }
+    },
+    async like(){
+      if(localStorage.getItem('X-Access-Token')){
+        const params = {
+          post_id: this.$route.params.id,
+        }
+        await this.$axios.$post(`api/likes/`, params, {
+          headers:{
+            'X-Access-Token': localStorage.getItem('X-Access-Token')
+          }
+        })
+        this.likeIndex()
+      }
+    },
+    async unlike(){
+      if(localStorage.getItem('X-Access-Token')){
+
+        await this.$axios.$delete(`api/likes/${this.$route.params.id}`, {
+          headers:{
+            'X-Access-Token': localStorage.getItem('X-Access-Token')
+          }
+        })
+        this.likeIndex()
+      }
+    },
   }
 }
 </script>
@@ -114,5 +183,11 @@ export default {
   position: absolute;
   right: 5px;
   bottom: 40px;
+}
+
+.like{
+  position: absolute;
+  top: -3px;
+  right: 35px;
 }
 </style>
