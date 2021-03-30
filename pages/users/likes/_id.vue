@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-12 mb-10 pb-5">
+  <div class="mb-10 pb-5">
     <div class="user_header">
       <div class="user_header_left">
         <p class="user_header_left_title">いいね一覧</p>
@@ -28,7 +28,7 @@
           <v-card
           >
             <v-img
-              @click="$router.push(`/posts/${post.id}`)"
+              @click="$router.push(`/posts/main/${post.id}`)"
               class="white--text align-end"
               background-color="gray"
               min-height="160px"
@@ -90,9 +90,9 @@ export default {
   },
   created() {
     if(localStorage.getItem('id') == this.$route.params.id){
-      this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: `投稿一覧`, link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロワー一覧`, link: `/users/follows/${this.$route.params.id}`},{title: `設定`, link: `/users/edits/${this.$route.params.id}`}]
+      this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: `投稿一覧`, link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`},{title: `設定`, link: `/users/edits/${this.$route.params.id}`}]
     }else{
-      this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: `投稿一覧`, link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロワー一覧`, link: `/users/follows/${this.$route.params.id}`}]
+      this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: `投稿一覧`, link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`}]
     }
     if(localStorage.getItem('X-Access-Token')){
       this.$axios.$get(`api/likes/${this.$route.params.id}`, {

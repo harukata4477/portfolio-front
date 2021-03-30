@@ -70,7 +70,7 @@
           <v-card
           >
             <v-img
-              @click="$router.push(`/posts/${post.id}`)"
+              @click="$router.push(`/posts/main/${post.id}`)"
               class="white--text align-end"
               background-color="gray"
               min-height="160px"

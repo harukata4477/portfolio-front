@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-12 mb-10 pb-5">
+  <div class="mb-10 pb-5">
     <div class="user_header">
       <div class="user_header_left">
         <p class="user_header_left_title" v-text="title"></p>

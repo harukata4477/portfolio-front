@@ -1,8 +1,9 @@
 <template>
   <div class="post mt-3 mb-16">
     <div class="like">
-      <p v-if="like_judge" @click="unlike" class="mb-0" style="display: flex; align-items: center; cursor:pointer;">{{likes}}<v-icon class="pb-1 pl-1" style="margin-left: auto; display: flex;" color="orange">mdi-thumb-up</v-icon></p>
-      <p v-else class="mb-0" @click="like" style="display: flex; align-items: center; center; cursor:pointer;">{{likes}}<v-icon class="pb-1 pl-1" style="margin-left: auto; display: flex;" color="gray">mdi-thumb-up-outline</v-icon></p>
+      <v-icon style="margin-top: -3px;" v-if="currentUser_id == post.user_id" @click="$router.push(`/posts/edits/${$route.params.id}`)" color="info">mdi-wrench</v-icon>
+      <p v-if="like_judge" @click="unlike" class="mb-0 ml-2" style="display: flex; align-items: center; cursor:pointer;">{{likes}}<v-icon class="pb-1 pl-1" style="margin-left: auto; display: flex;" color="orange">mdi-thumb-up</v-icon></p>
+      <p v-else class="mb-0 ml-2" @click="like" style="display: flex; align-items: center; center; cursor:pointer;">{{likes}}<v-icon class="pb-1 pl-1" style="margin-left: auto; display: flex;" color="gray">mdi-thumb-up-outline</v-icon></p>
     </div>
     <div class="post_header">
       <h1 class="post_header_title display-1 mb-6">{{post.title}}</h1>
@@ -59,6 +60,7 @@ export default {
       judge: false,
       likes:0,
       like_judge:false,
+      currentUser_id: localStorage.getItem('id'),
 
       isValid: false,
       editForm: false,
@@ -80,6 +82,7 @@ export default {
         var updated_at = year + '/' + month + '/' + day
         this.post = {
           id: res.data.attributes.id,
+          user_id: res.data.attributes.user_id,
           title: res.data.attributes.title,
           updated_at: updated_at,
         },
@@ -189,5 +192,6 @@ export default {
   position: absolute;
   top: -3px;
   right: 35px;
+  display: flex;
 }
 </style>

@@ -46,21 +46,13 @@
             <v-icon class="mr-2" v-else>mdi-checkbox-marked-circle-outline</v-icon>
             <div class="room_id"><v-icon small class="mr-1">mdi-calendar-clock</v-icon>{{room.deadline}}</div>
           </div>
-          <p style="font-weight: bold; width:100%;" class="room_title display-1 text--primary mb-2 mt-2" >
-            
-            <v-text-field
-              filled
-              rounded
-              dense
-              background-color="transparent"
-              class="display-1"
-              style="font-weight: bold; width:100%;"
-              v-model="room.title"
-              hide-details="auto"
-              @keypress.enter="update(room)"
-            ></v-text-field>
 
-          </p>
+          <input 
+            class="subTitleForm ml-1 mt-3" 
+            v-model="room.title"
+            @keypress.enter="update(room)"
+          >
+
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -122,20 +114,12 @@ export default {
       }
     }).then(res => {
       for (let i = 0; i < res.data.length; i++){
-        if(res.data[i].attributes.deadline){
-          var date = new Date(res.data[i].attributes.deadline)
-          var year = date.getFullYear();
-          var month = date.getMonth() + 1 ;
-          var day = date.getDate();
-          var hour = date.getHours();
-          var minute = date.getMinutes();
-          var deadline = year + '年' + month + '月' + day + '日' + ' ' + hour + '時' + minute + '分'
-        }
+        var date = res.data[i].attributes.deadline.replace( /-/g , "/").replace( /T/g , " ").replace( /.000Z/g , "")
 
         this.rooms.push({
           id: res.data[i].attributes.id,
           title: res.data[i].attributes.title,
-          deadline: deadline,
+          deadline: date,
           done: res.data[i].attributes.done,
         })
         this.currentPage = res.pagination.current_page
@@ -176,16 +160,7 @@ export default {
           this.rooms = []
 
           for (let i = 0; i < res.data.length; i++){
-            if(res.data[i].attributes.deadline){
-              var date = new Date(res.data[i].attributes.deadline)
-              var year = date.getFullYear();
-              var month = date.getMonth() + 1 ;
-              var day = date.getDate();
-              var hour = date.getHours();
-              var minute = date.getMinutes();
-              var deadline = year + '年' + month + '月' + day + '日' + ' ' + hour + '時' + minute + '分'
-            }
-
+            var deadline = res.data[i].attributes.deadline.replace( /-/g , "/").replace( /T/g , " ").replace( /.000Z/g , "")
             this.rooms.push({
               id: res.data[i].attributes.id,
               title: res.data[i].attributes.title,
@@ -256,5 +231,12 @@ export default {
 .room_header{
   display: flex;
   align-items: center;
+}
+.subTitleForm{
+  border: none;
+  outline: none;
+  font-size: 28px;
+  width: 100%;
+  font-weight: bold;
 }
 </style>

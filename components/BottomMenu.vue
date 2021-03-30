@@ -1,5 +1,5 @@
 <template>
-  <v-row fixed>
+  <v-row v-model="setId" fixed>
     <div style="width: 25%;">
       <button @click="$router.push('/')" class="home" style="color: #fff; text-align: center; margin: 0 auto; width: 100%; padding: 4px; line-height: 1; font-weight: bold;">
         <v-icon color="white" style="font-size: 30px;">mdi-home</v-icon>
@@ -29,6 +29,18 @@
 
 <script>
 export default {
+  props: {
+    id: {
+      type: String,
+      default: '',
+    },
+  },
+  computed: {
+    setId: {
+      get () { return this.id },
+      set (newVal) { return this.$emit('update:id', newVal) }
+    },
+  },
   data () {
     return {
       users: '',
@@ -37,6 +49,7 @@ export default {
   },
   created () {
    this.current_id = localStorage.getItem('id')
+   this.setId = localStorage.getItem('id')
   }
 }
 </script>

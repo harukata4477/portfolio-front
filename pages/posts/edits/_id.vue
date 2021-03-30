@@ -41,7 +41,7 @@
                 class="my-8 text-center"
               >
                 <h1 class="text-h5 font-weight-bold">
-                  投稿&nbsp;編集
+                  タイトル&nbsp;変更
                 </h1>
               </v-col>
 

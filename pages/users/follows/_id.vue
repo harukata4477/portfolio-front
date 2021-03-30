@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-12 mb-10 pb-5">
+  <div class="mb-10 pb-5">
     <div class="user_header">
       <div class="user_header_left">
         <p class="user_header_left_title" v-text="title"></p>
@@ -61,11 +61,21 @@ export default {
       followings: [],
  
       currentPage: 1,
-      totalPage: 0,
+      totalPage: 1,
     }
   },
   created() {
     if(localStorage.getItem('X-Access-Token')){
+      this.$axios.$get(`api/follows/${this.$route.params.id}`, {
+        headers:{
+          'X-Access-Token': localStorage.getItem('X-Access-Token')
+        }
+      }).then(res => {
+          this.followings = res.data.attributes.followings
+          this.currentUser_id = localStorage.getItem('id')
+          this.currentPage = res.pagination.current_page
+          this.totalPage = res.pagination.total_pages
+      })
     }else{
       this.$axios.$get(`api/follows/${this.$route.params.id}`).then(res => {
           this.followings = res.data.attributes.followings

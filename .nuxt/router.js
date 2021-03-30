@@ -4,6 +4,7 @@ import { normalizeURL, decode } from '@nuxt/ufo'
 import { interopDefault } from './utils'
 import scrollBehavior from './router.scrollBehavior.js'
 
+const _0649c83e = () => interopDefault(import('../pages/calendars/index.vue' /* webpackChunkName: "pages/calendars/index" */))
 const _10ba8d22 = () => interopDefault(import('../pages/login.vue' /* webpackChunkName: "pages/login" */))
 const _310ef581 = () => interopDefault(import('../pages/rooms/index.vue' /* webpackChunkName: "pages/rooms/index" */))
 const _490e6182 = () => interopDefault(import('../pages/signup.vue' /* webpackChunkName: "pages/signup" */))
@@ -12,11 +13,12 @@ const _c91b56de = () => interopDefault(import('../pages/users/index.vue' /* webp
 const _626c9da2 = () => interopDefault(import('../pages/posts/create.vue' /* webpackChunkName: "pages/posts/create" */))
 const _1884055d = () => interopDefault(import('../pages/rooms/create.vue' /* webpackChunkName: "pages/rooms/create" */))
 const _2f28c41e = () => interopDefault(import('../pages/posts/edits/_id.vue' /* webpackChunkName: "pages/posts/edits/_id" */))
+const _62958d8a = () => interopDefault(import('../pages/posts/main/_id.vue' /* webpackChunkName: "pages/posts/main/_id" */))
 const _19565593 = () => interopDefault(import('../pages/users/edits/_id.vue' /* webpackChunkName: "pages/users/edits/_id" */))
 const _fc1e33e8 = () => interopDefault(import('../pages/users/follows/_id.vue' /* webpackChunkName: "pages/users/follows/_id" */))
 const _c240fab4 = () => interopDefault(import('../pages/users/likes/_id.vue' /* webpackChunkName: "pages/users/likes/_id" */))
 const _7e88b3bd = () => interopDefault(import('../pages/users/posts/_id.vue' /* webpackChunkName: "pages/users/posts/_id" */))
-const _37bd3a04 = () => interopDefault(import('../pages/posts/_id.vue' /* webpackChunkName: "pages/posts/_id" */))
+const _1588c226 = () => interopDefault(import('../pages/calendars/_id.vue' /* webpackChunkName: "pages/calendars/_id" */))
 const _132e6429 = () => interopDefault(import('../pages/rooms/_id.vue' /* webpackChunkName: "pages/rooms/_id" */))
 const _1c03718e = () => interopDefault(import('../pages/users/_id.vue' /* webpackChunkName: "pages/users/_id" */))
 const _2dfb1658 = () => interopDefault(import('../pages/index.vue' /* webpackChunkName: "pages/index" */))
@@ -38,6 +40,10 @@ export const routerOptions = {
   scrollBehavior,
 
   routes: [{
+    path: "/calendars",
+    component: _0649c83e,
+    name: "calendars"
+  }, {
     path: "/login",
     component: _10ba8d22,
     name: "login"
@@ -70,6 +76,10 @@ export const routerOptions = {
     component: _2f28c41e,
     name: "posts-edits-id"
   }, {
+    path: "/posts/main/:id?",
+    component: _62958d8a,
+    name: "posts-main-id"
+  }, {
     path: "/users/edits/:id?",
     component: _19565593,
     name: "users-edits-id"
@@ -86,9 +96,9 @@ export const routerOptions = {
     component: _7e88b3bd,
     name: "users-posts-id"
   }, {
-    path: "/posts/:id?",
-    component: _37bd3a04,
-    name: "posts-id"
+    path: "/calendars/:id",
+    component: _1588c226,
+    name: "calendars-id"
   }, {
     path: "/rooms/:id",
     component: _132e6429,

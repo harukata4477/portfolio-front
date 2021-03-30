@@ -1,7 +1,7 @@
 <template>
   <div
     max-width="450"
-    class="mx-auto mt-12 mb-10 pb-5"
+    class="mx-auto mb-10 pb-5"
   >
   <div class="user_header" style="border-bottom: solid 1px #eee;">
     <div 

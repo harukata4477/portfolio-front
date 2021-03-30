@@ -1,13 +1,13 @@
 <template>
   <div>
-    <v-btn @click="add">ボタン</v-btn>
-    {{test}}
-    {{date}}
+    <calendars />
   </div>
 </template>
 
 <script>
+import Calendars from '../components/calendars/Calendars.vue'
 export default {
+  components: { Calendars },
   data () {return{
     test: [],
     date: '',

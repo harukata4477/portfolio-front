@@ -53,7 +53,7 @@
       min-height="100vh"
     >
         <v-main class="main">
-          <div style="display: flex; align-items: center;" v-if="~$route.path.indexOf('/posts/')">
+          <div style="display: flex; align-items: center;" v-if="~$route.path.indexOf('/posts/main/')">
           <v-spacer></v-spacer>
             <v-icon v-if="side == false" @click="side = !side" color="info">mdi-message-reply-text</v-icon>
           </div>
@@ -71,7 +71,7 @@
       >
         <!-- <memo />
         <calendar style="height: 49vh; overflow: hidden;"/> -->
-        <div style="display: block;" v-if="~$route.path.indexOf('/posts/')">
+        <div style="display: block;" v-if="~$route.path.indexOf('/posts/main/')">
           <!-- <p>{{$route.path}}</p> -->
           <messages-form type="type" :messageId="$route.params.id" />
           <!-- <messages-form :id="$route.params.id" /> -->
@@ -85,7 +85,7 @@
     </v-sheet>
   </v-card>
   <v-footer width="100%" style="background-color: rgba(0, 126, 255); position: fixed;  bottom: 0; left: 0; padding: 12px 0; z-index: 2;">
-    <bottom-menu />
+    <bottom-menu :id.sync="id" />
   </v-footer>
   </v-app>
 </template>
@@ -98,6 +98,7 @@ export default {
   components: { BottomMenu,VueLoading,MessagesForm },
     data () {
     return {
+      id: '',
       collapseOnScroll: true,
       clipped: false,
       drawer: false,
