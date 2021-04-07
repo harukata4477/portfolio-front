@@ -1,13 +1,19 @@
 <template>
-  <div style="margin-bottom: 80px;"> 
-    <div class="user_header" >
+  <div style="margin-bottom: 80px;" class="pb-10"> 
+    <div v-if="loading" class="loading">
+      <div class="loading_inner">
+        <p class="loading_inner_text">Loading...</p>
+        <vue-loading class="loading_inner_mark" type="beat" color="gold" :size="{ width: '60px', height: '60px'}"></vue-loading>
+      </div>
+    </div>
+    <div class="user_header">
       <v-alert style="position: fixed; top: 70px; z-index: 30; width: 95%;" type="success" v-model="updateAlert" transition="slide-y-transition">
         更新されました。
       </v-alert>
       <v-alert style="position: fixed; top: 70px; z-index: 30; width: 95%;" color="error" type="success" v-model="deleteAlert" transition="slide-y-transition">
         削除されました。
       </v-alert>
-      <v-row class="rooms_top mt-5 mb-5 ml-3">
+      <!-- <v-row v-if="loginJudge" class="rooms_top mt-5 mb-5 ml-3">
         <v-btn
           text
           color="info accent-4"
@@ -17,7 +23,7 @@
         <v-icon color="info" style="font-size: 18px; margin-right: 2px;">mdi-application</v-icon>
           新規作成
         </v-btn>
-      </v-row>
+      </v-row> -->
       <div 
         class=""
         style="width: 90%; margin: 25px auto 0 auto"
@@ -30,15 +36,36 @@
           filled
           rounded
           dense
+          hide-details="auto"
           @keypress.enter="onSearch(1)"
         ></v-text-field>
       </div>
     </div>
+
+  <div style="display: flex; width: 95%; margin: 0 auto;" class="mt-2">
+    <v-col style="width: 120px" class="pb-0 pt-0 pl-0 pr-0">
+      <v-select
+        style="width: 120px"
+        :items="items"
+        v-model="select"
+        @change="selectPage"
+        solo
+        flat
+        single-line
+        return-object
+        hide-details="auto"
+        background-color="transparent"
+      ></v-select>
+    </v-col>
+    <v-spacer></v-spacer>
+    <v-icon large v-if="loginJudge" @click="$router.push('/rooms/create')">mdi-pencil-box-outline</v-icon>
+  </div>
+
     
     <div class="rooms" v-for="(room,i) in rooms" :key="`room-${i}`">
       <v-card
-        class="mx-auto mt-3"
-        width="90%"
+        class="mx-auto mb-3"
+        width="95%"
       >
         <v-card-text class="pb-0">
           <div class="room_header">
@@ -83,19 +110,40 @@
     </div>
     <div class="text-center mt-11">
       <v-pagination
+        v-if="judgePage == 'index'"
         v-model="page"
         :length="this.totalPage"
         :total-visible="7"
         @input = "onSearch(page)"
+      ></v-pagination>
+      <v-pagination
+        v-if="judgePage == 'done'"
+        v-model="page"
+        :length="this.totalPage"
+        :total-visible="7"
+        @input = "roomDone(page)"
+      ></v-pagination>
+      <v-pagination
+        v-if="judgePage == 'notYet'"
+        v-model="page"
+        :length="this.totalPage"
+        :total-visible="7"
+        @input = "roomNotYet(page)"
       ></v-pagination>
     </div>
   </div>
 </template>
 
 <script>
+import { VueLoading } from 'vue-loading-template';
 export default {
+  components:{
+    VueLoading
+  },
   data () {
     return {
+      select: '全て',
+      items: ['全て','完了','未完了'], 
       rooms:[],
       users: [],
       search_title: '',
@@ -103,18 +151,33 @@ export default {
       totalPage: 1,
       page: 1,
 
+      judgePage: 'index',
       updateAlert: false,
       deleteAlert: false,
+      loading: true,
+      load_judge: false,
     }
   },
   created () {
+    if(localStorage.getItem('id')){
+      this.loginJudge = true
+    }else{
+      this.loginJudge = false
+    }
+    this.rooms = []
     this.$axios.$get('api/rooms', {
       headers:{
         'X-Access-Token': localStorage.getItem('X-Access-Token')
       }
     }).then(res => {
       for (let i = 0; i < res.data.length; i++){
-        var date = res.data[i].attributes.deadline.replace( /-/g , "/").replace( /T/g , " ").replace( /.000Z/g , "")
+        var deadline = new Date(res.data[i].attributes.deadline)
+        var year = deadline.getFullYear();
+        var month = deadline.getMonth() + 1 ;
+        var day = deadline.getDate();
+        var hour = deadline.getHours();
+        var minute = deadline.getMinutes();
+        var date = year + '/' + month + '/' + day + ' ' + hour + ':' + minute
 
         this.rooms.push({
           id: res.data[i].attributes.id,
@@ -125,10 +188,14 @@ export default {
         this.currentPage = res.pagination.current_page
         this.totalPage = res.pagination.total_pages
       }
-    })
+      this.loading = false
+    }).catch(
+      this.load_judge = true
+    )
   },
   methods:{
     async update(room) {
+      this.loading = true
       const params = {
         title: room.title
       }
@@ -136,9 +203,10 @@ export default {
           headers:{
             'X-Access-Token': localStorage.getItem('X-Access-Token')
           }
-        }).then(this.updateAlert = true)
+        }).then(this.updateAlert = true, this.loading = false)
     },
     async destroy(id){
+      this.loading = true
       const confirmation = window.confirm("本当に削除して良いのですか？");
       if (confirmation){
         await this.$axios.$delete(`api/rooms/${id}`, {
@@ -150,58 +218,154 @@ export default {
       }
     },
     async onSearch(page){
-      this.page = page
-      if(this.search_title){
-        await this.$axios.$get(`api/rooms/search/${this.search_title}?page=${this.page}`, {
-          headers:{
-            'X-Access-Token': localStorage.getItem('X-Access-Token')
-          }
-        }).then(res => {
-          this.rooms = []
-
-          for (let i = 0; i < res.data.length; i++){
-            var deadline = res.data[i].attributes.deadline.replace( /-/g , "/").replace( /T/g , " ").replace( /.000Z/g , "")
-            this.rooms.push({
-              id: res.data[i].attributes.id,
-              title: res.data[i].attributes.title,
-              deadline: deadline,
-              done: res.data[i].attributes.done,
-            })
-            this.currentPage = res.pagination.current_page
-            this.totalPage = res.pagination.total_pages
-          }
-        })
-      }else{
-        await this.$axios.$get(`api/rooms?page=${this.page}`, {
-          headers:{
-            'X-Access-Token': localStorage.getItem('X-Access-Token')
-          }
-        }).then(res => {
-          this.rooms = []
-            for (let i = 0; i < res.data.length; i++){
-
-            if(res.data[i].attributes.deadline){
-              var date = new Date(res.data[i].attributes.deadline)
-              var year = date.getFullYear();
-              var month = date.getMonth() + 1 ;
-              var day = date.getDate();
-              var hour = date.getHours();
-              var minute = date.getMinutes();
-              var deadline = year + '年' + month + '月' + day + '日' + ' ' + hour + '時' + minute + '分'
+      this.loading = true
+      if(localStorage.getItem('id')){
+        this.page = page
+        if(this.search_title){
+          await this.$axios.$get(`api/rooms/search/${this.search_title}?page=${this.page}`, {
+            headers:{
+              'X-Access-Token': localStorage.getItem('X-Access-Token')
             }
+          }).then(res => {
+            this.rooms = []
 
-            this.rooms.push({
-              id: res.data[i].attributes.id,
-              title: res.data[i].attributes.title,
-              deadline: deadline,
-              done: res.data[i].attributes.done,
-            })
-            this.currentPage = res.pagination.current_page
-            this.totalPage = res.pagination.total_pages
-          }
-        })
+            for (let i = 0; i < res.data.length; i++){
+              var deadline = new Date(res.data[i].attributes.deadline)
+              var year = deadline.getFullYear();
+              var month = deadline.getMonth() + 1 ;
+              var day = deadline.getDate();
+              var hour = deadline.getHours();
+              var minute = deadline.getMinutes();
+              var date = year + '/' + month + '/' + day + ' ' + hour + ':' + minute
+
+              this.rooms.push({
+                id: res.data[i].attributes.id,
+                title: res.data[i].attributes.title,
+                deadline: date,
+                done: res.data[i].attributes.done,
+              })
+              this.currentPage = res.pagination.current_page
+              this.totalPage = res.pagination.total_pages
+            }
+            this.loading = false
+          })
+        }else{
+          await this.$axios.$get(`api/rooms?page=${this.page}`, {
+            headers:{
+              'X-Access-Token': localStorage.getItem('X-Access-Token')
+            }
+          }).then(res => {
+            this.rooms = []
+              for (let i = 0; i < res.data.length; i++){
+              var deadline = new Date(res.data[i].attributes.deadline)
+              var year = deadline.getFullYear();
+              var month = deadline.getMonth() + 1 ;
+              var day = deadline.getDate();
+              var hour = deadline.getHours();
+              var minute = deadline.getMinutes();
+              var date = year + '/' + month + '/' + day + ' ' + hour + ':' + minute
+
+              this.rooms.push({
+                id: res.data[i].attributes.id,
+                title: res.data[i].attributes.title,
+                deadline: date,
+                done: res.data[i].attributes.done,
+              })
+              this.currentPage = res.pagination.current_page
+              this.totalPage = res.pagination.total_pages
+            }
+            this.loading = false
+          })
+        }
+      }else{
+        this.load_judge = true
       }
     },
+    async roomDone(page){
+      this.rooms = []
+      this.loading = true
+      this.page = page
+      if(localStorage.getItem('id')){
+        await this.$axios.$get(`api/rooms/room_done?page=${this.page}`, {
+          headers:{
+            'X-Access-Token': localStorage.getItem('X-Access-Token')
+          }
+        }).then(res => {
+          for (let i = 0; i < res.data.length; i++){
+            var deadline = new Date(res.data[i].attributes.deadline)
+            var year = deadline.getFullYear();
+            var month = deadline.getMonth() + 1 ;
+            var day = deadline.getDate();
+            var hour = deadline.getHours();
+            var minute = deadline.getMinutes();
+            var date = year + '/' + month + '/' + day + ' ' + hour + ':' + minute
+
+            this.rooms.push({
+              id: res.data[i].attributes.id,
+              title: res.data[i].attributes.title,
+              deadline: date,
+              done: res.data[i].attributes.done,
+            })
+            this.currentPage = res.pagination.current_page
+            this.totalPage = res.pagination.total_pages
+          }
+          this.loading = false
+          this.judgePage = 'done'
+        })
+      }else{
+        this.load_judge = true
+      }
+    },
+    async roomNotYet(page){
+      this.rooms = []
+      this.loading = true
+      this.page = page
+      if(localStorage.getItem('id')){
+        await this.$axios.$get(`api/rooms/room_not_yet?page=${this.page}`, {
+          headers:{
+            'X-Access-Token': localStorage.getItem('X-Access-Token')
+          }
+        }).then(res => {
+          for (let i = 0; i < res.data.length; i++){
+            var deadline = new Date(res.data[i].attributes.deadline)
+            var year = deadline.getFullYear();
+            var month = deadline.getMonth() + 1 ;
+            var day = deadline.getDate();
+            var hour = deadline.getHours();
+            var minute = deadline.getMinutes();
+            var date = year + '/' + month + '/' + day + ' ' + hour + ':' + minute
+
+            this.rooms.push({
+              id: res.data[i].attributes.id,
+              title: res.data[i].attributes.title,
+              deadline: date,
+              done: res.data[i].attributes.done,
+            })
+            this.currentPage = res.pagination.current_page
+            this.totalPage = res.pagination.total_pages
+          }
+          this.loading = false
+          this.judgePage = 'notYet'
+        })
+      }else{
+        this.load_judge = true
+      }
+    },
+    selectPage(){
+      if(this.select == '完了'){
+        if(localStorage.getItem('id')){
+          this.roomDone(1)
+        }
+      }else if(this.select == '未完了'){
+        if(localStorage.getItem('id')){
+          this.roomNotYet(1)
+          }
+      }else{
+        if(localStorage.getItem('id')){
+          this.onSearch(1)
+        }
+      }
+    }
   },
   watch: {
       updateAlert (val) {
@@ -214,7 +378,13 @@ export default {
           this.deleteAlert = false
         }, 2000)
       },
+    load_judge (val) {
+      val && setTimeout(() => {
+        this.load_judge = false
+        this.loading = false
+      }, 500)
     },
+  },
 }
 </script>
 
@@ -238,5 +408,35 @@ export default {
   font-size: 28px;
   width: 100%;
   font-weight: bold;
+}
+@keyframes fadeIn {
+  0% {
+      opacity: 0;
+  }
+  100% {
+      opacity: 1;
+  }
+}
+.loading{
+  position: fixed;
+  top: 0;
+  bottom:0;
+  right:0;
+  left:0;
+  background: rgba(255, 255, 255, 0.199);
+  z-index: 100;
+}
+.loading_inner{
+  position: absolute;
+  bottom: 50%;
+  right: 50%;
+  transform: translate(50%,50%);
+}
+.loading_inner_text{
+  margin: 0;
+  animation: fadeIn infinite alternate 2s;
+}
+.loading_inner_mark{
+  
 }
 </style>

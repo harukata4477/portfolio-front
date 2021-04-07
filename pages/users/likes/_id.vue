@@ -1,5 +1,11 @@
 <template>
-  <div class="mb-10 pb-5">
+  <div class="mb-10">
+    <div v-if="loading" class="loading">
+      <div class="loading_inner">
+        <p class="loading_inner_text">Loading...</p>
+        <vue-loading class="loading_inner_mark" type="beat" color="gold" :size="{ width: '60px', height: '60px'}"></vue-loading>
+      </div>
+    </div>
     <div class="user_header">
       <div class="user_header_left">
         <p class="user_header_left_title">いいね一覧</p>
@@ -17,13 +23,13 @@
       </li>
     </ul>
 
-
-    <v-row dense class="mt-3">
+  <div class="contents">
+    <v-row dense class="mt-2">
         <v-col
           v-for="(post, a) in posts"
           :key="`post-${a}`"
           :cols="6"
-          class="mb-4"
+          class="post_content mb-4"
         >
           <v-card
           >
@@ -35,10 +41,10 @@
               gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
               :src="`/img/img${post.kind}.svg`"
             >
-              <div class="tag_list" v-for="(tag, b) in post.tag_list" :key="`tag-${b}`">
-                <p class="tag pl-1 pr-1 mb-0" v-text="tag"></p>
+              <div class="tag_list">
+                <p v-for="(tag, b) in post.tag_list" :key="`tag-${b}`" class="tag pl-1 pr-1 mb-0 mr-1" v-text="tag"></p>
               </div>
-              <v-card-title style="font-size: 15px; font-weight: bold; line-height: 1.5;" v-text="post.title"></v-card-title>
+              <v-card-title class="pt-0 pb-2" style="font-size: 15px; font-weight: bold; line-height: 1.5; overflow: scroll; height: 50px;" v-text="post.title"></v-card-title>
             </v-img>
 
             <v-card-actions>
@@ -50,8 +56,8 @@
               <v-spacer></v-spacer>
               {{like_counts[a]}}
               <v-btn icon>
-                <v-icon v-if="like_judges[a]" @click="unlike(posts[a].id)" style="color: red;">mdi-heart</v-icon>
-                <v-icon v-else @click="like(posts[a].id)" @>mdi-heart</v-icon>
+                <v-icon v-if="like_judges[a]" @click="unlike(posts[a])" style="color: red;">mdi-heart</v-icon>
+                <v-icon v-else @click="like(posts[a])" @>mdi-heart</v-icon>
               </v-btn>
 
             </v-card-actions>
@@ -59,7 +65,7 @@
         </v-col>
       </v-row>
 
-      <div class="text-center mt-5 mb-16">
+      <div class="text-center mt-5 mb-6">
         <v-pagination
           v-model="page"
           :length="this.totalPage"
@@ -67,14 +73,19 @@
           @input = "onSearch(page)"
         ></v-pagination>
       </div>
+  </div>
     
-    <button class="user_to_index" @click="$router.push('/users/')"><v-icon class="user_to_index_icon">mdi-home</v-icon>&nbsp;一覧ページ</button>
+    <button class="user_to_index" @click="$router.push('/users/')"><v-icon class="user_to_index_icon">mdi-home</v-icon>&nbsp;User一覧</button>
 
   </div>
 </template>
 
 <script>
+import { VueLoading } from 'vue-loading-template';
 export default {
+  components:{
+    VueLoading
+  },
   data() {
     return {
       title: 'いいね一覧',
@@ -86,89 +97,95 @@ export default {
       currentPage:1,
       totalPage:1,
       page: 1,
+      loading: true,
     }
   },
   created() {
     if(localStorage.getItem('id') == this.$route.params.id){
-      this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: `投稿一覧`, link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`},{title: `設定`, link: `/users/edits/${this.$route.params.id}`}]
+      this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: `投稿一覧`, link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`},{title: `フォロワー`, link: `/users/followers/${this.$route.params.id}`},{title: `設定`, link: `/users/edits/${this.$route.params.id}`}]
     }else{
-      this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: `投稿一覧`, link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`}]
+      this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: `投稿一覧`, link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`},{title: `フォロワー`, link: `/users/followers/${this.$route.params.id}`}]
     }
-    if(localStorage.getItem('X-Access-Token')){
-      this.$axios.$get(`api/likes/${this.$route.params.id}`, {
-        headers:{
-          'X-Access-Token': localStorage.getItem('X-Access-Token')
-        }
-      }).then(res => {
-        for (let i = 0; i < res.data.length; i++){
-          this.posts.push({
-            id: res.data[i].attributes.posts.id,
-            title: res.data[i].attributes.posts.title,
-            kind: res.data[i].attributes.posts.kind,
-            tag_list: res.data[i].attributes.posts.tag_list,
-          })
-          this.like_counts.push(res.data[i].attributes.like_counts),
-          this.like_judges.push(res.data[i].attributes.like_judges),
-          this.users.push(res.data[i].attributes.users)
-        }
-        this.currentPage = res.pagination.current_page
-        this.totalPage = res.pagination.total_pages
-      })
-
-    }else{
-      this.$axios.$get(`api/likes/${this.$route.params.id}`).then(res => {
-        for (let i = 0; i < res.data.length; i++){
-          this.posts.push({
-            id: res.data[i].attributes.posts.id,
-            title: res.data[i].attributes.posts.title,
-            kind: res.data[i].attributes.posts.kind,
-            tag_list: res.data[i].attributes.posts.tag_list,
-          })
-          this.like_counts.push(res.data[i].attributes.like_counts),
-          this.like_judges.push(res.data[i].attributes.like_judges),
-          this.users.push(res.data[i].attributes.users)
-        }
-        this.currentPage = res.pagination.current_page
-        this.totalPage = res.pagination.total_pages
-      })
-    }
+    this.index()
     
   },
 
   methods:{
+    async index(){
+      this.loading = true
+      this.users = []
+      this.posts = []
+      this.like_counts = []
+      this.like_judges = []
+      if(localStorage.getItem('X-Access-Token')){
+        this.$axios.$get(`api/likes/${this.$route.params.id}`, {
+          headers:{
+            'X-Access-Token': localStorage.getItem('X-Access-Token')
+          }
+        }).then(res => {
+          for (let i = 0; i < res.data.length; i++){
+            this.posts.push({
+              id: res.data[i].attributes.posts.id,
+              user_id: res.data[i].attributes.user_id,
+              title: res.data[i].attributes.posts.title,
+              kind: res.data[i].attributes.posts.kind,
+              tag_list: res.data[i].attributes.posts.tag_list,
+            })
+            this.like_counts.push(res.data[i].attributes.like_counts),
+            this.like_judges.push(res.data[i].attributes.like_judges),
+            this.users.push(res.data[i].attributes.users)
+          }
+          this.currentPage = res.pagination.current_page
+          this.totalPage = res.pagination.total_pages
+          this.loading = false
+        })
 
-    async like(id){
-      const params = {
-        post_id: id
+      }else{
+        this.$axios.$get(`api/likes/${this.$route.params.id}`).then(res => {
+          for (let i = 0; i < res.data.length; i++){
+            this.posts.push({
+              id: res.data[i].attributes.posts.id,
+              user_id: res.data[i].attributes.user_id,
+              title: res.data[i].attributes.posts.title,
+              kind: res.data[i].attributes.posts.kind,
+              tag_list: res.data[i].attributes.posts.tag_list,
+            })
+            this.like_counts.push(res.data[i].attributes.like_counts),
+            this.like_judges.push(res.data[i].attributes.like_judges),
+            this.users.push(res.data[i].attributes.users)
+          }
+          this.currentPage = res.pagination.current_page
+          this.totalPage = res.pagination.total_pages
+          this.loading = false
+        })
       }
-      await this.$axios.$post(`api/likes/`, params, {
-          headers:{
-            authorization: localStorage.getItem('access-token')
-          }
-      })
-      await this.$axios.$get(`api/posts/likes/${this.$route.params.id}`, {
-          headers:{
-              authorization: localStorage.getItem('access-token')
-          }
-      }).then(res => {
-          this.like_judges = res.like_judges
-          this.like_counts = res.like_counts
-      })
     },
-    async unlike(id){
-      await this.$axios.$delete(`api/likes/${id}`, {
-          headers:{
-              authorization: localStorage.getItem('access-token')
-          }
-      })
-      await this.$axios.$get(`api/posts/likes/${this.$route.params.id}`, {
-          headers:{
-              authorization: localStorage.getItem('access-token')
-          }
-      }).then(res => {
-          this.like_judges = res.like_judges
-          this.like_counts = res.like_counts
-      })
+
+    async like(post){
+      if(localStorage.getItem('id')){
+        this.loading = true
+        const params = {
+          post_id: post.id,
+          user_id: post.user_id
+        }
+        await this.$axios.$post(`api/likes/`, params, {
+            headers:{
+              'X-Access-Token': localStorage.getItem('X-Access-Token')
+            }
+        })
+        this.index()
+      }
+    },
+    async unlike(post){
+      if(localStorage.getItem('id')){
+        this.loading = true
+        await this.$axios.$delete(`api/likes/${post.id}`, {
+            headers:{
+                'X-Access-Token': localStorage.getItem('X-Access-Token')
+            }
+        })
+        this.index()
+      }
     }
   },
 
@@ -201,6 +218,12 @@ export default {
   width: 100%;
   overflow-x: scroll;
   border-bottom: 1px solid #eee;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.menu::-webkit-scrollbar {
+  display:none;
+  -ms-overflow-style: none;
 }
 .menu_notice{
   display: block;
@@ -214,7 +237,6 @@ export default {
 .menu li{
   min-width: 100px;
   width: 100%;
-  text-align: center;
   font-size: 13px;
   font-weight: bold;
   cursor: pointer;
@@ -225,9 +247,12 @@ export default {
   color: #2196f3;
 }
 .menu_link{
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin: 0;
-  padding: 10px 0;
   width: 100%;
+  height: 40px;
 }
 .user_header_left{
   width: 40%;
@@ -265,15 +290,15 @@ export default {
   margin-right: 2px;
 }
 .user_to_index{
-  border-bottom: 1px solid blue;
-  font-size: 12px;
-  color: blue;
-  margin-left: 10px;
-  padding: 0 10px 0 5px;
+  font-size: 13px;
+  color: rgb(0 126 255);
+  height: 45px;
+  display: flex;
+  align-items: center;
 }
 .user_to_index_icon{
-  font-size: 13px;
-  color: blue;
+  font-size: 14px;
+  color: rgb(0 126 255);
 }
 
 
@@ -307,29 +332,85 @@ export default {
   display: flex;
   align-items: center;
   cursor: pointer;
+  width: 70%;
 }
 .user_img{
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   border-radius: 100%;
 }
 .user_name{
   margin: 0 0 0 10px;
   height: 25px;
-  width: 14vw;
+  width: 100%;
   overflow: scroll;
 }
 .tag_list{
   position: absolute;
-  top: 5px;
-  right: 10px;
+  top: 2%;
+  left: 2%;
 }
 .tag{
-  background: rgb(0, 162, 255);
-  display: inline-block;
-  font-size: 10px;
-  font-weight: bold;
-  text-align: center;
+  white-space: pre;
+  margin: 0 5px;
+  font-size: 10px; 
+  font-weight: bold; 
   border-radius: 10px;
+  background: rgb(91, 164, 248, 0.7); 
+  display:inline-block;
+}
+
+@keyframes fadeIn {
+  0% {
+      opacity: 0;
+  }
+  100% {
+      opacity: 1;
+  }
+}
+.loading{
+  position: fixed;
+  top: 0;
+  bottom:0;
+  right:0;
+  left:0;
+  background: rgba(255, 255, 255, 0.199);
+  z-index: 100;
+}
+.loading_inner{
+  position: absolute;
+  bottom: 50%;
+  right: 50%;
+  transform: translate(50%,50%);
+}
+.loading_inner_text{
+  margin: 0;
+  animation: fadeIn infinite alternate 2s;
+}
+.loading_inner_mark{
+  
+}
+.contents{
+  height: calc(100vh - 254px);
+  overflow-y: scroll;
+  overflow-x: hidden;
+  border-bottom: 1px solid #eee; 
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.contents::-webkit-scrollbar {
+  display:none;
+  -ms-overflow-style: none;
+}
+@media (min-width: 600px){
+  .post_content{
+    max-width: 32%;
+    margin: 0 0.6%;
+  }
+}
+@media (min-width: 960px){
+  .contents{
+    height: calc(100vh - 215px);
+  }
 }
 </style>

@@ -1,12 +1,21 @@
 <template>
-  <div class="mb-10 pb-5">
+  <div>
+    <div v-if="loading" class="loading">
+      <div class="loading_inner">
+        <p class="loading_inner_text">Loading...</p>
+        <vue-loading class="loading_inner_mark" type="beat" color="gold" :size="{ width: '60px', height: '60px'}"></vue-loading>
+      </div>
+    </div>
     <div class="user_header">
       <div class="user_header_left">
         <p class="user_header_left_title" v-text="title"></p>
+        <div class="user_header_left_follow mt-3">
+          <p @click="$router.push(`/users/follows/${$route.params.id}`)" class="mb-0" style="cursor: pointer; font-size: 12px;"><strong style="color: #333;">{{following}}</strong> フォロ中</p>
+          <p @click="$router.push(`/users/followers/${$route.params.id}`)" class="mb-0 ml-2" style="cursor: pointer; font-size: 12px;"><strong style="color: #333;">{{follower}}</strong> フォロワー</p>
+        </div>
       </div>
-      <div class="user_header_right" style="display: flex;">
+      <div v-if="loginJudge" class="user_header_right" style="display: flex;">
 
-        
         <template v-if="currentUser.id == $route.params.id">
           <v-btn @click="logout" color="error" small>ログアウト</v-btn>
         </template>
@@ -62,13 +71,17 @@
         </tbody>
       </template>
     </v-simple-table>
-    <button class="user_to_index" @click="$router.push('/users/')"><v-icon class="user_to_index_icon">mdi-home</v-icon>&nbsp;一覧ページ</button>
+    <button class="user_to_index" @click="$router.push('/users/')"><v-icon class="user_to_index_icon">mdi-home</v-icon>&nbsp;User一覧</button>
 
   </div>
 </template>
 
 <script>
+import { VueLoading } from 'vue-loading-template';
 export default {
+  components:{
+    VueLoading
+  },
   data() {
     return {
       title: 'ユーザー情報',
@@ -77,62 +90,80 @@ export default {
       items: [],
       currentUser: {},
 
+      follower: 0,
+      following: 0,
+
       follow_judge: '',
 
       editForm: false,
+      loading: true,
+      loginJudge: false,
     }
   },
   created() {
-    if(localStorage.getItem('X-Access-Token')){
-      this.$axios.$get(`api/users/${this.$route.params.id}`, {
-        headers:{
-          'X-Access-Token': localStorage.getItem('X-Access-Token')
-        }
-      }).then(res => {
-          this.currentUser = {id: localStorage.getItem('id')}
-          this.follow_judge = res.data.attributes.follow_judge
-  
-          var contents = []
-          contents.push(res.data.attributes.image.url)
-          contents.push(res.data.attributes.name)
-          contents.push(res.data.attributes.email)
-          contents.push(res.data.attributes.profile)
-          for(let i = 0; i < this.names.length; i++){
-            this.users.push({
-              name: this.names[i],
-              content: contents[i]
-          })
-        }
-  
-      })
+    if(localStorage.getItem('id')){
+      this.loginJudge = true
     }else{
-      this.$axios.$get(`api/users/${this.$route.params.id}`).then(res => {
-          this.currentUser = {id: localStorage.getItem('id')}
-          this.follow_judge = res.data.attributes.follow_judge
-  
-          var contents = []
-          contents.push(res.data.attributes.image.url)
-          contents.push(res.data.attributes.name)
-          contents.push(res.data.attributes.email)
-          contents.push(res.data.attributes.profile)
-          for(let i = 0; i < this.names.length; i++){
-            this.users.push({
-              name: this.names[i],
-              content: contents[i]
-          })
-        }
-  
-      })
+      this.loginJudge = false
     }
-    if(this.currentUser.id == this.$route.params.id){
-      this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: '投稿一覧', link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`},{title: `設定`, link: `/users/edits/${this.$route.params.id}`}]
+    this.index()
+    if(localStorage.getItem('id') == this.$route.params.id){
+      this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: '投稿一覧', link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`},{title: `フォロワー`, link: `/users/followers/${this.$route.params.id}`},{title: `設定`, link: `/users/edits/${this.$route.params.id}`}]
     }else{
-      this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: '投稿一覧', link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`}]
+      this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: '投稿一覧', link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`},{title: `フォロワー`, link: `/users/followers/${this.$route.params.id}`}]
     }
   },
 
   methods:{
+    async index(){
+      this.users = []
+      if(localStorage.getItem('X-Access-Token')){
+        this.$axios.$get(`api/users/${this.$route.params.id}`, {
+          headers:{
+            'X-Access-Token': localStorage.getItem('X-Access-Token')
+          }
+        }).then(res => {
+            this.currentUser = {id: localStorage.getItem('id')}
+            this.follow_judge = res.data.attributes.follow_judge
+            this.follower = res.data.attributes.follower
+            this.following = res.data.attributes.following
+    
+            var contents = []
+            contents.push(res.data.attributes.image.url)
+            contents.push(res.data.attributes.name)
+            contents.push(res.data.attributes.email)
+            contents.push(res.data.attributes.profile)
+            for(let i = 0; i < this.names.length; i++){
+              this.users.push({
+                name: this.names[i],
+                content: contents[i]
+            })
+          }
+          this.loading = false
+        })
+      }else{
+        this.$axios.$get(`api/users/${this.$route.params.id}`).then(res => {
+            this.follow_judge = res.data.attributes.follow_judge
+    
+            this.follower = res.data.attributes.follower
+            this.followimg = res.data.attributes.followimg
+            var contents = []
+            contents.push(res.data.attributes.image.url)
+            contents.push(res.data.attributes.name)
+            contents.push(res.data.attributes.email)
+            contents.push(res.data.attributes.profile)
+            for(let i = 0; i < this.names.length; i++){
+              this.users.push({
+                name: this.names[i],
+                content: contents[i]
+            })
+          }
+          this.loading = false
+        })
+      }
+    },
     async follow(){
+      this.loading = true
       const params = {
         user_id: this.$route.params.id
       }
@@ -140,32 +171,20 @@ export default {
         headers:{
           'X-Access-Token': localStorage.getItem('X-Access-Token')
         }
-      }).then()
-
-      await this.$axios.$get(`api/users/${this.$route.params.id}`, {
-        headers:{
-          'X-Access-Token': localStorage.getItem('X-Access-Token')
-        }
-      }).then(res => {
-        this.follow_judge = res.data.attributes.follow_judge
       })
+      this.index()
     },
     async unfollow(){
+      this.loading = true
       await this.$axios.$delete(`api/follows/${this.$route.params.id}`, {
         headers:{
           'X-Access-Token': localStorage.getItem('X-Access-Token')
         }
       })
-
-      await this.$axios.$get(`api/users/${this.$route.params.id}`, {
-        headers:{
-          'X-Access-Token': localStorage.getItem('X-Access-Token')
-        }
-      }).then(res => {
-        this.follow_judge = res.data.attributes.follow_judge
-      })
+      this.index()
     },
     logout(){
+      this.loading = true
       const confirmation = window.confirm("本当に宜しいですか？");
       if (confirmation){
         this.$axios.$delete(`auth/sign_out`, {
@@ -175,6 +194,7 @@ export default {
         }).then(
           localStorage.setItem("X-Access-Token", ""),
           localStorage.setItem("id", ""),
+          this.loading = false,
           window.location.href = "/"
         )
       }
@@ -197,7 +217,8 @@ export default {
   align-items: center; 
   justify-content: space-between; 
   height: 60px; 
-  padding: 0;
+  padding: 0 10px;
+  margin: 10px 0;
 }
 .menu{
   display: flex;
@@ -210,6 +231,7 @@ export default {
   overflow-x: scroll;
   border-bottom: 1px solid #eee;
 }
+
 .menu_notice{
   display: block;
   position: absolute;
@@ -238,18 +260,20 @@ export default {
   width: 100%;
 }
 .user_header_left{
-  width: 40%;
+  width: 70%;
   overflow: hidden;
-  height: 58px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
 }
 .user_header_left_title{
   font-weight: bold;
   margin: 0;
   font-size: 18px;
   cursor: pointer;
+}
+.user_header_left_follow{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  color: gray;
 }
 .user_header_right{
   align-items: center;
@@ -274,29 +298,34 @@ export default {
 }
 
 .profile{
-  margin-top: 3px;
+  height: calc(100vh - 275px);
+  overflow-y: scroll;
+  overflow-x: hidden;
+  border-bottom: 1px solid #eee; 
 }
 .name{
   width: 100px;
+  text-align: center !important;
+  font-size: 13px !important;
 }
 .content{
   width: 100px;
-  text-align: center;
+  text-align: center ;
 }
 .content_img{
   max-width: 130px;
   margin: auto;
 }
 .user_to_index{
-  border-bottom: 1px solid blue;
-  font-size: 12px;
-  color: blue;
-  margin-left: 10px;
-  padding: 0 10px 0 5px;
+  font-size: 13px;
+  color: rgb(0 126 255);
+  height: 45px;
+  display: flex;
+  align-items: center;
 }
 .user_to_index_icon{
-  font-size: 13px;
-  color: blue;
+  font-size: 14px;
+  color: rgb(0 126 255);
 }
 
 .menu_notice{
@@ -304,6 +333,27 @@ export default {
   color: gray;
   font-size: 10px;
 }
+
+.loading{
+  position: fixed;
+  top: 0;
+  bottom:0;
+  right:0;
+  left:0;
+  background: rgba(255, 255, 255, 0.199);
+  z-index: 100;
+}
+.loading_inner{
+  position: absolute;
+  bottom: 50%;
+  right: 50%;
+  transform: translate(50%,50%);
+}
+.loading_inner_text{
+  margin: 0;
+  animation: fadeIn infinite alternate 2s;
+}
+
 @media (min-width: 530px){
   .content_img{
     max-width: 350px;
@@ -311,6 +361,11 @@ export default {
   }
   .menu_notice{
     display: none;
+  }
+}
+@media (min-width: 960px){
+  .profile{
+    height: calc(100vh - 235px);
   }
 }
 </style>

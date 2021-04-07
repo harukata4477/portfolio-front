@@ -1,5 +1,11 @@
 <template>
-  <div class="mb-10 pb-5">
+  <div class="mb-10">
+    <div v-if="loading" class="loading">
+      <div class="loading_inner">
+        <p class="loading_inner_text">Loading...</p>
+        <vue-loading class="loading_inner_mark" type="beat" color="gold" :size="{ width: '60px', height: '60px'}"></vue-loading>
+      </div>
+    </div>
     <div class="user_header">
       <div class="user_header_left">
         <p class="user_header_left_title" v-text="title"></p>
@@ -23,7 +29,7 @@
 
 
 
-    <div>
+    <div class="contents">
       <v-card-text>
         <v-container>
           <v-row>
@@ -94,13 +100,17 @@
       </v-card-actions>
     </div>
 
-    <button class="user_to_index" @click="$router.push('/users/')"><v-icon class="user_to_index_icon">mdi-home</v-icon>&nbsp;一覧ページ</button>
+    <button class="user_to_index" @click="$router.push('/users/')"><v-icon class="user_to_index_icon">mdi-home</v-icon>&nbsp;User一覧</button>
 
   </div>
 </template>
 
 <script>
+import { VueLoading } from 'vue-loading-template';
 export default {
+  components:{
+    VueLoading
+  },
   data() {
     return {
       title: '設定',
@@ -114,6 +124,8 @@ export default {
       image: [],
       profile: '',
       user: '',
+
+      loading: true,
     }
   },
   created() {
@@ -128,12 +140,12 @@ export default {
       this.email = res.data.attributes.email
       this.image = res.data.attributes.image.url
       this.profile = res.data.attributes.profile
-
+      this.loading = false
     })
     if(localStorage.getItem('id') == this.$route.params.id){
-      this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: '投稿一覧', link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`},{title: `設定`, link: `/users/edits/${this.$route.params.id}`}]
+      this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: '投稿一覧', link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`},{title: `フォロワー`, link: `/users/followers/${this.$route.params.id}`},{title: `設定`, link: `/users/edits/${this.$route.params.id}`}]
     }else{
-      this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: '投稿一覧', link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`}]
+      this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: '投稿一覧', link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`},{title: `フォロワー`, link: `/users/followers/${this.$route.params.id}`}]
     }
     if(this.image){
     }else{
@@ -147,6 +159,7 @@ export default {
        this.image_judge = '画像を取得しました。更新してください。'
     },
     async edit(){
+      this.loading = true
       let formData = new FormData
         formData.append('name', this.name)
         formData.append('profile', this.profile)
@@ -175,10 +188,11 @@ export default {
 
       })
       this.image_judge = ''
+      this.loading = false
       this.$router.push(`/users/${this.$route.params.id}`)
-      
     },
     destroy(){
+      this.loading = true
       const confirmation = window.confirm("全てのデータが消えてしまいますが宜しいですか？");
       const confirmation2 = window.confirm("最後です、本当に宜しいですか？");
       if (confirmation){
@@ -190,6 +204,7 @@ export default {
           }).then(
             localStorage.setItem("X-Access-Token", ""),
             localStorage.setItem("id", ""),
+            this.loading = false,
             window.location.href = "/"
           )
         }
@@ -214,7 +229,7 @@ export default {
   align-items: center; 
   justify-content: space-between; 
   height: 60px; 
-  padding: 0;
+  padding: 0 10px;
 }
 .menu{
   display: flex;
@@ -226,6 +241,12 @@ export default {
   width: 100%;
   overflow-x: scroll;
   border-bottom: 1px solid #eee;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.menu::-webkit-scrollbar {
+  display:none;
+  -ms-overflow-style: none;
 }
 .menu_notice{
   display: block;
@@ -239,7 +260,6 @@ export default {
 .menu li{
   min-width: 100px;
   width: 100%;
-  text-align: center;
   font-size: 13px;
   font-weight: bold;
   cursor: pointer;
@@ -250,9 +270,12 @@ export default {
   color: #2196f3;
 }
 .menu_link{
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin: 0;
-  padding: 10px 0;
   width: 100%;
+  height: 40px;
 }
 .v-image{
   text-align: center; 
@@ -317,15 +340,39 @@ export default {
   max-width: 130px;
 }
 .user_to_index{
-  border-bottom: 1px solid blue;
-  font-size: 12px;
-  color: blue;
-  margin-left: 10px;
-  padding: 0 10px 0 5px;
+  font-size: 13px;
+  color: rgb(0 126 255);
+  height: 45px;
+  display: flex;
+  align-items: center;
 }
 .user_to_index_icon{
-  font-size: 13px;
-  color: blue;
+  font-size: 14px;
+  color: rgb(0 126 255);
+}
+
+
+.loading{
+  position: fixed;
+  top: 0;
+  bottom:0;
+  right:0;
+  left:0;
+  background: rgba(255, 255, 255, 0.199);
+  z-index: 100;
+}
+.loading_inner{
+  position: absolute;
+  bottom: 50%;
+  right: 50%;
+  transform: translate(50%,50%);
+}
+.loading_inner_text{
+  margin: 0;
+  animation: fadeIn infinite alternate 2s;
+}
+.loading_inner_mark{
+  
 }
 @media (min-width: 530px){
   .content_img{
@@ -333,6 +380,24 @@ export default {
   }
   .menu_notice{
     display: none;
+  }
+}
+
+.contents{
+  height: calc(100vh - 254px);
+  overflow-y: scroll;
+  overflow-x: hidden;
+  border-bottom: 1px solid #eee; 
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.contents::-webkit-scrollbar {
+  display:none;
+  -ms-overflow-style: none;
+}
+@media (min-width: 960px){
+  .contents{
+    height: calc(100vh - 215px);
   }
 }
 </style>

@@ -1,8 +1,17 @@
 <template>
-  <v-row>
-    <v-col>
+  <v-row style="margin: 0; height: 84vh;">
+    <div v-if="loading" class="loading">
+      <div class="loading_inner">
+        <p class="loading_inner_text">Loading...</p>
+        <vue-loading class="loading_inner_mark" type="beat" color="gold" :size="{ width: '60px', height: '60px'}"></vue-loading>
+      </div>
+    </div>
+    <v-alert style="position: fixed; top: 70px; left:2.5%; z-index: 30; width: 95%;" type="error" v-model="submitAlert" transition="slide-y-transition">
+      ログインが必要になります。
+    </v-alert>
+    <v-col class="pt-0 pb-0 pl-0 pr-0">
       <v-sheet >
-        <div class="plan_header" style="display: flex; justify-content: space-between; align-items: center; margin: 5px 0;">
+        <div class="plan_header" style="display: flex; justify-content: space-between; align-items: center; margin: 10px 0;">
           <p class="pie-graph_title" style="display: inline-block; font-weight: bold; border-bottom: solid 1px #333; margin: 10px">1日の予定</p>
 
           <div style="display: inline-block; margin: 10px 0 10px auto;">
@@ -191,10 +200,9 @@
           :events="events"
           color="primary"
           type="day"
-          style="border-bottom: solid 1px #e0e0e0; height: calc(100vh - 180px);"
           @click:event="showEvent"
         ></v-calendar>
-        <v-col cols="12">
+        <v-col cols="12" class="pt-0 pr-0 pb-0 pl-0">
           <v-menu
             v-model="selectedOpen"
             :close-on-content-click="false"
@@ -221,7 +229,11 @@
 
               </v-toolbar>
               <v-card-text>
-                <p class="mb-0">編集</p>
+                <v-row class="mt-1 mr-1 mb-1 ml-1"> 
+                  <p class="mb-0">編集</p>
+                  <v-spacer></v-spacer>
+                  <v-icon @click="deleteCalendar" color="info">mdi-delete</v-icon>
+                </v-row>
                 <v-card-text>
                   <v-container>
                     <v-row>
@@ -380,12 +392,15 @@
         </v-col>
       </v-sheet>
     </v-col>
-
   </v-row>
 </template>
 
 <script>
+import { VueLoading } from 'vue-loading-template';
 export default {
+  components:{
+    VueLoading
+  },
   data () {
     return {
       today: this.$route.params.id,
@@ -419,15 +434,18 @@ export default {
       new_menu3: false,
       onComplete: '',
       submitForm: false,
+      loading: true,
+      load_judge: false,
+      submitAlert: false,
     }
   },
   created () {
     this.new_day = this.$route.params.id
     this.index()
   },
-  mounted () {
-    this.$refs.calendar.scrollToTime('08:00')
-  },
+  // mounted () {
+  //   this.$refs.calendar.scrollToTime('08:00')
+  // },
   methods: {
     async index(){
       await this.$axios.$get(`api/calendars/${this.$route.params.id}`, {
@@ -438,8 +456,8 @@ export default {
         this.events = []
         for(let i = 0; i < res.data.length; i++){ 
 
-          var start = res.data[i].attributes.start.replace( /T/g , " ").replace( /.000Z/g , "")
-          var end = res.data[i].attributes.end.replace( /T/g , " ").replace( /.000Z/g , "")
+          var start = res.data[i].attributes.start.replace( /T/g , " ").replace('.000+09:00','')
+          var end = res.data[i].attributes.end.replace( /T/g , " ").replace('.000+09:00','')
 
           if(res.data[i].attributes.done == true){
             var color = 'black'
@@ -464,31 +482,40 @@ export default {
             })
           }
         }
-      })
+        this.loading = false
+      }).catch(
+        this.load_judge = true
+      )
     },
 
     async create(){
-      const params = {
-        name: this.new_name,
-        start: this.new_day + ' ' + this.new_start_time,
-        end: this.new_day + ' ' + this.new_end_time,
-        done: this.new_done,
-        color: this.new_color,
-      }
-      await this.$axios.$post(`api/calendars/`, params, {
-        headers:{
-          'X-Access-Token': localStorage.getItem('X-Access-Token')
+      if(localStorage.getItem('id')){
+        this.loading = true
+        const params = {
+          name: this.new_name,
+          start: this.new_day + ' ' + this.new_start_time,
+          end: this.new_day + ' ' + this.new_end_time,
+          done: this.new_done,
+          color: this.new_color,
         }
-      })
-      this.index()
-      this.new_name = ''
-      this.new_day = ''
-      this.new_start_time = ''
-      this.new_day = ''
-      this.new_end_time = ''
-      this.new_done = ''
-      this.new_color = ''
-      this.submitForm = false
+        await this.$axios.$post(`api/calendars/`, params, {
+          headers:{
+            'X-Access-Token': localStorage.getItem('X-Access-Token')
+          }
+        })
+        this.index()
+        this.new_name = ''
+        this.new_day = ''
+        this.new_start_time = ''
+        this.new_day = ''
+        this.new_end_time = ''
+        this.new_done = ''
+        this.new_color = ''
+        this.submitForm = false
+      }else{
+        this.submitForm = false
+        this.submitAlert = true
+      }
     },
     showEvent ({ nativeEvent, event }) {
       const open = () => {
@@ -526,6 +553,7 @@ export default {
       nativeEvent.stopPropagation()
     },
     async edit(){
+      this.loading = false
       const params = {
         name: this.name,
         start: this.day + ' ' + this.start_time,
@@ -537,13 +565,37 @@ export default {
         headers:{
           'X-Access-Token': localStorage.getItem('X-Access-Token')
         }
-      }).then(res => {
-        // window.location.href = `/calendars/${this.$route.params.id}`
       })
 
       this.index()
       this.selectedOpen = false
+    },
+    async deleteCalendar(){
+      this.loading = true
+      const confirmation = window.confirm("本当に削除して良いのですか？");
+      if (confirmation){
+        await this.$axios.$delete(`api/calendars/${this.id}`, {
+          headers:{
+            'X-Access-Token': localStorage.getItem('X-Access-Token')
+          }
+        })
+        this.index()
+        this.selectedOpen = false
+      }
     }
+  },
+  watch: {
+    load_judge (val) {
+      val && setTimeout(() => {
+        this.load_judge = false
+        this.loading = false
+      }, 500)
+    },
+    submitAlert (val) {
+      val && setTimeout(() => {
+        this.submitAlert = false
+      }, 2000)
+    },
   }
 }
 </script>
@@ -561,5 +613,44 @@ export default {
 }
 .v-calendar .v-event-timed{
   white-space: break-spaces !important;
+}
+@keyframes fadeIn {
+  0% {
+      opacity: 0;
+  }
+  100% {
+      opacity: 1;
+  }
+}
+.loading{
+  position: fixed;
+  top: 0;
+  bottom:0;
+  right:0;
+  left:0;
+  background: rgba(255, 255, 255, 0.199);
+  z-index: 100;
+}
+.loading_inner{
+  position: absolute;
+  bottom: 50%;
+  right: 50%;
+  transform: translate(50%,50%);
+}
+.loading_inner_text{
+  margin: 0;
+  animation: fadeIn infinite alternate 2s;
+}
+.loading_inner_mark{
+  
+}
+.v-calendar{
+  border-bottom: solid 1px #e0e0e0; 
+  height: calc(100vh - 200px);
+}
+@media (min-width: 960px){
+  .v-calendar{
+    height: calc(100vh - 150px);
+  }
 }
 </style>

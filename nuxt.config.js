@@ -24,7 +24,7 @@ export default {
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
-    'plugins/axios'
+    'plugins/axios',
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -39,7 +39,6 @@ export default {
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
     '@nuxtjs/axios',
-    '@nuxtjs/auth'
   ],
 
   server: {
@@ -73,22 +72,4 @@ export default {
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
   },
-
-  auth: {
-    redirect: {
-      login: '/login', 
-      logout: '/login',
-      callback: false,
-      home: '/'
-    },
-    strategies: {
-      local: {
-        endpoints: {
-          login: { url: 'auth/sign_in', method: 'post', propertyName: 'x-access-token' },
-          logout: false,
-          user: false
-        }
-      }
-    }  
-  }
 }

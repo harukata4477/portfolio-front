@@ -1,5 +1,11 @@
 <template>
-  <div class="mb-10 pb-5">
+  <div class="mb-10">
+    <div v-if="loading" class="loading">
+      <div class="loading_inner">
+        <p class="loading_inner_text">Loading...</p>
+        <vue-loading class="loading_inner_mark" type="beat" color="gold" :size="{ width: '60px', height: '60px'}"></vue-loading>
+      </div>
+    </div>
     <div class="user_header">
       <div class="user_header_left">
         <p class="user_header_left_title" v-text="title"></p>
@@ -17,42 +23,49 @@
       </li>
     </ul>
 
-    <v-list three-line>
-      <template v-for="(following, index) in followings" >
-        
+    <div class="contents">
+      <v-list three-line>
+        <template v-for="(following, index) in followings" >
+          
 
-        <v-list-item
-          class="user_main"
-          :key="`following-${index}`"
-        >
-          <v-list-item-avatar
-            @click="$router.push(`/users/${following.id}`)"
+          <v-list-item
+            class="user_main"
+            :key="`following-${index}`"
           >
-            <v-img :src="`http://localhost:3000${following.image.url}`"></v-img>
-          </v-list-item-avatar>
-          <v-list-item-content
-            @click="$router.push(`/users/${following.id}`)"
-          >
-            <v-list-item-title v-html="following.name"></v-list-item-title>
-            <v-list-item-subtitle v-if="following.profile == ''"></v-list-item-subtitle>
-            <v-list-item-subtitle v-if="following.profile" v-html="following.profile"></v-list-item-subtitle>
-          </v-list-item-content>
-          <template v-if="currentUser_id == $route.params.id">
-            <v-btn @click="unfollow(following.id)" small color="info" class="unfollow">フォロー済み</v-btn>
-          </template>
-        </v-list-item>
+            <v-list-item-avatar
+              @click="$router.push(`/users/${following.id}`)"
+            >
+              <v-img :src="`http://localhost:3000${following.image.url}`"></v-img>
+            </v-list-item-avatar>
+            <v-list-item-content
+              @click="$router.push(`/users/${following.id}`)"
+            >
+              <v-list-item-title v-html="following.name"></v-list-item-title>
+              <v-list-item-subtitle v-if="following.profile == ''"></v-list-item-subtitle>
+              <v-list-item-subtitle v-if="following.profile" v-html="following.profile"></v-list-item-subtitle>
+            </v-list-item-content>
+            <template v-if="currentUser_id == $route.params.id">
+              <v-btn @click="unfollow(following.id)" small color="info" class="unfollow">フォロー済み</v-btn>
+            </template>
+          </v-list-item>
 
-      </template>
-    </v-list>
-    <template v-if="currentPage == totalPage"></template>
-    <p @click="followMore" v-else style="cursor: pointer; text-align: center; margin: 10px 0;">もっとみる</p>
-    <button class="user_to_index" @click="$router.push('/users/')"><v-icon class="user_to_index_icon">mdi-home</v-icon>&nbsp;一覧ページ</button>
+        </template>
+      </v-list>
+      <template v-if="currentPage == totalPage"></template>
+      <p @click="followMore" v-else style="cursor: pointer; text-align: center; margin: 10px 0;">もっとみる</p>
+    </div>
+
+    <button class="user_to_index" @click="$router.push('/users/')"><v-icon class="user_to_index_icon">mdi-home</v-icon>&nbsp;User一覧</button>
 
   </div>
 </template>
 
 <script>
+import { VueLoading } from 'vue-loading-template';
 export default {
+  components:{
+    VueLoading
+  },
   data() {
     return {
       title: 'フォロー中',
@@ -62,6 +75,8 @@ export default {
  
       currentPage: 1,
       totalPage: 1,
+
+      loading: true,
     }
   },
   created() {
@@ -75,6 +90,7 @@ export default {
           this.currentUser_id = localStorage.getItem('id')
           this.currentPage = res.pagination.current_page
           this.totalPage = res.pagination.total_pages
+          this.loading = false
       })
     }else{
       this.$axios.$get(`api/follows/${this.$route.params.id}`).then(res => {
@@ -82,18 +98,20 @@ export default {
           this.currentUser_id = localStorage.getItem('id')
           this.currentPage = res.pagination.current_page
           this.totalPage = res.pagination.total_pages
+          this.loading = false
       })
     }
 
     if(localStorage.getItem('id') == this.$route.params.id){
-      this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: '投稿一覧', link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`},{title: `設定`, link: `/users/edits/${this.$route.params.id}`}]
+      this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: '投稿一覧', link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`},{title: `フォロワー`, link: `/users/followers/${this.$route.params.id}`},{title: `設定`, link: `/users/edits/${this.$route.params.id}`}]
     }else{
-      this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: '投稿一覧', link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`}]
+      this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: '投稿一覧', link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`},{title: `フォロワー`, link: `/users/followers/${this.$route.params.id}`}]
     }
   },
 
   methods:{
     async unfollow(user_id){
+      this.loading = true
       await this.$axios.$delete(`api/follows/${user_id}`, {
         headers:{
           'X-Access-Token': localStorage.getItem('X-Access-Token')
@@ -102,7 +120,9 @@ export default {
 
       await this.$axios.$get(`api/follows/${this.$route.params.id}`).then(res => {
         this.followings = res.data.attributes.followings
-      })
+      }).then(
+        this.loading = false
+      )
     },
     async followMore(){
       var next = this.currentPage + 1
@@ -118,7 +138,8 @@ export default {
         this.currentUser_id = localStorage.getItem('id')
         this.currentPage = res.pagination.current_page
         this.totalPage = res.pagination.total_pages
-    })
+        this.loading = false
+      })
     }
   },
 
@@ -139,7 +160,7 @@ export default {
   align-items: center; 
   justify-content: space-between; 
   height: 60px; 
-  padding: 0;
+  padding: 0 10px;
 }
 .menu{
   display: flex;
@@ -151,6 +172,12 @@ export default {
   width: 100%;
   overflow-x: scroll;
   border-bottom: 1px solid #eee;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.menu::-webkit-scrollbar {
+  display:none;
+  -ms-overflow-style: none;
 }
 .menu_notice{
   display: block;
@@ -164,7 +191,6 @@ export default {
 .menu li{
   min-width: 100px;
   width: 100%;
-  text-align: center;
   font-size: 13px;
   font-weight: bold;
   cursor: pointer;
@@ -175,9 +201,12 @@ export default {
   color: #2196f3;
 }
 .menu_link{
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin: 0;
-  padding: 10px 0;
   width: 100%;
+  height: 40px;
 }
 .user_header_left{
   width: 50%;
@@ -215,23 +244,63 @@ export default {
   margin-right: 2px;
 }
 .user_to_index{
-  border-bottom: 1px solid blue;
-  font-size: 12px;
-  color: blue;
-  margin-left: 10px;
-  padding: 0 10px 0 5px;
+  font-size: 13px;
+  color: rgb(0 126 255);
+  height: 45px;
+  display: flex;
+  align-items: center;
 }
 .user_to_index_icon{
-  font-size: 13px;
-  color: blue;
+  font-size: 14px;
+  color: rgb(0 126 255);
 }
 .user_main{
   border-bottom: solid 1px #eee;
 }
 
+.loading{
+  position: fixed;
+  top: 0;
+  bottom:0;
+  right:0;
+  left:0;
+  background: rgba(255, 255, 255, 0.199);
+  z-index: 100;
+}
+.loading_inner{
+  position: absolute;
+  bottom: 50%;
+  right: 50%;
+  transform: translate(50%,50%);
+}
+.loading_inner_text{
+  margin: 0;
+  animation: fadeIn infinite alternate 2s;
+}
+.loading_inner_mark{
+  
+}
+
 @media (min-width: 530px){
   .menu_notice{
     display: none;
+  }
+}
+.contents{
+  height: calc(100vh - 254px);
+  overflow-y: scroll;
+  overflow-x: hidden;
+  border-bottom: 1px solid #eee; 
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.contents::-webkit-scrollbar {
+  display:none;
+  -ms-overflow-style: none;
+}
+@media (min-width: 960px){
+  .contents{
+    height: calc(100vh - 215px);
   }
 }
 </style>

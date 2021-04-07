@@ -1,6 +1,12 @@
 <template>
   <div class="post mt-6">
-    <v-alert style="position: fixed; top: 70px; width: 95%; z-index: 30;" :color="colors" :type="types" v-model="submitAlert" transition="slide-y-transition">
+    <div v-if="loading" class="loading">
+      <div class="loading_inner">
+        <p class="loading_inner_text">Loading...</p>
+        <vue-loading class="loading_inner_mark" type="beat" color="gold" :size="{ width: '60px', height: '60px'}"></vue-loading>
+      </div>
+    </div>
+    <v-alert style="position: fixed; top: 70px; left: 2.5%; width: 95%; z-index: 50;" :color="colors" :type="types" v-model="submitAlert" transition="slide-y-transition">
       {{answer}}
     </v-alert>
     <div class="post_header">
@@ -31,6 +37,7 @@
 
         
         <v-card>
+          <v-icon @click="deletePost" style="position: absolute; top: 20px; right: 20px;" color="info">mdi-delete</v-icon>
           <v-container fluid>
             <v-row
               align="center"
@@ -79,7 +86,7 @@
       <div class="post_header_left">
         <p color="gray" class="post_header_created_at grey--text"><v-icon class=" mr-1 grey--text" x-small>mdi-autorenew</v-icon>{{post.updated_at}}</p>
         <v-spacer></v-spacer>
-        <p class="post_header_tag_list">プログラミング</p>
+        <p class="post_header_tag_list">{{post.tags}}</p>
       </div>
       <div class="mind_map">
         <Mindmap style="height: 70vh" :zoomable="judge" :draggable="false" :keyboard="false" :nodeClick="false" :showUndo="false" :showNodeAdd="false" :contextMenu="false" :download="false" :strokeWidth="1" :fitView="false"  v-model="contents"></Mindmap>
@@ -239,15 +246,15 @@
 
 
 <script>
+import { VueLoading } from 'vue-loading-template';
 import Mindmap from '@hellowuxin/mindmap'
-import PostsModal from '../../../components/posts/PostsModal.vue'
 import PostsFormTitle from '../../../components/posts/PostsFormTitle.vue'
 
 export default {
   components: {
     Mindmap,
-    PostsModal,
     PostsFormTitle,
+    VueLoading,
   },
   data(){
     return{ 
@@ -271,141 +278,124 @@ export default {
       editForm: false,
       judge: false,
       submitAlert: false,
+      loading: true,
     }
   },
   created(){
-    this.$axios.$get(`api/posts/${this.$route.params.id}`, {
+    if(localStorage.getItem('X-Access-Token')){
+      this.$axios.$get(`api/posts/${this.$route.params.id}`, {
         headers:{
           'X-Access-Token': localStorage.getItem('X-Access-Token')
         }
       }).then(res => {
-      this.contents = res.data.attributes.contents.content
-      this.postContents = res.data.attributes.post_contents
-      var date = new Date(res.data.attributes.updated_at)
-      var year = date.getFullYear();
-      var month = date.getMonth() + 1 ;
-      var day = date.getDate();
-      var updated_at = year + '/' + month + '/' + day
-      this.post = {
-        id: res.data.attributes.id,
-        title: res.data.attributes.title,
-        updated_at: updated_at,
-      }
-      this.num = res.data.attributes.post_contents.length + 1
-    })
+        this.contents = res.data.attributes.contents.content
+        this.postContents = res.data.attributes.post_contents
+        var date = new Date(res.data.attributes.updated_at)
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1 ;
+        var day = date.getDate();
+        var updated_at = year + '/' + month + '/' + day
+        this.post = {
+          id: res.data.attributes.id,
+          title: res.data.attributes.title,
+          updated_at: updated_at,
+          tag_list: res.data.attributes.tag_list,
+        }
+        this.num = res.data.attributes.post_contents.length + 1
+        this.loading = false
+      }).catch(
+        this.loading = false,
+      )
+    }else{
+      this.loading = false,
+      this.submitAlert = true,
+      this.colors = '',
+      this.types = 'error',
+      this.answer = 'ログインしてください。'
+    }
   },
   methods:{
     async create(){
-      if(this.kindSelect){
-        let formData = new FormData
-          formData.append('post_id', this.$route.params.id)
-          formData.append('kind', this.kindSelect)
-          formData.append('order_num', this.num)
-          formData.append('title', this.title)
-          formData.append('sub_title', this.sub_title)
-          formData.append('text', this.text)
-          formData.append('picture', this.picture)
-  
-        await this.$axios.$post('api/post_contents/', formData, {
-          headers:{
-            'X-Access-Token': localStorage.getItem('X-Access-Token')
-          }
-        }).then(
-          this.submitAlert = true,
-          this.colors = 'info',
-          this.types = 'success',
-          this.answer = '作成されました'
-        )
+      if(localStorage.getItem('id')){
+        this.loading = true
+        if(this.kindSelect){
+          let formData = new FormData
+            formData.append('post_id', this.$route.params.id)
+            formData.append('kind', this.kindSelect)
+            formData.append('order_num', this.num)
+            formData.append('title', this.title)
+            formData.append('sub_title', this.sub_title)
+            formData.append('text', this.text)
+            formData.append('picture', this.picture)
+    
+          await this.$axios.$post('api/post_contents/', formData, {
+            headers:{
+              'X-Access-Token': localStorage.getItem('X-Access-Token')
+            }
+          }).then(
+            this.submitAlert = true,
+            this.colors = 'info',
+            this.types = 'success',
+            this.answer = '作成されました'
+          )
 
-        this.$axios.$get(`api/posts/${this.$route.params.id}`, {
-          headers:{
-            'X-Access-Token': localStorage.getItem('X-Access-Token')
-          }
-        }).then(res => {
-          this.postContents = res.data.attributes.post_contents
-          this.num = res.data.attributes.post_contents.length + 1
-        })
-        this.num += 1
-  
-        this.title = ''
-        this.sub_title = ''
-        this.text = ''
-        this.picture = ''
-        this.kindSelect = ''
+          this.$axios.$get(`api/posts/${this.$route.params.id}`, {
+            headers:{
+              'X-Access-Token': localStorage.getItem('X-Access-Token')
+            }
+          }).then(res => {
+            this.postContents = res.data.attributes.post_contents
+            this.num = res.data.attributes.post_contents.length + 1
+            this.loading = false
+          })
+          this.num += 1
+    
+          this.title = ''
+          this.sub_title = ''
+          this.text = ''
+          this.picture = ''
+          this.kindSelect = ''
+        }else{
+          this.loading = false
+          this.submitAlert = true
+          this.colors = 'error',
+          this.types = 'error',
+          this.answer = 'Typeを選択してください'
+        }
       }else{
         this.submitAlert = true
-        this.colors = 'error',
-        this.types = 'error',
-        this.answer = 'Typeを選択してください'
       }
     },
     async update(){
-      const params = {
-        title: this.post.title
-      }
-      await this.$axios.$patch(`api/posts/${this.$route.params.id}`, params, {
-        headers:{
-          'X-Access-Token': localStorage.getItem('X-Access-Token')
+      if(localStorage.getItem('id')){
+        const params = {
+          title: this.post.title
         }
-      }).then(
-        this.editForm = false,
-        this.submitAlert = true,
-        this.colors = '',
-        this.types = 'success',
-        this.answer = '更新されました'
-      )
-    },
-    async postContentsUpdate(post_content){
-      if(post_content.kind == "delete"){
-        await this.$axios.$delete(`api/post_contents/${post_content.id}`, {
-          headers:{
-            'X-Access-Token': localStorage.getItem('X-Access-Token')
-          }
-        })
-        this.$axios.$get(`api/posts/${this.$route.params.id}`, {
-          headers:{
-            'X-Access-Token': localStorage.getItem('X-Access-Token')
-          }
-        }).then(res => {
-          this.contents = res.data.attributes.contents.content
-          this.postContents = res.data.attributes.post_contents
-          var date = new Date(res.data.attributes.updated_at)
-          var year = date.getFullYear();
-          var month = date.getMonth() + 1 ;
-          var day = date.getDate();
-          var updated_at = year + '/' + month + '/' + day
-          this.post = {
-            id: res.data.attributes.id,
-            title: res.data.attributes.title,
-            updated_at: updated_at,
-          }
-          this.num = res.data.attributes.post_contents.length + 1
-        })
-        this.submitAlert = true
-        this.colors = 'info'
-        this.types = 'success',
-        this.answer = '削除されました'
-      }else{
-        let formData = new FormData
-          formData.append('post_id', post_content.post_id)
-          formData.append('kind', post_content.kind)
-          formData.append('order_num',post_content.order_num)
-          formData.append('title', post_content.title)
-          formData.append('sub_title', post_content.sub_title)
-          formData.append('text', post_content.text)
-          formData.append('picture', post_content.picture)
-  
-        await this.$axios.$patch(`api/post_contents/${post_content.id}`, formData, {
+        await this.$axios.$patch(`api/posts/${this.$route.params.id}`, params, {
           headers:{
             'X-Access-Token': localStorage.getItem('X-Access-Token')
           }
         }).then(
+          this.loading = false,
+          this.editForm = false,
           this.submitAlert = true,
           this.colors = '',
           this.types = 'success',
           this.answer = '更新されました'
         )
-        if (post_content.kind == 'picture'){
+      }else{
+        this.submitAlert = true
+      }
+    },
+    async postContentsUpdate(post_content){
+      if(localStorage.getItem('id')){
+        this.loading = true
+        if(post_content.kind == "delete"){
+          await this.$axios.$delete(`api/post_contents/${post_content.id}`, {
+            headers:{
+              'X-Access-Token': localStorage.getItem('X-Access-Token')
+            }
+          })
           this.$axios.$get(`api/posts/${this.$route.params.id}`, {
             headers:{
               'X-Access-Token': localStorage.getItem('X-Access-Token')
@@ -424,10 +414,79 @@ export default {
               updated_at: updated_at,
             }
             this.num = res.data.attributes.post_contents.length + 1
+            this.loading = false
           })
+          this.submitAlert = true
+          this.colors = 'info'
+          this.types = 'success',
+          this.answer = '削除されました'
+        }else{
+          let formData = new FormData
+            formData.append('post_id', post_content.post_id)
+            formData.append('kind', post_content.kind)
+            formData.append('order_num',post_content.order_num)
+            formData.append('title', post_content.title)
+            formData.append('sub_title', post_content.sub_title)
+            formData.append('text', post_content.text)
+            formData.append('picture', post_content.picture)
+    
+          await this.$axios.$patch(`api/post_contents/${post_content.id}`, formData, {
+            headers:{
+              'X-Access-Token': localStorage.getItem('X-Access-Token')
+            }
+          }).then(
+            this.submitAlert = true,
+            this.colors = '',
+            this.answer = '更新されました',
+            this.types = 'success',
+            this.loading = false
+          )
+          if (post_content.kind == 'picture'){
+            this.$axios.$get(`api/posts/${this.$route.params.id}`, {
+              headers:{
+                'X-Access-Token': localStorage.getItem('X-Access-Token')
+              }
+            }).then(res => {
+              this.contents = res.data.attributes.contents.content
+              this.postContents = res.data.attributes.post_contents
+              var date = new Date(res.data.attributes.updated_at)
+              var year = date.getFullYear();
+              var month = date.getMonth() + 1 ;
+              var day = date.getDate();
+              var updated_at = year + '/' + month + '/' + day
+              this.post = {
+                id: res.data.attributes.id,
+                title: res.data.attributes.title,
+                updated_at: updated_at,
+              }
+              this.num = res.data.attributes.post_contents.length + 1
+              this.loading = false
+            })
+          }
         }
+      }else{
+        this.submitAlert = true
       }
     },
+    async deletePost(){
+      if(localStorage.getItem('id')){
+        this.loading = true
+        const confirmation = window.confirm("本当に削除して良いのですか？");
+        if (confirmation){
+          await this.$axios.$delete(`api/posts/${this.$route.params.id}`, {
+            headers:{
+              'X-Access-Token': localStorage.getItem('X-Access-Token')
+            }
+          }).then(
+            window.location.href = `/users/posts/${localStorage.getItem('id')}`,
+            this.$router.push(`/users/posts/${localStorage.getItem('id')}`),
+            this.loading = false
+          )
+        }
+      }else{
+        this.submitAlert = true
+      }
+    }
   },
   watch: {
     submitAlert (val) {
@@ -487,4 +546,33 @@ input {
   right: 5px;
   bottom: 40px;
 }
+
+@keyframes fadeIn {
+  0% {
+      opacity: 0;
+  }
+  100% {
+      opacity: 1;
+  }
+}
+.loading{
+  position: fixed;
+  top: 0;
+  bottom:0;
+  right:0;
+  left:0;
+  background: rgba(255, 255, 255, 0.199);
+  z-index: 100;
+}
+.loading_inner{
+  position: absolute;
+  bottom: 50%;
+  right: 50%;
+  transform: translate(50%,50%);
+}
+.loading_inner_text{
+  margin: 0;
+  animation: fadeIn infinite alternate 2s;
+}
+
 </style>

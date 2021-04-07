@@ -1,7 +1,7 @@
 <template>
-  <div class="mt-12 mb-10 pb-5">
+  <div>
     <v-alert style="position: fixed; top: 70px; z-index: 30; width: 95%;" type="error" v-model="submitAlert" transition="slide-y-transition">
-      画像選択されていません。
+      {{submitContent}}
     </v-alert>
     <v-container fluid>
       <v-row
@@ -139,6 +139,7 @@ export default {
 
       isValid: false,
       submitAlert: false,
+      submitContent: '画像選択されていません。',
     }
   },
   methods:{

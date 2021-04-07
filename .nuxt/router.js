@@ -6,6 +6,7 @@ import scrollBehavior from './router.scrollBehavior.js'
 
 const _0649c83e = () => interopDefault(import('../pages/calendars/index.vue' /* webpackChunkName: "pages/calendars/index" */))
 const _10ba8d22 = () => interopDefault(import('../pages/login.vue' /* webpackChunkName: "pages/login" */))
+const _6d3fc09c = () => interopDefault(import('../pages/posts/index.vue' /* webpackChunkName: "pages/posts/index" */))
 const _310ef581 = () => interopDefault(import('../pages/rooms/index.vue' /* webpackChunkName: "pages/rooms/index" */))
 const _490e6182 = () => interopDefault(import('../pages/signup.vue' /* webpackChunkName: "pages/signup" */))
 const _4b01347c = () => interopDefault(import('../pages/test.vue' /* webpackChunkName: "pages/test" */))
@@ -15,6 +16,7 @@ const _1884055d = () => interopDefault(import('../pages/rooms/create.vue' /* web
 const _2f28c41e = () => interopDefault(import('../pages/posts/edits/_id.vue' /* webpackChunkName: "pages/posts/edits/_id" */))
 const _62958d8a = () => interopDefault(import('../pages/posts/main/_id.vue' /* webpackChunkName: "pages/posts/main/_id" */))
 const _19565593 = () => interopDefault(import('../pages/users/edits/_id.vue' /* webpackChunkName: "pages/users/edits/_id" */))
+const _0927e302 = () => interopDefault(import('../pages/users/followers/_id.vue' /* webpackChunkName: "pages/users/followers/_id" */))
 const _fc1e33e8 = () => interopDefault(import('../pages/users/follows/_id.vue' /* webpackChunkName: "pages/users/follows/_id" */))
 const _c240fab4 = () => interopDefault(import('../pages/users/likes/_id.vue' /* webpackChunkName: "pages/users/likes/_id" */))
 const _7e88b3bd = () => interopDefault(import('../pages/users/posts/_id.vue' /* webpackChunkName: "pages/users/posts/_id" */))
@@ -47,6 +49,10 @@ export const routerOptions = {
     path: "/login",
     component: _10ba8d22,
     name: "login"
+  }, {
+    path: "/posts",
+    component: _6d3fc09c,
+    name: "posts"
   }, {
     path: "/rooms",
     component: _310ef581,
@@ -83,6 +89,10 @@ export const routerOptions = {
     path: "/users/edits/:id?",
     component: _19565593,
     name: "users-edits-id"
+  }, {
+    path: "/users/followers/:id?",
+    component: _0927e302,
+    name: "users-followers-id"
   }, {
     path: "/users/follows/:id?",
     component: _fc1e33e8,

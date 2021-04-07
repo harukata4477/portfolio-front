@@ -17,6 +17,18 @@
   "LazyCalendars": {
     "description": "Auto imported from components/calendars/Calendars.vue"
   },
+  "MessagesForm": {
+    "description": "Auto imported from components/messages/MessagesForm.vue"
+  },
+  "LazyMessagesForm": {
+    "description": "Auto imported from components/messages/MessagesForm.vue"
+  },
+  "Notifications": {
+    "description": "Auto imported from components/notifications/Notifications.vue"
+  },
+  "LazyNotifications": {
+    "description": "Auto imported from components/notifications/Notifications.vue"
+  },
   "ContentsFormNewContent": {
     "description": "Auto imported from components/contents/contentsFormNewContent.vue"
   },
@@ -52,12 +64,6 @@
   },
   "LazyPostsModal": {
     "description": "Auto imported from components/posts/PostsModal.vue"
-  },
-  "MessagesForm": {
-    "description": "Auto imported from components/messages/MessagesForm.vue"
-  },
-  "LazyMessagesForm": {
-    "description": "Auto imported from components/messages/MessagesForm.vue"
   },
   "RoomEditForm": {
     "description": "Auto imported from components/rooms/RoomEditForm.vue"

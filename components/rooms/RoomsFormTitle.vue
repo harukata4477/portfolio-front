@@ -3,6 +3,7 @@
     v-model="setTitle"
     :rules="rules"
     outlined
+    placeholder="目標"
   />
 </template>
 

@@ -1,14 +1,23 @@
 <template>
- <div>
-   <div style="font-size:0.8em; margin: 0 auto 40px auto;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin: 10px 0;">
+ <div class="content">
+    <div v-if="loading" class="loading">
+      <div class="loading_inner">
+        <p class="loading_inner_text">Loading...</p>
+        <vue-loading class="loading_inner_mark" type="beat" color="gold" :size="{ width: '60px', height: '60px'}"></vue-loading>
+      </div>
+    </div>
+    <v-alert style="position: fixed; top: 70px; left:2.5%; z-index: 30; width: 95%;" type="error" v-model="submitAlert" transition="slide-y-transition">
+      ログインが必要になります。
+    </v-alert>
+   <div style="font-size:0.8em; padding-top: 10px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin: 15px 0 10px;">
       <h2 style="display: inline-block; margin: 0; font-weight: bold;">カレンダー{{ displayDate }}</h2>
     </div>
 
       <div class="button-area">
         <div>
-          <button @click="prevMonth" class="button">前の月</button>
-          <button @click="nextMonth" class="button">次の月</button>
+          <button @click="prevMonth(currentMonth)" class="button">前の月</button>
+          <button @click="nextMonth(currentMonth)" class="button">次の月</button>
         </div>
 
         <div style="display: inline-block;">
@@ -231,8 +240,12 @@
 </template>
 
 <script>
+import { VueLoading } from 'vue-loading-template';
 import moment from "moment";
 export default {
+  components:{
+    VueLoading
+  },
   data() {
     return {
       name: '',
@@ -246,6 +259,7 @@ export default {
       day: '',
       start_time: '',
       end_time: '',
+      today:'',
       
       currentDate: moment(),
       events:[],
@@ -254,94 +268,96 @@ export default {
       menu2: false,
       menu3: false,
       submitForm: false,
+      loading: true,
+      load_judge: false,
+      submitAlert: false,
     };
   },
   created() {
-    this.$axios.$get(`api/calendars/`, {
-      headers:{
-        'X-Access-Token': localStorage.getItem('X-Access-Token')
-      }
-    }).then(res => {
-      for (let i = 0; i < res.data.length; i++){
-        if(res.data[i].attributes.done == true){
-          this.events.push({
-            id: res.data[i].attributes.id,
-            name:res.data[i].attributes.name,
-            color: 'black',
-            user_id: res.data[i].attributes.user_id,
-            start: res.data[i].attributes.start,
-            end: res.data[i].attributes.end,
-            start_time: res.data[i].attributes.start_time,
-            end_time: res.data[i].attributes.end_time,
-            done: res.data[i].attributes.done,
-          })
-        }else{
-          this.events.push({
-            id: res.data[i].attributes.id,
-            name:res.data[i].attributes.name,
-            color: res.data[i].attributes.color,
-            user_id: res.data[i].attributes.user_id,
-            start: res.data[i].attributes.start,
-            end: res.data[i].attributes.end,
-            start_time: res.data[i].attributes.start_time,
-            end_time: res.data[i].attributes.end_time,
-            done: res.data[i].attributes.done,
-          })
-        }
-      }
-    })
+    var date = new Date()
+    var year = date.getFullYear();
+    var month = date.getMonth() + 1;
+    var day = 1
+    this.today = year + '-' + month + '-' + day
+    
+    this.index()
   },
   methods: {
+    async index(){
+      this.loading = true
+      this.$axios.$get(`api/calendars/show_month/${this.today}/`, {
+        headers:{
+          'X-Access-Token': localStorage.getItem('X-Access-Token')
+        }
+      }).then(res => {
+        for (let i = 0; i < res.data.length; i++){
+          var start = res.data[i].attributes.start
+          var end = res.data[i].attributes.end
+          var start_time = res.data[i].attributes.start_time
+          var end_time = res.data[i].attributes.end_time
+          start = start.replace( /-/g , "/").replace( /T/g , " ").replace( /.000Z/g , "")
+          end = end.replace( /-/g , "/").replace( /T/g , " ").replace( /.000Z/g , "")
+          if(res.data[i].attributes.done == true){
+            this.events.push({
+              id: res.data[i].attributes.id,
+              name:res.data[i].attributes.name,
+              color: 'black',
+              user_id: res.data[i].attributes.user_id,
+              start: start,
+              end: end,
+              start_time: start_time,
+              end_time: end_time,
+              done: res.data[i].attributes.done,
+            })
+          }else{
+            this.events.push({
+              id: res.data[i].attributes.id,
+              name:res.data[i].attributes.name,
+              color: res.data[i].attributes.color,
+              user_id: res.data[i].attributes.user_id,
+              start: start,
+              end: end,
+              start_time: start_time,
+              end_time: end_time,
+              done: res.data[i].attributes.done,
+            })
+          }
+        }
+        this.name = ''
+        this.day = ''
+        this.start_time = ''
+        this.end_time = ''
+        this.done = ''
+        this.color = ''
+        this.loading = false
+      }).catch(
+        this.submitForm = false,
+        this.load_judge = true
+      )
+    },
     current(day){
       this.$router.push(`/calendars/${day}`)
     },
     async create(){
-      const params = {
-        name: this.name,
-        start: this.day + ' ' + this.start_time,
-        end: this.day + ' ' + this.end_time,
-        done: this.done,
-        color: this.color,
-      }
-      await this.$axios.$post(`api/calendars/`, params, {
-        headers:{
-          'X-Access-Token': localStorage.getItem('X-Access-Token')
+      if(localStorage.getItem('X-Access-Token')){
+        this.loading = true
+        const params = {
+          name: this.name,
+          start: this.day + ' ' + this.start_time,
+          end: this.day + ' ' + this.end_time,
+          done: this.done,
+          color: this.color,
         }
-      }).then(this.events = [])
-        await this.$axios.$get(`api/calendars/`, {
+        await this.$axios.$post(`api/calendars/`, params, {
           headers:{
             'X-Access-Token': localStorage.getItem('X-Access-Token')
           }
-        }).then(res => {
-          for (let i = 0; i < res.data.length; i++){
-            if(res.data[i].attributes.done == true){
-              this.events.push({
-                id:res.data[i].attributes.id,
-                name:res.data[i].attributes.name,
-                color: 'black',
-                user_id: res.data[i].attributes.user_id,
-                start: res.data[i].attributes.start,
-                end: res.data[i].attributes.end,
-                start_time: res.data[i].attributes.start_time,
-                end_time: res.data[i].attributes.end_time,
-                done: res.data[i].attributes.done,
-              })
-            }else{
-              this.events.push({
-                id: res.data[i].attributes.id,
-                name:res.data[i].attributes.name,
-                color: res.data[i].attributes.color,
-                user_id: res.data[i].attributes.user_id,
-                start: res.data[i].attributes.start,
-                end: res.data[i].attributes.end,
-                start_time: res.data[i].attributes.start_time,
-                end_time: res.data[i].attributes.end_time,
-                done: res.data[i].attributes.done,
-              })
-            }
-          }
-        })
+        }).then(this.events = [])
+          this.index()
+      }else{
         this.submitForm = false
+        this.submitAlert = true
+      }
     },
     getStartDate() {
       let date = moment(this.currentDate);
@@ -378,10 +394,26 @@ export default {
       return calendars;
     },
     nextMonth() {
+      this.loading = true
       this.currentDate = moment(this.currentDate).add(1, "month");
+      var date = new Date(this.currentDate)
+      var year = date.getFullYear();
+      var month = date.getMonth() + 1;
+      var day = 1
+      this.today = year + '-' + month + '-' + day
+      this.events = []
+      this.index()
     },
-    prevMonth() {
+    prevMonth(month) {
+      this.loading = true
       this.currentDate = moment(this.currentDate).subtract(1, "month");
+      var date = new Date(this.currentDate)
+      var year = date.getFullYear();
+      var month = date.getMonth() + 1;
+      var day = 1
+      this.today = year + '-' + month + '-' + day
+      this.events = []
+      this.index()
     },
     youbi(dayIndex) {
       const week = ["日", "月", "火", "水", "木", "金", "土"];
@@ -407,16 +439,30 @@ export default {
       return this.currentDate.format('YYYY-MM')
     },
   },
+  watch: {
+    load_judge (val) {
+      val && setTimeout(() => {
+        this.load_judge = false
+        this.loading = false
+      }, 500)
+    },
+    submitAlert (val) {
+      val && setTimeout(() => {
+        this.submitAlert = false
+      }, 2000)
+    },
+  },
 }
 </script>
 
 <style scoped>
 .content{
-  margin:2em auto;
-  width:900px;
+  margin: 0 auto;
+  max-width:850px;
+  padding: 0 1px;
 }
 .button-area{
-  margin:0.5em 0;
+  margin: 5px 0;
   display: flex;
   justify-content: space-between;
 }
@@ -431,7 +477,7 @@ export default {
   box-shadow: unset;
 }
 .calendar{
-  max-width:900px;
+  max-width:850px;
   border-top:1px solid #E0E0E0;
   font-size:0.8em;
 }
@@ -441,8 +487,9 @@ export default {
 }
 .calendar-daily{
   flex:1;
-  height:13vh;
-  overflow: scroll;
+  height: calc((100vh - 240px) / 5);
+  overflow-y: scroll;
+  overflow-x: hidden;
   border-right:1px solid #E0E0E0;
   border-bottom:1px solid #E0E0E0;
   margin-right:-1px;
@@ -465,5 +512,39 @@ export default {
   height:25px;
   line-height:25px;
   border-radius: 5px;
+}
+
+@keyframes fadeIn {
+  0% {
+      opacity: 0;
+  }
+  100% {
+      opacity: 1;
+  }
+}
+.loading{
+  position: fixed;
+  top: 0;
+  bottom:0;
+  right:0;
+  left:0;
+  background: rgba(255, 255, 255, 0.199);
+  z-index: 100;
+}
+.loading_inner{
+  position: absolute;
+  bottom: 50%;
+  right: 50%;
+  transform: translate(50%,50%);
+}
+.loading_inner_text{
+  margin: 0;
+  animation: fadeIn infinite alternate 2s;
+}
+
+@media (min-width: 960px){
+  .calendar-daily{
+    height: calc((100vh - 200px) / 5);
+  }
 }
 </style>

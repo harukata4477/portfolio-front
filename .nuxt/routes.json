@@ -14,6 +14,13 @@
     "_name": "_10ba8d22"
   },
   {
+    "name": "posts",
+    "path": "/posts",
+    "component": "/app/pages/posts/index.vue",
+    "chunkName": "pages/posts/index",
+    "_name": "_6d3fc09c"
+  },
+  {
     "name": "rooms",
     "path": "/rooms",
     "component": "/app/pages/rooms/index.vue",
@@ -75,6 +82,13 @@
     "component": "/app/pages/users/edits/_id.vue",
     "chunkName": "pages/users/edits/_id",
     "_name": "_19565593"
+  },
+  {
+    "name": "users-followers-id",
+    "path": "/users/followers/:id?",
+    "component": "/app/pages/users/followers/_id.vue",
+    "chunkName": "pages/users/followers/_id",
+    "_name": "_0927e302"
   },
   {
     "name": "users-follows-id",
