@@ -31,16 +31,15 @@
           :disabled="!isValid"
           block
           color="info"
-          class="white--text"
+          class="white--text mb-6"
           @click="signup"
         >
           登録する
         </v-btn>
+      <nuxt-link to="/login">ログイン</nuxt-link>
       </v-card>
     </v-row>
   </v-container>
-    <nuxt-link to="/login">ログイン</nuxt-link>
-
   </div>
 </template>
 

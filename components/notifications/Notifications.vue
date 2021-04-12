@@ -1,6 +1,6 @@
 <template>
   <div style="display: inline-block;">
-    <v-alert style="position: fixed; left: 2.5%; top: 70px; z-index: 30; width: 95%;" icon="mdi-bell" type="info" v-model="notificationAlert" transition="slide-y-transition">
+    <v-alert class="alert" icon="mdi-bell" type="info" v-model="notificationAlert" transition="slide-y-transition">
        通知があります。
     </v-alert>
     <v-dialog
@@ -63,7 +63,7 @@
                 <v-icon style="font-size: 20px;">mdi-check</v-icon>
                 <p style="cursor: pointer;" @click="update(notification.core.id)">既読する</p>
               </div>
-              <p><strong class="notification_hover" @click="$router.push(`/posts/main/${notification.message.post_id}`), notificationForm = false">Post{{notification.message.post_id}}</strong>&nbsp;に「メッセージ」が届いております。</p>
+              <p><strong class="notification_hover" @click="$router.push(`/posts/${notification.message.post_id}`), notificationForm = false">Post{{notification.message.post_id}}</strong>&nbsp;に「メッセージ」が届いております。</p>
             </template>
             <template v-else-if="notification.core.action == 'like'">
               <div class="all_check">
@@ -72,7 +72,7 @@
                 <v-icon style="font-size: 20px;">mdi-check</v-icon>
                 <p style="cursor: pointer;" @click="update(notification.core.id)">既読する</p>
               </div>
-              <p><strong class="notification_hover" @click="$router.push(`/posts/main/${notification.like}`), notificationForm = false">Post{{notification.like}}</strong>&nbsp;が「いいね」されました。</p>
+              <p><strong class="notification_hover" @click="$router.push(`/posts/${notification.like}`), notificationForm = false">Post{{notification.like}}</strong>&nbsp;が「いいね」されました。</p>
             </template>
             <v-spacer></v-spacer>
           </v-container>
@@ -295,37 +295,6 @@ export default {
 .notification_hover:hover{
   color: #2196f3;
   text-decoration: underline #2196f3;
-}
-
-@keyframes fadeIn {
-  0% {
-      opacity: 0;
-  }
-  100% {
-      opacity: 1;
-  }
-}
-.loading{
-  position: fixed;
-  top: 0;
-  bottom:0;
-  right:0;
-  left:0;
-  background: rgba(255, 255, 255, 0.199);
-  z-index: 100;
-}
-.loading_inner{
-  position: absolute;
-  bottom: 50%;
-  right: 50%;
-  transform: translate(50%,50%);
-}
-.loading_inner_text{
-  margin: 0;
-  animation: fadeIn infinite alternate 2s;
-}
-.loading_inner_mark{
-  
 }
 .morePage{
   cursor: pointer;

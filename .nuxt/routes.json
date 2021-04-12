@@ -70,13 +70,6 @@
     "_name": "_2f28c41e"
   },
   {
-    "name": "posts-main-id",
-    "path": "/posts/main/:id?",
-    "component": "/app/pages/posts/main/_id.vue",
-    "chunkName": "pages/posts/main/_id",
-    "_name": "_62958d8a"
-  },
-  {
     "name": "users-edits-id",
     "path": "/users/edits/:id?",
     "component": "/app/pages/users/edits/_id.vue",
@@ -117,6 +110,13 @@
     "component": "/app/pages/calendars/_id.vue",
     "chunkName": "pages/calendars/_id",
     "_name": "_1588c226"
+  },
+  {
+    "name": "posts-id",
+    "path": "/posts/:id",
+    "component": "/app/pages/posts/_id.vue",
+    "chunkName": "pages/posts/_id",
+    "_name": "_37bd3a04"
   },
   {
     "name": "rooms-id",

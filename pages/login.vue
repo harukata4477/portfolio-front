@@ -37,15 +37,15 @@
             :disabled="!isValid"
             block
             color="info"
-            class="white--text"
+            class="white--text mb-6"
             @click="login"
           >
             登録する
           </v-btn>
+          <nuxt-link to="/signup">新規登録</nuxt-link>
         </v-card>
       </v-row>
     </v-container>
-    <nuxt-link to="/signup">新規登録</nuxt-link>
   </div>
 </template>
 
@@ -82,34 +82,4 @@ export default {
 </script>
 
 <style scoped>
-@keyframes fadeIn {
-  0% {
-      opacity: 0;
-  }
-  100% {
-      opacity: 1;
-  }
-}
-.loading{
-  position: fixed;
-  top: 0;
-  bottom:0;
-  right:0;
-  left:0;
-  background: rgba(255, 255, 255, 0.199);
-  z-index: 100;
-}
-.loading_inner{
-  position: absolute;
-  bottom: 50%;
-  right: 50%;
-  transform: translate(50%,50%);
-}
-.loading_inner_text{
-  margin: 0;
-  animation: fadeIn infinite alternate 2s;
-}
-.loading_inner_mark{
-  
-}
 </style>

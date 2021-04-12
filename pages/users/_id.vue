@@ -1,41 +1,40 @@
 <template>
   <div>
+
     <div v-if="loading" class="loading">
       <div class="loading_inner">
         <p class="loading_inner_text">Loading...</p>
         <vue-loading class="loading_inner_mark" type="beat" color="gold" :size="{ width: '60px', height: '60px'}"></vue-loading>
       </div>
     </div>
+
     <div class="user_header">
       <div class="user_header_left">
         <p class="user_header_left_title" v-text="title"></p>
         <div class="user_header_left_follow mt-3">
-          <p @click="$router.push(`/users/follows/${$route.params.id}`)" class="mb-0" style="cursor: pointer; font-size: 12px;"><strong style="color: #333;">{{following}}</strong> フォロ中</p>
-          <p @click="$router.push(`/users/followers/${$route.params.id}`)" class="mb-0 ml-2" style="cursor: pointer; font-size: 12px;"><strong style="color: #333;">{{follower}}</strong> フォロワー</p>
+          <p @click="$router.push(`/users/follows/${$route.params.id}`)" class="mb-0"><strong style="color: #333;">{{following}}</strong> フォロ中</p>
+          <p @click="$router.push(`/users/followers/${$route.params.id}`)" class="mb-0 ml-2"><strong style="color: #333;">{{follower}}</strong> フォロワー</p>
         </div>
       </div>
-      <div v-if="loginJudge" class="user_header_right" style="display: flex;">
 
+      <div v-if="loginJudge" class="user_header_right">
         <template v-if="currentUser.id == $route.params.id">
           <v-btn @click="logout" color="error" small>ログアウト</v-btn>
         </template>
-
         <div v-else>
           <v-btn v-if="follow_judge" @click="unfollow" small color="info" class="unfollow">フォロー済み</v-btn>
           <v-btn v-else @click="follow" outlined x-small color="info" class="follow" small>フォロー</v-btn>
         </div>
-
       </div>
     </div>
 
     <p class="menu_notice">←scroll→</p>
     <ul class="menu">
       <li v-for="(item, i) in items" @click="$router.push(item.link)">
-        <p class="menu_link"  v-if="title == items[i].title" style="color: #2196f3; border-bottom: 2px solid #2196f3;">{{item.title}}</p>
+        <p class="menu_link" v-if="title == items[i].title" style="color: #2196f3; border-bottom: 2px solid #2196f3;">{{item.title}}</p>
         <p class="menu_link" v-else>{{item.title}}</p>
       </li>
     </ul>
-
 
     <v-simple-table class="profile">
       <template v-slot:default>
@@ -95,7 +94,6 @@ export default {
 
       follow_judge: '',
 
-      editForm: false,
       loading: true,
       loginJudge: false,
     }
@@ -162,6 +160,7 @@ export default {
         })
       }
     },
+
     async follow(){
       this.loading = true
       const params = {
@@ -174,6 +173,7 @@ export default {
       })
       this.index()
     },
+
     async unfollow(){
       this.loading = true
       await this.$axios.$delete(`api/follows/${this.$route.params.id}`, {
@@ -183,6 +183,7 @@ export default {
       })
       this.index()
     },
+
     logout(){
       this.loading = true
       const confirmation = window.confirm("本当に宜しいですか？");
@@ -204,14 +205,6 @@ export default {
 </script>
 
 <style scoped>
-@keyframes fadeIn {
-  0% {
-      opacity: 0;
-  }
-  100% {
-      opacity: 1;
-  }
-}
 .user_header{
   display: flex; 
   align-items: center; 
@@ -219,6 +212,10 @@ export default {
   height: 60px; 
   padding: 0 10px;
   margin: 10px 0;
+}
+.user_header_left_follow{
+  cursor: pointer; 
+  font-size: 12px;
 }
 .menu{
   display: flex;
@@ -231,7 +228,6 @@ export default {
   overflow-x: scroll;
   border-bottom: 1px solid #eee;
 }
-
 .menu_notice{
   display: block;
   position: absolute;
@@ -278,6 +274,7 @@ export default {
 .user_header_right{
   align-items: center;
   height: 100%;
+  display: flex;
 }
 .user_header_right_btn{
   display: flex;
@@ -298,7 +295,7 @@ export default {
 }
 
 .profile{
-  height: calc(100vh - 275px);
+  height: calc(100vh - 265px);
   overflow-y: scroll;
   overflow-x: hidden;
   border-bottom: 1px solid #eee; 
@@ -334,26 +331,6 @@ export default {
   font-size: 10px;
 }
 
-.loading{
-  position: fixed;
-  top: 0;
-  bottom:0;
-  right:0;
-  left:0;
-  background: rgba(255, 255, 255, 0.199);
-  z-index: 100;
-}
-.loading_inner{
-  position: absolute;
-  bottom: 50%;
-  right: 50%;
-  transform: translate(50%,50%);
-}
-.loading_inner_text{
-  margin: 0;
-  animation: fadeIn infinite alternate 2s;
-}
-
 @media (min-width: 530px){
   .content_img{
     max-width: 350px;
@@ -365,7 +342,7 @@ export default {
 }
 @media (min-width: 960px){
   .profile{
-    height: calc(100vh - 235px);
+    height: calc(100vh - 220px);
   }
 }
 </style>

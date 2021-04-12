@@ -619,36 +619,6 @@ export default {
 .v-calendar .v-event-timed{
   white-space: break-spaces !important;
 }
-@keyframes fadeIn {
-  0% {
-      opacity: 0;
-  }
-  100% {
-      opacity: 1;
-  }
-}
-.loading{
-  position: fixed;
-  top: 0;
-  bottom:0;
-  right:0;
-  left:0;
-  background: rgba(255, 255, 255, 0.199);
-  z-index: 100;
-}
-.loading_inner{
-  position: absolute;
-  bottom: 50%;
-  right: 50%;
-  transform: translate(50%,50%);
-}
-.loading_inner_text{
-  margin: 0;
-  animation: fadeIn infinite alternate 2s;
-}
-.loading_inner_mark{
-  
-}
 .v-calendar{
   border-bottom: solid 1px #e0e0e0; 
   height: calc(100vh - 200px);

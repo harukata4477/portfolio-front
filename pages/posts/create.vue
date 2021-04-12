@@ -1,8 +1,10 @@
 <template>
   <div>
-    <v-alert style="position: fixed; top: 70px; z-index: 30; width: 95%;" type="error" v-model="submitAlert" transition="slide-y-transition">
+
+    <v-alert class="alert" type="error" v-model="submitAlert" transition="slide-y-transition">
       {{submitContent}}
     </v-alert>
+
     <v-container fluid>
       <v-row
         align="center"
@@ -27,12 +29,12 @@
             v-model="isValid"
             ref="form"
           >
-            <div style="display: flex; flex-wrap: wrap;">
+            <div class="post_card_form_content">
               <posts-form-select :room.sync="room" />
               <posts-form-title :title.sync="title" />
               <posts-form-tag-list :tag_list.sync="tag_list" />
               
-              <div class="mb-5" style="display: flex; align-items: center; width: 100%;">
+              <div class="post_card_form_content_menu mb-5">
                 <v-menu offset-y>
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
@@ -46,10 +48,10 @@
                       <v-icon>mdi-image</v-icon>
                     </v-btn>
                   </template>
-                  <v-list height="600">
+                  <v-list background="white" height="600">
                     <v-list-item
                       :rules="kindRules"
-                      style="background: #fff;"
+                      style="background-color: white !important;"
                       v-for="(item, index) in items"
                       :key="index"
                       link
@@ -61,11 +63,11 @@
                         width="100px"
                         class="mr-2"
                       ></v-img>
-                      <v-list-item-title style="text-align: center;">{{ item.title }}</v-list-item-title>
+                      <v-list-item-title class="text-center">{{ item.title }}</v-list-item-title>
                     </v-list-item>
                   </v-list>
                 </v-menu>
-                <p class="mb-0" style="display: flex; align-items: center;"><v-img class="mr-2" style="border: solid 1px #eee; border-radius: 5px;" width="60px" height="60px" :src="`/img/img${kind.id}.svg`"></v-img>{{kind.title}}</p>
+                <p class="post_card_form_content_menu_img mb-0"><v-img class="mr-2" width="60px" height="60px" :src="`/img/img${kind.id}.svg`"></v-img>{{kind.title}}</p>
               </div>
             </div>
           </v-form>
@@ -94,7 +96,7 @@ export default {
     "posts-form-select" :PostsFormSelect,
     "posts-form-title" :PostsFormTitle,
     "posts-form-tag-list" :PostsFormTagList,
-     },
+  },
   data(){
     return{
       room: '',
@@ -179,6 +181,7 @@ export default {
       }
     }
   },
+  
   watch: {
     submitAlert (val) {
       val && setTimeout(() => {
@@ -188,3 +191,25 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.post_card_form_content{
+  display: flex; 
+  flex-wrap: wrap;
+}
+.post_card_form_content_menu{
+  display: flex; 
+  align-items: center; 
+  width: 100%;
+  overflow: scroll;
+}
+.post_card_form_content_menu_img{
+  display: flex; 
+  align-items: center;
+  background: #fff;
+}
+.post_card_form_content_menu_img .v-image{
+  border: solid 1px #eee; 
+  border-radius: 5px;
+}
+</style>

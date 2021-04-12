@@ -2,3 +2,38 @@
 //
 // The variables you want to modify
 // $font-size-root: 20px;
+
+@keyframes fadeIn {
+  0% {
+      opacity: 0;
+  }
+  100% {
+      opacity: 1;
+  }
+}
+.loading{
+  position: absolute;
+  top: 0;
+  bottom:0;
+  right:0;
+  left:0;
+  background: rgba(255, 255, 255, 0.199);
+  z-index: 100;
+}
+.loading_inner{
+  position: absolute;
+  bottom: 50%;
+  right: 50%;
+  transform: translate(50%,50%);
+}
+.loading_inner_text{
+  margin: 0;
+  animation: fadeIn infinite alternate 2s;
+}
+.alert{
+  position: fixed !important; 
+  top: 70px; 
+  left: 2.5%; 
+  z-index: 30; 
+  width: 95%;
+}

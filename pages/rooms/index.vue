@@ -1,33 +1,21 @@
 <template>
-  <div style="margin-bottom: 80px;" class="pb-10"> 
+  <div class="pb-10"> 
     <div v-if="loading" class="loading">
       <div class="loading_inner">
         <p class="loading_inner_text">Loading...</p>
         <vue-loading class="loading_inner_mark" type="beat" color="gold" :size="{ width: '60px', height: '60px'}"></vue-loading>
       </div>
     </div>
-    <div class="user_header">
-      <v-alert style="position: fixed; top: 70px; z-index: 30; width: 95%;" type="success" v-model="updateAlert" transition="slide-y-transition">
-        更新されました。
-      </v-alert>
-      <v-alert style="position: fixed; top: 70px; z-index: 30; width: 95%;" color="error" type="success" v-model="deleteAlert" transition="slide-y-transition">
-        削除されました。
-      </v-alert>
-      <!-- <v-row v-if="loginJudge" class="rooms_top mt-5 mb-5 ml-3">
-        <v-btn
-          text
-          color="info accent-4"
-          style="font-weight: bold; border: solid 1px;"
-          @click="$router.push('/rooms/create')"
-        >
-        <v-icon color="info" style="font-size: 18px; margin-right: 2px;">mdi-application</v-icon>
-          新規作成
-        </v-btn>
-      </v-row> -->
-      <div 
-        class=""
-        style="width: 90%; margin: 25px auto 0 auto"
-      >
+
+    <v-alert class="alert" type="success" v-model="updateAlert" transition="slide-y-transition">
+      更新されました。
+    </v-alert>
+    <v-alert class="alert" color="error" type="success" v-model="deleteAlert" transition="slide-y-transition">
+      削除されました。
+    </v-alert>
+
+    <div class="room_header">
+      <div class="room_header_inner">
         <v-text-field
           v-model="search_title"
           placeholder="Room 検索"
@@ -42,51 +30,49 @@
       </div>
     </div>
 
-  <div style="display: flex; width: 95%; margin: 0 auto;" class="mt-2">
-    <v-col style="width: 120px" class="pb-0 pt-0 pl-0 pr-0">
-      <v-select
-        style="width: 120px"
-        :items="items"
-        v-model="select"
-        @change="selectPage"
-        solo
-        flat
-        single-line
-        return-object
-        hide-details="auto"
-        background-color="transparent"
-      ></v-select>
-    </v-col>
-    <v-spacer></v-spacer>
-    <v-icon large v-if="loginJudge" @click="$router.push('/rooms/create')">mdi-pencil-box-outline</v-icon>
-  </div>
-
+    <div class="room_select mt-2">
+      <v-col class="room_select_col pb-0 pt-0 pl-0 pr-0">
+        <v-select
+          class="room_select_col_select"
+          :items="items"
+          v-model="select"
+          @change="selectPage"
+          solo
+          flat
+          single-line
+          return-object
+          hide-details="auto"
+          background-color="transparent"
+        ></v-select>
+      </v-col>
+      <v-spacer></v-spacer>
+      <v-icon large v-if="loginJudge" @click="$router.push('/rooms/create')">mdi-pencil-box-outline</v-icon>
+    </div>
     
-    <div class="rooms" v-for="(room,i) in rooms" :key="`room-${i}`">
+    <div class="room_content" v-for="(room,i) in rooms" :key="`room-${i}`">
       <v-card
         class="mx-auto mb-3"
         width="95%"
       >
         <v-card-text class="pb-0">
-          <div class="room_header">
+          <div class="room_content_header">
             <v-icon class="mr-2" color="info" v-if="room.done == true">mdi-checkbox-marked-circle</v-icon>
             <v-icon class="mr-2" v-else>mdi-checkbox-marked-circle-outline</v-icon>
             <div class="room_id"><v-icon small class="mr-1">mdi-calendar-clock</v-icon>{{room.deadline}}</div>
           </div>
-
           <input 
             class="subTitleForm ml-1 mt-3" 
             v-model="room.title"
             @keypress.enter="update(room)"
           >
-
         </v-card-text>
+
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
             text
             color="info accent-4"
-            style="font-weight: bold;"
+            class="room_content_btn"
             @click="`${$router.push(`/rooms/${room.id}`)}`"
           >
           <v-icon color="info" style="font-size: 18px; margin-right: 2px;">mdi-application</v-icon>
@@ -96,18 +82,16 @@
           <v-btn
             text
             color="info accent-4"
-            style="font-weight: bold;"
-            class="ml-0"
+            class="room_content_btn ml-0"
             @click="destroy(room.id)"
           >
-            <v-icon color="info" style="font-size: 18px; margin-right: 2px;">mdi-delete-empty</v-icon>
+            <v-icon class="room_content_btn_icon" color="info">mdi-delete-empty</v-icon>
               削除
           </v-btn>
         </v-card-actions>
-
- 
       </v-card>
     </div>
+
     <div class="text-center mt-11">
       <v-pagination
         v-if="judgePage == 'index'"
@@ -136,6 +120,7 @@
 
 <script>
 import { VueLoading } from 'vue-loading-template';
+
 export default {
   components:{
     VueLoading
@@ -145,7 +130,6 @@ export default {
       select: '全て',
       items: ['全て','完了','未完了'], 
       rooms:[],
-      users: [],
       search_title: '',
       currentPage: 1,
       totalPage: 1,
@@ -158,6 +142,7 @@ export default {
       load_judge: false,
     }
   },
+
   created () {
     if(localStorage.getItem('id')){
       this.loginJudge = true
@@ -193,6 +178,7 @@ export default {
       this.load_judge = true
     )
   },
+
   methods:{
     async update(room) {
       this.loading = true
@@ -205,6 +191,7 @@ export default {
           }
         }).then(this.updateAlert = true, this.loading = false)
     },
+    
     async destroy(id){
       this.loading = true
       const confirmation = window.confirm("本当に削除して良いのですか？");
@@ -215,8 +202,11 @@ export default {
           }
         }).then(this.deleteAlert = true)
         this.onSearch(this.page)
+      }else{
+        this.loading = false
       }
     },
+
     async onSearch(page){
       this.loading = true
       if(localStorage.getItem('id')){
@@ -228,7 +218,6 @@ export default {
             }
           }).then(res => {
             this.rooms = []
-
             for (let i = 0; i < res.data.length; i++){
               var deadline = new Date(res.data[i].attributes.deadline)
               var year = deadline.getFullYear();
@@ -281,6 +270,7 @@ export default {
         this.load_judge = true
       }
     },
+
     async roomDone(page){
       this.rooms = []
       this.loading = true
@@ -316,6 +306,7 @@ export default {
         this.load_judge = true
       }
     },
+
     async roomNotYet(page){
       this.rooms = []
       this.loading = true
@@ -351,6 +342,7 @@ export default {
         this.load_judge = true
       }
     },
+
     selectPage(){
       if(this.select == '完了'){
         if(localStorage.getItem('id')){
@@ -367,6 +359,7 @@ export default {
       }
     }
   },
+
   watch: {
       updateAlert (val) {
         val && setTimeout(() => {
@@ -389,16 +382,38 @@ export default {
 </script>
 
 <style scoped>
-.rooms{
+.room_header_inner{
+  width: 90%; 
+  margin: 25px auto 0 auto;
+}
+.room_select{
+  display: flex; 
+  width: 95%; 
+  margin: 0 auto;
+}
+.room_select_col{
+  width: 120px;
+}
+.room_select_col_select{
+  width: 100%;
+}
+.room_content{
   list-style: none;
 }
-.room_id{
+.room_content_btn{
+  font-weight: bold;
+}
+.room_content_btn_icon{
+  font-size: 18px; 
+  margin-right: 2px;
+}
+.room_content_id{
   display: inline-block;
 }
-.room_title{
+.room_content_title{
   display: inline-block;
 }
-.room_header{
+.room_content_header{
   display: flex;
   align-items: center;
 }
@@ -408,35 +423,5 @@ export default {
   font-size: 28px;
   width: 100%;
   font-weight: bold;
-}
-@keyframes fadeIn {
-  0% {
-      opacity: 0;
-  }
-  100% {
-      opacity: 1;
-  }
-}
-.loading{
-  position: fixed;
-  top: 0;
-  bottom:0;
-  right:0;
-  left:0;
-  background: rgba(255, 255, 255, 0.199);
-  z-index: 100;
-}
-.loading_inner{
-  position: absolute;
-  bottom: 50%;
-  right: 50%;
-  transform: translate(50%,50%);
-}
-.loading_inner_text{
-  margin: 0;
-  animation: fadeIn infinite alternate 2s;
-}
-.loading_inner_mark{
-  
 }
 </style>

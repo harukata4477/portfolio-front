@@ -1,17 +1,18 @@
 <template>
   <div class="mb-10">
+
     <div v-if="loading" class="loading">
       <div class="loading_inner">
         <p class="loading_inner_text">Loading...</p>
         <vue-loading class="loading_inner_mark" type="beat" color="gold" :size="{ width: '60px', height: '60px'}"></vue-loading>
       </div>
     </div>
+
     <div class="user_header">
       <div class="user_header_left">
         <p class="user_header_left_title" v-text="title"></p>
       </div>
-      <div class="user_header_right" style="display: flex;">
-
+      <div class="user_header_right">
       </div>
     </div>
       
@@ -26,8 +27,6 @@
     <div class="contents">
       <v-list three-line>
         <template v-for="(following, index) in followings" >
-          
-
           <v-list-item
             class="user_main"
             :key="`following-${index}`"
@@ -48,15 +47,13 @@
               <v-btn @click="unfollow(following.id)" small color="info" class="unfollow">フォロー済み</v-btn>
             </template>
           </v-list-item>
-
         </template>
       </v-list>
       <template v-if="currentPage == totalPage"></template>
-      <p @click="followMore" v-else style="cursor: pointer; text-align: center; margin: 10px 0;">もっとみる</p>
+      <p class="contents_more" @click="followMore" v-else>もっとみる</p>
     </div>
 
     <button class="user_to_index" @click="$router.push('/users/')"><v-icon class="user_to_index_icon">mdi-home</v-icon>&nbsp;User一覧</button>
-
   </div>
 </template>
 
@@ -124,6 +121,7 @@ export default {
         this.loading = false
       )
     },
+    
     async followMore(){
       var next = this.currentPage + 1
       this.$axios.$get(`api/follows/${this.$route.params.id}?page=${next}`, {
@@ -147,14 +145,6 @@ export default {
 </script>
 
 <style scoped>
-@keyframes fadeIn {
-  0% {
-      opacity: 0;
-  }
-  100% {
-      opacity: 1;
-  }
-}
 .user_header{
   display: flex; 
   align-items: center; 
@@ -225,6 +215,7 @@ export default {
 .user_header_right{
   align-items: center;
   height: 100%;
+  display: flex;
 }
 .user_header_right_btn{
   display: flex;
@@ -258,36 +249,13 @@ export default {
   border-bottom: solid 1px #eee;
 }
 
-.loading{
-  position: fixed;
-  top: 0;
-  bottom:0;
-  right:0;
-  left:0;
-  background: rgba(255, 255, 255, 0.199);
-  z-index: 100;
-}
-.loading_inner{
-  position: absolute;
-  bottom: 50%;
-  right: 50%;
-  transform: translate(50%,50%);
-}
-.loading_inner_text{
-  margin: 0;
-  animation: fadeIn infinite alternate 2s;
-}
-.loading_inner_mark{
-  
-}
-
 @media (min-width: 530px){
   .menu_notice{
     display: none;
   }
 }
 .contents{
-  height: calc(100vh - 254px);
+  height: calc(100vh - 244px);
   overflow-y: scroll;
   overflow-x: hidden;
   border-bottom: 1px solid #eee; 
@@ -298,9 +266,14 @@ export default {
   display:none;
   -ms-overflow-style: none;
 }
+.contents_more{
+  cursor: pointer; 
+  text-align: center; 
+  margin: 10px 0;
+}
 @media (min-width: 960px){
   .contents{
-    height: calc(100vh - 215px);
+    height: calc(100vh - 200px);
   }
 }
 </style>

@@ -1,11 +1,13 @@
 <template>
   <div class="mt-12">
+
     <div v-if="loading" class="loading">
       <div class="loading_inner">
         <p class="loading_inner_text">Loading...</p>
         <vue-loading class="loading_inner_mark" type="beat" color="gold" :size="{ width: '60px', height: '60px'}"></vue-loading>
       </div>
     </div>
+
     <v-container fluid>
       <v-row
         align="center"
@@ -30,7 +32,7 @@
             v-model="isValid"
             ref="form"
           >
-            <div style="display: flex; flex-wrap: wrap;">
+            <div class="room_card_form">
                <v-card-text class="pb-1 pt-0 pl-0 pr-0">
                 <p class="grey--text mb-0">目標</p>
               </v-card-text>
@@ -68,7 +70,6 @@ export default {
     return{
       title: '',
       deadline: '',
-
       date: '',
       time: '',
 
@@ -105,40 +106,14 @@ export default {
           this.loading = false
         })
       }
-      }
+    }
   }
 }
 </script>
 
 <style scoped>
-@keyframes fadeIn {
-  0% {
-      opacity: 0;
-  }
-  100% {
-      opacity: 1;
-  }
-}
-.loading{
-  position: fixed;
-  top: 0;
-  bottom:0;
-  right:0;
-  left:0;
-  background: rgba(255, 255, 255, 0.199);
-  z-index: 100;
-}
-.loading_inner{
-  position: absolute;
-  bottom: 50%;
-  right: 50%;
-  transform: translate(50%,50%);
-}
-.loading_inner_text{
-  margin: 0;
-  animation: fadeIn infinite alternate 2s;
-}
-.loading_inner_mark{
-  
+.room_card_form{
+  display: flex; 
+  flex-wrap: wrap;
 }
 </style>

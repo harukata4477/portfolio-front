@@ -1,18 +1,18 @@
 <template>
   <div>
+
     <div v-if="loading" class="loading">
       <div class="loading_inner">
         <p class="loading_inner_text">Loading...</p>
         <vue-loading class="loading_inner_mark" type="beat" color="gold" :size="{ width: '60px', height: '60px'}"></vue-loading>
       </div>
     </div>
+
     <div class="user_header">
       <div class="user_header_left">
         <p class="user_header_left_title">投稿一覧</p>
       </div>
-      <div class="user_header_right" style="display: flex;">
-
-      </div>
+      <div class="user_header_right"></div>
     </div>
 
     <p class="menu_notice">←scroll→</p>
@@ -30,10 +30,9 @@
           :cols="6"
           class="post_content mb-4"
         >
-          <v-card
-          >
+          <v-card>
             <v-img
-              @click="$router.push(`/posts/main/${post.id}`)"
+              @click="$router.push(`/posts/${post.id}`)"
               class="white--text align-end"
               background-color="gray"
               min-height="155px"
@@ -43,22 +42,20 @@
               <div class="tag_list">
                 <p v-for="(tag, b) in post.tag_list" :key="`tag-${b}`" class="tag pl-1 pr-1 mb-0 mr-1" v-text="tag"></p>
               </div>
-              <v-card-title class="pt-0 pb-2" style="font-size: 15px; font-weight: bold; line-height: 1.5; overflow: scroll; height: 50px;" v-text="post.title"></v-card-title>
+              <v-card-title class="contents_card_title pt-0 pb-2" v-text="post.title"></v-card-title>
             </v-img>
 
             <v-card-actions>
-              <div @click="$router.push(`/users/${users[a].id}`)" class="user" style="display: flex;">
+              <div @click="$router.push(`/users/${users[a].id}`)" class="contents_card_user">
                 <v-img :src="`http://localhost:3000${users[a].image.url}`" class="user_img"></v-img>
                 <p class="user_name">{{users[a].name}}</p>
               </div>
-
               <v-spacer></v-spacer>
               {{like_counts[a]}}
               <v-btn icon>
-                <v-icon v-if="like_judges[a]" @click="unlike(posts[a])" style="color: red;">mdi-heart</v-icon>
-                <v-icon v-else @click="like(posts[a])" @>mdi-heart</v-icon>
+                <v-icon v-if="like_judges[a]" @click="unlike(posts[a])" color="orange">mdi-thumb-up</v-icon>
+                <v-icon v-else @click="like(posts[a])">mdi-thumb-up-outline</v-icon>
               </v-btn>
-
             </v-card-actions>
           </v-card>
         </v-col>
@@ -73,7 +70,6 @@
         ></v-pagination>
       </div>
     </div>
-
 
     <button class="user_to_index" @click="$router.push('/users/')"><v-icon class="user_to_index_icon">mdi-home</v-icon>&nbsp;User一覧</button>
 
@@ -94,8 +90,7 @@ export default {
       like_counts: [],
       like_judges: [],
 
-      total_count:1,
-      current_page:1,
+      currentPage:1,
       totalPage:1,
       page: 1,
       loading: true,
@@ -180,6 +175,7 @@ export default {
         })
       }
     },
+
     async unlike(post){
       if(localStorage.getItem('id')){
         this.loading = true
@@ -203,10 +199,10 @@ export default {
         })
       }
     },
+
     async onSearch(page){
       this.loading = true
       this.page = page
-
       this.posts = []
       this.users = []
       this.like_counts = []
@@ -230,7 +226,6 @@ export default {
       })
     },
   },
-
 }
 </script>
 
@@ -353,10 +348,10 @@ export default {
   font-size: 20px;
   cursor: pointer;
 }
-
 .user_header_right{
   align-items: center;
   height: 100%;
+  display: flex;
 }
 .user_header_right_btn{
   display: flex;
@@ -403,7 +398,7 @@ export default {
 }
 
 .contents{
-  height: calc(100vh - 254px);
+  height: calc(100vh - 244px);
   overflow-y: scroll;
   overflow-x: hidden;
   border-bottom: 1px solid #eee; 
@@ -414,35 +409,16 @@ export default {
   display:none;
   -ms-overflow-style: none;
 }
-
-@keyframes fadeIn {
-  0% {
-      opacity: 0;
-  }
-  100% {
-      opacity: 1;
-  }
+.contents_card_title{
+  font-size: 15px; 
+  font-weight: bold; 
+  line-height: 1.5; 
+  overflow: scroll; 
+  height: 50px;
 }
-.loading{
-  position: fixed;
-  top: 0;
-  bottom:0;
-  right:0;
-  left:0;
-  background: rgba(255, 255, 255, 0.199);
-  z-index: 100;
+.contents_card_user{
+  display: flex;
 }
-.loading_inner{
-  position: absolute;
-  bottom: 50%;
-  right: 50%;
-  transform: translate(50%,50%);
-}
-.loading_inner_text{
-  margin: 0;
-  animation: fadeIn infinite alternate 2s;
-}
-
 @media (min-width: 530px){
   .content_img{
     max-width: 350px;
@@ -460,7 +436,7 @@ export default {
 }
 @media (min-width: 960px){
   .contents{
-    height: calc(100vh - 215px);
+    height: calc(100vh - 200px);
   }
 }
 </style>

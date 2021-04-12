@@ -1,14 +1,17 @@
 <template>
-  <div style="">
+  <div>
+
     <div v-if="loading" class="loading">
       <div class="loading_inner">
         <p class="loading_inner_text">Loading...</p>
         <vue-loading class="loading_inner_mark" type="beat" color="gold" :size="{ width: '60px', height: '60px'}"></vue-loading>
       </div>
     </div>
-    <v-alert style="position: fixed; top: 10px; left: 2.5%; width: 95%; z-index: 30;" type="error" v-model="submitAlert" transition="slide-y-transition">
+
+    <v-alert class="alert" type="error" v-model="submitAlert" transition="slide-y-transition">
       ログインしてください。
     </v-alert>
+
     <v-row style="align-items:center; padding: 20px;">
       <v-icon>mdi-comment-text</v-icon>
       <p style="margin: 0; padding-left: 5px; font-weight: bold; font-size: 20px; color: #565656;">Comments</p>
@@ -16,6 +19,7 @@
       <p class="mb-0" color="dimgray">Live</p>
       <vue-loading type="bubbles" color="gold" :size="{ width: '50px', height: '50px'}"></vue-loading>
     </v-row>
+    
     <v-list id='messages' three-line>
       <template v-for="(message, i) in messages">
         <v-divider
@@ -29,8 +33,8 @@
           </v-list-item-avatar>
 
           <v-list-item-content class="mt-4" style="padding: 0;">
-            <div style="display: flex;">
-              <v-list-item-action-text class="mr-2" style="font-size:13px;">{{message.user_name}} • {{message.created_at}}</v-list-item-action-text>
+            <div style="display: flex; overflow-x: scroll">
+              <v-list-item-action-text class="profile mr-2">{{message.user_name}} • {{message.created_at}}</v-list-item-action-text>
             </div>
             <p style="color: rgba(0, 0, 0, 0.9); margin-top: 5px; line-height: 1.4;">{{message.message}}</p>
           </v-list-item-content>
@@ -170,36 +174,6 @@ export default {
 </script>
 
 <style scoped>
-@keyframes fadeIn {
-  0% {
-      opacity: 0;
-  }
-  100% {
-      opacity: 1;
-  }
-}
-.loading{
-  position: fixed;
-  top: 0;
-  bottom:0;
-  right:0;
-  left:0;
-  background: rgba(255, 255, 255, 0.199);
-  z-index: 100;
-}
-.loading_inner{
-  position: absolute;
-  bottom: 50%;
-  right: 50%;
-  transform: translate(50%,50%);
-}
-.loading_inner_text{
-  margin: 0;
-  animation: fadeIn infinite alternate 2s;
-}
-.loading_inner_mark{
-  
-}
 .morePage{
   padding: 20px 0 0;
   cursor: pointer;
@@ -210,6 +184,16 @@ export default {
   overflow-y: scroll;
   overflow-x: hidden;
   height: calc(100vh - 130px);
+}
+.profile{
+  font-size:11px; 
+  white-space: nowrap;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.profile::-webkit-scrollbar {
+  display:none;
+  -ms-overflow-style: none;
 }
 @media (min-width: 960px){
   #messages{

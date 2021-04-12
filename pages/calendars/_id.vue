@@ -1,20 +1,23 @@
 <template>
-  <v-row style="margin: 0; height: 84vh;">
+  <v-row class="map_calendar">
+
     <div v-if="loading" class="loading">
       <div class="loading_inner">
         <p class="loading_inner_text">Loading...</p>
         <vue-loading class="loading_inner_mark" type="beat" color="gold" :size="{ width: '60px', height: '60px'}"></vue-loading>
       </div>
     </div>
-    <v-alert style="position: fixed; top: 70px; left:2.5%; z-index: 30; width: 95%;" type="error" v-model="submitAlert" transition="slide-y-transition">
+
+    <v-alert class="alert" type="error" v-model="submitAlert" transition="slide-y-transition">
       ログインが必要になります。
     </v-alert>
-    <v-col class="pt-0 pb-0 pl-0 pr-0">
-      <v-sheet >
-        <div class="plan_header" style="display: flex; justify-content: space-between; align-items: center; margin: 10px 0;">
-          <p class="pie-graph_title" style="display: inline-block; font-weight: bold; border-bottom: solid 1px #333; margin: 10px">1日の予定</p>
 
-          <div style="display: inline-block; margin: 10px 0 10px auto;">
+    <v-col class="pt-0 pb-0 pl-0 pr-0">
+      <v-sheet>
+        <div class="map_calendar_header">
+          <p class="map_calendar_header_title">1日の予定</p>
+
+          <div class="map_calendar_create">
             <v-dialog
               v-model="submitForm"
               persistent
@@ -26,9 +29,8 @@
                   v-bind="attrs"
                   v-on="on"
                   class="button"
-                  style="font-size: 12px;"
                 >
-                  <v-icon style="font-size: 15px;">mdi-calendar-plus</v-icon>
+                  <v-icon class="map_calendar_create_btn_icon">mdi-calendar-plus</v-icon>
                   新規登録
                 </button>
               </template>
@@ -51,7 +53,7 @@
                         ></v-text-field>
                       </v-col>
 
-                      <p style="width: 100%; margin-bottom: -20px;">日付</p>
+                      <p class="map_calendar_create_title">日付</p>
                       <v-col cols="12">
                         <v-menu
                           v-model="new_menu"
@@ -79,7 +81,7 @@
                       </v-col>
 
 
-                      <p style="width: 100%; margin-bottom: -20px;">時間</p>          
+                      <p class="map_calendar_create_title">時間</p>          
                       <v-col
                         cols="6"
                         sm="5"
@@ -148,12 +150,11 @@
                         </v-menu>
                       </v-col>
 
-                      <v-row class="mb-5" style="align-items: center; width: 100%; color: rgba(0, 0, 0, 0.6);">
+                      <v-row class="map_calendar_create_checkbox mb-5">
                         <v-checkbox
                           v-model="new_done"
-                          style="display: flex; align-items: center; margin-left: 20px;"
                         ></v-checkbox>
-                        <p style="margin-bottom: 0; display: flex; align-items: center;">完了</p>
+                        <p>完了</p>
                       </v-row>
 
                       <v-select
@@ -165,7 +166,6 @@
                       />
 
                       <span :style="`background-color: ${new_color}; width: 10px; height: 10px; border-radius: 100%;`"></span>
-
 
                     </v-row>
                   </v-container>
@@ -248,7 +248,7 @@
                         ></v-text-field>
                       </v-col>
 
-                      <p style="width: 100%; margin-bottom: -20px;">日付</p>
+                      <p class="map_calendar_edit_title">日付</p>
                       <v-col cols="12">
                         <v-menu
                           v-model="menu"
@@ -276,7 +276,7 @@
                       </v-col>
 
 
-                      <p style="width: 100%; margin-bottom: -20px;">時間</p>          
+                      <p class="map_calendar_edit_title">時間</p>          
                       <v-col
                         cols="6"
                         sm="5"
@@ -345,12 +345,9 @@
                         </v-menu>
                       </v-col>
 
-                      <v-row class="mb-5" style="align-items: center; width: 100%; color: rgba(0, 0, 0, 0.6);">
-                        <v-checkbox
-                          v-model="done"
-                          style="display: flex; align-items: center; margin-left: 20px;"
-                        ></v-checkbox>
-                        <p style="margin-bottom: 0; display: flex; align-items: center;">完了</p>
+                      <v-row class="map_calendar_edit_checkbox mb-5">
+                        <v-checkbox v-model="done"></v-checkbox>
+                        <p>完了</p>
                       </v-row>
 
                       <v-select
@@ -362,8 +359,6 @@
                       />
 
                       <span :style="`background-color: ${color}; width: 10px; height: 10px; border-radius: 100%;`"></span>
-
-
                     </v-row>
                   </v-container>
                 </v-card-text>
@@ -432,7 +427,6 @@ export default {
       new_menu: false,
       new_menu2: false,
       new_menu3: false,
-      onComplete: '',
       submitForm: false,
       loading: true,
       load_judge: false,
@@ -443,9 +437,7 @@ export default {
     this.new_day = this.$route.params.id
     this.index()
   },
-  // mounted () {
-  //   this.$refs.calendar.scrollToTime('08:00')
-  // },
+
   methods: {
     async index(){
       await this.$axios.$get(`api/calendars/${this.$route.params.id}`, {
@@ -517,6 +509,7 @@ export default {
         this.submitAlert = true
       }
     },
+
     showEvent ({ nativeEvent, event }) {
       const open = () => {
         var start_day = new Date(event.start)
@@ -552,6 +545,7 @@ export default {
 
       nativeEvent.stopPropagation()
     },
+
     async edit(){
       this.loading = false
       const params = {
@@ -570,6 +564,7 @@ export default {
       this.index()
       this.selectedOpen = false
     },
+
     async deleteCalendar(){
       this.loading = true
       const confirmation = window.confirm("本当に削除して良いのですか？");
@@ -584,6 +579,7 @@ export default {
       }
     }
   },
+
   watch: {
     load_judge (val) {
       val && setTimeout(() => {
@@ -601,8 +597,72 @@ export default {
 </script>
 
 <style>
+.map_calendar{
+  margin: 0 auto;
+  height: 84vh;
+  max-width: 850px;
+}
+.map_calendar_header{
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  margin: 10px 0 0 0;
+}
+.map_calendar_header_title{
+  display: inline-block; 
+  font-weight: bold; 
+  border-bottom: solid 1px #333; 
+  margin: 10px
+}
+.map_calendar_create{
+  display: inline-block; 
+  margin: 10px 0 10px auto;
+}
+.map_calendar_create_btn_icon{
+  font-size: 15px !important;
+}
+.map_calendar_create_title{
+  width: 100%; 
+  margin-bottom: -20px;
+}
+.map_calendar_create_checkbox{
+  align-items: center; 
+  width: 100%; 
+  color: rgba(0, 0, 0, 0.6);
+}
+.map_calendar_create_checkbox input{
+  display: flex; 
+  align-items: center; 
+  margin-left: 20px;
+}
+.map_calendar_create_checkbox p{
+  margin-bottom: 0; 
+  display: flex;
+  align-items: center;
+}
+.map_calendar_edit_title{
+  width: 100%; 
+  margin-bottom: -20px;
+}
+.map_calendar_edit_checkbox{
+  align-items: center; 
+  width: 100%; 
+  color: rgba(0, 0, 0, 0.6);
+}
+.map_calendar_edit_checkbox input{
+  display: flex; 
+  align-items: center; 
+  margin-left: 20px;
+}
+.map_calendar_edit_checkbox p{
+  margin-bottom: 0; 
+  display: flex; 
+  align-items: center;
+}
+
 .button{
   padding:4px 8px;
+  font-size: 12px;
   margin-right:8px;
   border: solid 1px #eee;
   border-radius: 10px; 
@@ -614,43 +674,13 @@ export default {
 .v-calendar .v-event-timed{
   white-space: break-spaces !important;
 }
-@keyframes fadeIn {
-  0% {
-      opacity: 0;
-  }
-  100% {
-      opacity: 1;
-  }
-}
-.loading{
-  position: fixed;
-  top: 0;
-  bottom:0;
-  right:0;
-  left:0;
-  background: rgba(255, 255, 255, 0.199);
-  z-index: 100;
-}
-.loading_inner{
-  position: absolute;
-  bottom: 50%;
-  right: 50%;
-  transform: translate(50%,50%);
-}
-.loading_inner_text{
-  margin: 0;
-  animation: fadeIn infinite alternate 2s;
-}
-.loading_inner_mark{
-  
-}
 .v-calendar{
   border-bottom: solid 1px #e0e0e0; 
-  height: calc(100vh - 200px);
+  height: calc(100vh - 180px);
 }
 @media (min-width: 960px){
   .v-calendar{
-    height: calc(100vh - 150px);
+    height: calc(100vh - 140px);
   }
 }
 </style>

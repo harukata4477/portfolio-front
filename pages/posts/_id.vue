@@ -1,47 +1,47 @@
 <template>
   <div class="post pb-16">
+
     <div v-if="loading" class="loading">
       <div class="loading_inner">
         <p class="loading_inner_text">Loading...</p>
         <vue-loading class="loading_inner_mark" type="beat" color="gold" :size="{ width: '60px', height: '60px'}"></vue-loading>
       </div>
     </div>
-    <v-alert style="position: fixed; top: 70px; left:2.5%; z-index: 30; width: 95%;" type="error" v-model="submitAlert" transition="slide-y-transition">
+
+    <v-alert class="alert" type="error" v-model="submitAlert" transition="slide-y-transition">
       ログインが必要になります。
     </v-alert>
-    <v-icon style="position: absolute; top: 10px; left: 0;" v-if="currentUser_id == post.user_id" @click="$router.push(`/posts/edits/${$route.params.id}`)" color="info">mdi-wrench</v-icon>
-    <div class="like">
-      <p v-if="like_judge" @click="unlike" class="mb-0 ml-2" style="display: flex; align-items: center; cursor:pointer;">{{likes}}<v-icon class="pb-1 pl-1" style="margin-left: auto; display: flex;" color="orange">mdi-thumb-up</v-icon></p>
-      <p v-else class="mb-0 ml-2" @click="like" style="display: flex; align-items: center; center; cursor:pointer;">{{likes}}<v-icon class="pb-1 pl-1" style="margin-left: auto; display: flex;" color="gray">mdi-thumb-up-outline</v-icon></p>
-    </div>
-    <div class="post_header">
-      <h1 class="post_header_title display-1 mt-8 mb-2">{{post.title}}</h1>
 
+    <v-icon class="post_icon" v-if="currentUser_id == post.user_id" @click="$router.push(`/posts/edits/${$route.params.id}`)" color="info">mdi-wrench</v-icon>
+    <v-row class="post_like mt-2 mr-2">
+      <v-spacer></v-spacer>
+      <p v-if="like_judge" @click="unlike" class="mb-0 ml-2">{{likes}}<v-icon class="pb-1 pl-1" color="orange">mdi-thumb-up</v-icon></p>
+      <p v-else class="mb-0 ml-2" @click="like">{{likes}}<v-icon class="pb-1 pl-1" color="gray">mdi-thumb-up-outline</v-icon></p>
+    </v-row>
+
+    <div class="post_header">
+      <h1 class="post_header_title display-1 mt-5 mb-2">{{post.title}}</h1>
       <div class="post_header_left">
         <p color="gray" class="post_header_created_at grey--text"><v-icon class=" mr-1 grey--text" x-small>mdi-autorenew</v-icon>{{post.updated_at}}</p>
         <v-spacer></v-spacer>
-          
         <div class="post_header_tag">
-          <p class="post_header_tag_list" v-for="tag in post.tag_list">{{tag}}</p>
+          <p class="post_header_tag_list" v-for="(tag, i) in post.tag_list" :key="`tag-${i}`">{{tag}}</p>
         </div>
       </div>
-      
     </div>
+
     <div class="mind_map">
-      <Mindmap style="height: 70vh" :zoomable="judge" :draggable="false" :keyboard="false" :nodeClick="false" :showUndo="false" :showNodeAdd="false" :contextMenu="false" :download="false" :strokeWidth="1" :fitView="false"  v-model="contents"></Mindmap>
+      <Mindmap class="mindmap" style="height: 70vh" :zoomable="judge" :draggable="false" :keyboard="false" :nodeClick="false" :showUndo="false" :showNodeAdd="false" :contextMenu="false" :download="false" :strokeWidth="3" :ySpacing='40' :fitView="false"  v-model="contents"></Mindmap>
       <div class="mind_map_move">
         <v-icon @click="judge = !judge" v-if="judge" color="info">mdi-cursor-default</v-icon>
         <v-icon @click="judge = !judge" v-else color="info">mdi-cursor-default-outline</v-icon>
       </div>
     </div>
 
-    <div v-for="(content, index) in postContents" :key="`content-${index}`">
-      <h2 v-if="content.kind == 'title'" style="font-weight: bold; font-size: 30px; border-bottom: solid 1px rgb(220 218 218);" class="mt-12 mb-10">{{content.title}}</h2>
-
-      <h3 v-text="content.sub_title" class="ml-1 mt-6 mb-5" style="font-size: 23px;" v-else-if="content.kind == 'sub_title'"></h3>
-
-      <p v-text="content.text" class="ml-1 mt-5 mb-5" style="line-height: 1.6;" v-else-if="content.kind == 'text'"></p>
-
+    <div class="post_content" v-for="(content, index) in postContents" :key="`content-${index}`">
+      <h2 class="post_content_ttl mt-12 mb-10" v-if="content.kind == 'title'">{{content.title}}</h2>
+      <h3 class="post_content_sub-ttl ml-1 mt-6 mb-5" v-text="content.sub_title" v-else-if="content.kind == 'sub_title'"></h3>
+      <p class="post_content_txt ml-1 mt-5 mb-5" v-text="content.text" v-else-if="content.kind == 'text'"></p>
       <v-card class="mt-12 mb-12" flat v-else-if="content.kind == 'picture'">
         <v-img contain max-height="320" :src="`http://localhost:3000${content.picture.url}`"></v-img>
       </v-card>
@@ -63,20 +63,16 @@ export default {
     return{ 
       contents: [{}],
       post: {},
-      kinds:["title", "sub_title", "picture", "text"],
       title: '',
       sub_title: '',
       text: '',
       picture: '',
-      kindSelect: '',
       postContents: [],
-      judge: false,
       likes:0,
-      like_judge:false,
       currentUser_id: localStorage.getItem('id'),
 
-      isValid: false,
-      editForm: false,
+      judge: false,
+      like_judge:false,
       submitAlert: false,
       loading: true,
     }
@@ -133,6 +129,7 @@ export default {
         })
       }
     },
+
     async likeIndex(){
       if(localStorage.getItem('id')){
         this.loading = true
@@ -153,6 +150,7 @@ export default {
         })
       }
     },
+
     async like(){
       if(localStorage.getItem('X-Access-Token')){
         this.loading = true
@@ -170,6 +168,7 @@ export default {
         this.submitAlert = true
       }
     },
+
     async unlike(){
       if(localStorage.getItem('X-Access-Token')){
         this.loading = true
@@ -184,6 +183,7 @@ export default {
       }
     },
   },
+
   watch: {
     submitAlert (val) {
       val && setTimeout(() => {
@@ -191,13 +191,25 @@ export default {
       }, 2000)
     },
   },
+
   errorCaptured(){
-    window.location.href = `/posts/main/${this.$route.params.id}`
+    window.location.href = `/posts/${this.$route.params.id}`
   }
 }
 </script>
 
 <style scoped>
+.mindmap{
+  font-weight: bold !important;
+}
+.post_icon{
+  position: absolute; 
+  top: 10px; 
+  left: 0;
+}
+.post_like p{
+  cursor:pointer;
+}
 .post_header_title{
   text-align: center;
   font-weight: bold;
@@ -219,7 +231,6 @@ export default {
   display: flex;
   overflow: scroll; 
 }
-
 .post_header_tag_list{
   white-space: pre;
   font-size: 10px;
@@ -241,11 +252,15 @@ export default {
   right: 5px;
   bottom: 40px;
 }
-
-.like{
-  position: absolute;
-  top: 8px;
-  right: 0;
-  display: flex;
+.post_content_ttl{
+  font-weight: bold; 
+  font-size: 30px; 
+  border-bottom: solid 1px rgb(220 218 218);
+}
+.post_content_sub-ttl{
+  font-size: 23px;
+}
+.post_content_txt{
+  line-height: 1.6;
 }
 </style>
