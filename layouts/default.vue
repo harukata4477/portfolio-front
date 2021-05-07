@@ -1,7 +1,9 @@
 <template>
   <v-app dark>
 
+    <template v-if="~$route.path.indexOf(`/rooms/${$route.params.id}`)"></template>
     <v-app-bar
+      v-else
       height="50px"
       :clipped-left="clipped"
       fixed
@@ -9,20 +11,20 @@
       color="info"
       style="right: 0; left: 0; height: 50px !important;"
     >
-      <v-toolbar-title class="toolbar_title pl-0 display-1 white--text" align="center" @click="$router.push('/rooms/')" > 
+      <v-toolbar-title class="toolbar_title pl-0 display-1 white--text" align="center" @click="$router.push('/posts/')"> 
         <p style="margin: 0; font-weight: bold; font-family: 'Roboto'; display: flex; align-items: center;"><v-icon large color="white" class="mr-1">mdi-sitemap</v-icon>Post&nbsp;Map</p>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-     
+
       <notifications v-if="loginJudge" />
-      <v-btn v-else color="white" style="font-weight: bold;" outlined @click="$router.push('/login/')">ログイン</v-btn>
+      <v-btn v-else color="white" style="font-weight: bold;" outlined @click="$router.push('/')">始めよう！</v-btn>
     </v-app-bar>
 
     <v-main class="index_main" v-if="$route.path == '/'">
       <nuxt />
     </v-main>
-
     <v-card v-else class="overflow-hidden" min-height="100vh">
+
       <template v-if="~$route.path.indexOf(`/rooms/${$route.params.id}`)"></template>
       <v-navigation-drawer
         v-else
@@ -33,22 +35,7 @@
         app
         class="nav"
       >
-        <!-- <v-list-item class="px-2">
-          <v-list-item-avatar>
-            <v-img src="https://randomuser.me/api/portraits/men/85.jpg"></v-img>
-          </v-list-item-avatar>
-
-          <v-list-item-title>John Leider</v-list-item-title>
-
-          <v-btn
-            icon
-            @click.stop="mini = !mini"
-          >
-            <v-icon>mdi-chevron-left</v-icon>
-          </v-btn>
-        </v-list-item> -->
         <v-app-bar-nav-icon class="left_drawer white--text" />
-
         <v-list dense>
           <v-list-item
             v-for="item in items"
@@ -59,13 +46,13 @@
             <v-list-item-icon>
               <v-icon color="white">{{ item.icon }}</v-icon>
             </v-list-item-icon>
-
             <v-list-item-content>
               <v-list-item-title style="color: #fff; font-weight: bold;">{{ item.title }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list>
       </v-navigation-drawer>
+
       <v-sheet
         class="sheet"
       >
@@ -75,6 +62,7 @@
           style="width: 100%;"
           min-height="100vh"
         >
+
           <v-main v-if="~$route.path.indexOf(`/rooms/${$route.params.id}`)">
             <div style="display: flex; align-items: center;" v-if="$route.path === `/posts/${$route.params.id}`">
             <v-spacer></v-spacer>
@@ -82,7 +70,6 @@
             </div>
             <nuxt />
           </v-main>
-
           <v-main v-else class="main">
             <div style="position: absolute; top: 10px; right: 50px; display: flex; align-items: center;" v-if="$route.path === `/posts/${$route.params.id}`">
             <v-spacer></v-spacer>
@@ -109,10 +96,10 @@
             <div class="messages" style="display: block;" v-if="$route.path === `/posts/${$route.params.id}`">
               <messages-form type="type" :messageId="$route.params.id" />
             </div>
-            
             <template v-else>
               <calendars />
             </template>
+
           </v-navigation-drawer>
         </v-container>
       </v-sheet>
@@ -196,6 +183,9 @@ export default {
 </script>
 
 <style>
+.toolbar_title{
+  cursor: pointer; 
+}
 .index_main{
   padding: 50px 0 0 0 !important;
   height: calc(100vh - 48px);
@@ -206,11 +196,15 @@ export default {
   scrollbar-width: none;
 }
 .index_main::-webkit-scrollbar {
-  display:none;
+  display: none;
   -ms-overflow-style: none;
 }
 .nav{
-  display: none;
+  display: none !important;
+}
+.left_drawer{
+  height: 63px !important;
+  margin-left: 10px;
 }
 .sheet{
   margin: 0;
@@ -236,9 +230,6 @@ export default {
   right: 0;
   z-index: 100;
 }
-.left_drawer{
-  display: none;
-}
 .v-footer{
   display: block;
 }
@@ -252,7 +243,7 @@ export default {
     align-items: center;
   }
   .nav{
-    display: block;
+    display: block !important;
   }
   .sheet{
     margin-left: 60px;
@@ -267,11 +258,6 @@ export default {
     padding: 50px 0 0 0 !important;
     width: calc(100% - 380px);
     height: 100vh;
-  }
-  .left_drawer{
-    display: block;
-    height: 63px !important;
-    margin-left: 10px;
   }
   .aside{
     transform: translateX(0%) !important;

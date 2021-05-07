@@ -15,6 +15,8 @@
   <div class="content_inner">
     <div class="content_inner_title">
       <h2>カレンダー{{ displayDate }}</h2>
+      <v-spacer></v-spacer>
+      <v-icon class="mb-1" color="gray" @click="$router.push('/help/')">mdi-help-circle</v-icon>
     </div>
 
     <div class="button-area">
@@ -150,7 +152,7 @@
                     </v-menu>
                   </v-col>
 
-                  <v-row class="content_create_form_checkbox mb-5">
+                  <v-row class="content_create_form_checkbox mb-5 ml-3">
                     <v-checkbox v-model="done" ></v-checkbox>
                     <p>完了</p>
                   </v-row>
@@ -262,6 +264,11 @@ export default {
   },
 
   created() {
+    if(localStorage.getItem('id')){
+
+    }else{
+      this.$router.push('/')
+    }
     var date = new Date()
     var year = date.getFullYear();
     var month = date.getMonth() + 1;

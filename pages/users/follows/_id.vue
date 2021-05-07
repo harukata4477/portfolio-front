@@ -18,9 +18,9 @@
       
     <p class="menu_notice">←scroll→</p>
     <ul class="menu">
-      <li v-for="(item, i) in items" @click="$router.push(item.link)">
-        <p class="menu_link"  v-if="title == items[i].title" style="color: #2196f3; border-bottom: 2px solid #2196f3;">{{item.title}}</p>
-        <p class="menu_link" v-else>{{item.title}}</p>
+      <li v-for="(nav, i) in navs" @click="$router.push(nav.link)">
+        <p class="menu_link"  v-if="title == navs[i].title" style="color: #2196f3; border-bottom: 2px solid #2196f3;">{{nav.title}}</p>
+        <p class="menu_link" v-else>{{nav.title}}</p>
       </li>
     </ul>
 
@@ -34,7 +34,7 @@
             <v-list-item-avatar
               @click="$router.push(`/users/${following.id}`)"
             >
-              <v-img :src="`http://localhost:3000${following.image.url}`"></v-img>
+              <v-img :src="`http://localhost:5000${following.image.url}`"></v-img>
             </v-list-item-avatar>
             <v-list-item-content
               @click="$router.push(`/users/${following.id}`)"
@@ -43,14 +43,12 @@
               <v-list-item-subtitle v-if="following.profile == ''"></v-list-item-subtitle>
               <v-list-item-subtitle v-if="following.profile" v-html="following.profile"></v-list-item-subtitle>
             </v-list-item-content>
-            <template v-if="currentUser_id == $route.params.id">
-              <v-btn @click="unfollow(following.id)" small color="info" class="unfollow">フォロー済み</v-btn>
-            </template>
+
           </v-list-item>
         </template>
       </v-list>
       <template v-if="currentPage == totalPage"></template>
-      <p class="contents_more" @click="followMore" v-else>もっとみる</p>
+      <p v-else class="contents_more" @click="nextPage">もっとみる</p>
     </div>
 
     <button class="user_to_index" @click="$router.push('/users/')"><v-icon class="user_to_index_icon">mdi-home</v-icon>&nbsp;User一覧</button>
@@ -66,8 +64,7 @@ export default {
   data() {
     return {
       title: 'フォロー中',
-      currentUser_id: 0,
-      items: [],
+      navs: [],
       followings: [],
  
       currentPage: 1,
@@ -77,65 +74,38 @@ export default {
     }
   },
   created() {
-    if(localStorage.getItem('X-Access-Token')){
-      this.$axios.$get(`api/follows/${this.$route.params.id}`, {
-        headers:{
-          'X-Access-Token': localStorage.getItem('X-Access-Token')
-        }
-      }).then(res => {
-          this.followings = res.data.attributes.followings
-          this.currentUser_id = localStorage.getItem('id')
-          this.currentPage = res.pagination.current_page
-          this.totalPage = res.pagination.total_pages
-          this.loading = false
-      })
-    }else{
-      this.$axios.$get(`api/follows/${this.$route.params.id}`).then(res => {
-          this.followings = res.data.attributes.followings
-          this.currentUser_id = localStorage.getItem('id')
-          this.currentPage = res.pagination.current_page
-          this.totalPage = res.pagination.total_pages
-          this.loading = false
-      })
-    }
-
-    if(localStorage.getItem('id') == this.$route.params.id){
-      this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: '投稿一覧', link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`},{title: `フォロワー`, link: `/users/followers/${this.$route.params.id}`},{title: `設定`, link: `/users/edits/${this.$route.params.id}`}]
-    }else{
-      this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: '投稿一覧', link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`},{title: `フォロワー`, link: `/users/followers/${this.$route.params.id}`}]
-    }
+    this.data()
+    this.navData()
   },
 
   methods:{
-    async unfollow(user_id){
-      this.loading = true
-      await this.$axios.$delete(`api/follows/${user_id}`, {
-        headers:{
-          'X-Access-Token': localStorage.getItem('X-Access-Token')
-        }
-      })
-
-      await this.$axios.$get(`api/follows/${this.$route.params.id}`).then(res => {
-        this.followings = res.data.attributes.followings
-      }).then(
+    async data(){
+      this.$axios.$get(`api/follows/${this.$route.params.id}`).then(res => {
+        var data = res.data.attributes
+        var pagination = res.pagination
+        this.followings = data.followings
+        this.currentPage = pagination.current_page
+        this.totalPage = pagination.total_pages
         this.loading = false
-      )
+      }).catch(this.loading = false)
     },
-    
-    async followMore(){
-      var next = this.currentPage + 1
-      this.$axios.$get(`api/follows/${this.$route.params.id}?page=${next}`, {
-        headers:{
-          'X-Access-Token': localStorage.getItem('X-Access-Token')
+    navData(){
+      this.navs = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: '投稿一覧', link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`},{title: `フォロワー`, link: `/users/followers/${this.$route.params.id}`}]
+      
+      if(localStorage.getItem('id') == this.$route.params.id){
+        this.navs.push({title: `設定`, link: `/users/edits/${this.$route.params.id}`})
+      }
+    },
+    async nextPage(){
+      var nextPage = this.currentPage + 1
+      this.$axios.$get(`api/follows/${this.$route.params.id}?page=${nextPage}`).then(res => {
+        var data = res.data.attributes
+        var pagination = res.pagination
+        for (let i = 0; i < data.followings.length; i++){
+          this.followings.push(data.followings[i])
         }
-      }).then(res => {
-        for (let i = 0; i < res.data.attributes.followings.length; i++){
-
-          this.followings.push(res.data.attributes.followings[i])
-        }
-        this.currentUser_id = localStorage.getItem('id')
-        this.currentPage = res.pagination.current_page
-        this.totalPage = res.pagination.total_pages
+        this.currentPage = pagination.current_page
+        this.totalPage = pagination.total_pages
         this.loading = false
       })
     }

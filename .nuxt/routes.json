@@ -2,141 +2,141 @@
   {
     "name": "calendars",
     "path": "/calendars",
-    "component": "/app/pages/calendars/index.vue",
+    "component": "/Users/ryota4729/practice/difficulty_level/level3/portfolio/portfolio/front/pages/calendars/index.vue",
     "chunkName": "pages/calendars/index",
-    "_name": "_0649c83e"
+    "_name": "_446aebc8"
+  },
+  {
+    "name": "help",
+    "path": "/help",
+    "component": "/Users/ryota4729/practice/difficulty_level/level3/portfolio/portfolio/front/pages/help.vue",
+    "chunkName": "pages/help",
+    "_name": "_0022e6e6"
   },
   {
     "name": "login",
     "path": "/login",
-    "component": "/app/pages/login.vue",
+    "component": "/Users/ryota4729/practice/difficulty_level/level3/portfolio/portfolio/front/pages/login.vue",
     "chunkName": "pages/login",
-    "_name": "_10ba8d22"
+    "_name": "_4cb498cd"
   },
   {
     "name": "posts",
     "path": "/posts",
-    "component": "/app/pages/posts/index.vue",
+    "component": "/Users/ryota4729/practice/difficulty_level/level3/portfolio/portfolio/front/pages/posts/index.vue",
     "chunkName": "pages/posts/index",
-    "_name": "_6d3fc09c"
+    "_name": "_288fbd0c"
   },
   {
     "name": "rooms",
     "path": "/rooms",
-    "component": "/app/pages/rooms/index.vue",
+    "component": "/Users/ryota4729/practice/difficulty_level/level3/portfolio/portfolio/front/pages/rooms/index.vue",
     "chunkName": "pages/rooms/index",
-    "_name": "_310ef581"
+    "_name": "_a0f15342"
   },
   {
     "name": "signup",
     "path": "/signup",
-    "component": "/app/pages/signup.vue",
+    "component": "/Users/ryota4729/practice/difficulty_level/level3/portfolio/portfolio/front/pages/signup.vue",
     "chunkName": "pages/signup",
-    "_name": "_490e6182"
-  },
-  {
-    "name": "test",
-    "path": "/test",
-    "component": "/app/pages/test.vue",
-    "chunkName": "pages/test",
-    "_name": "_4b01347c"
+    "_name": "_d38f2438"
   },
   {
     "name": "users",
     "path": "/users",
-    "component": "/app/pages/users/index.vue",
+    "component": "/Users/ryota4729/practice/difficulty_level/level3/portfolio/portfolio/front/pages/users/index.vue",
     "chunkName": "pages/users/index",
-    "_name": "_c91b56de"
+    "_name": "_19eab56f"
   },
   {
     "name": "posts-create",
     "path": "/posts/create",
-    "component": "/app/pages/posts/create.vue",
+    "component": "/Users/ryota4729/practice/difficulty_level/level3/portfolio/portfolio/front/pages/posts/create.vue",
     "chunkName": "pages/posts/create",
-    "_name": "_626c9da2"
+    "_name": "_99ff4ef8"
   },
   {
     "name": "rooms-create",
     "path": "/rooms/create",
-    "component": "/app/pages/rooms/create.vue",
+    "component": "/Users/ryota4729/practice/difficulty_level/level3/portfolio/portfolio/front/pages/rooms/create.vue",
     "chunkName": "pages/rooms/create",
-    "_name": "_1884055d"
+    "_name": "_6917c03f"
   },
   {
     "name": "posts-edits-id",
     "path": "/posts/edits/:id?",
-    "component": "/app/pages/posts/edits/_id.vue",
+    "component": "/Users/ryota4729/practice/difficulty_level/level3/portfolio/portfolio/front/pages/posts/edits/_id.vue",
     "chunkName": "pages/posts/edits/_id",
-    "_name": "_2f28c41e"
+    "_name": "_06a985fc"
   },
   {
     "name": "users-edits-id",
     "path": "/users/edits/:id?",
-    "component": "/app/pages/users/edits/_id.vue",
+    "component": "/Users/ryota4729/practice/difficulty_level/level3/portfolio/portfolio/front/pages/users/edits/_id.vue",
     "chunkName": "pages/users/edits/_id",
-    "_name": "_19565593"
+    "_name": "_1e51d11e"
   },
   {
     "name": "users-followers-id",
     "path": "/users/followers/:id?",
-    "component": "/app/pages/users/followers/_id.vue",
+    "component": "/Users/ryota4729/practice/difficulty_level/level3/portfolio/portfolio/front/pages/users/followers/_id.vue",
     "chunkName": "pages/users/followers/_id",
-    "_name": "_0927e302"
+    "_name": "_82469d46"
   },
   {
     "name": "users-follows-id",
     "path": "/users/follows/:id?",
-    "component": "/app/pages/users/follows/_id.vue",
+    "component": "/Users/ryota4729/practice/difficulty_level/level3/portfolio/portfolio/front/pages/users/follows/_id.vue",
     "chunkName": "pages/users/follows/_id",
-    "_name": "_fc1e33e8"
+    "_name": "_7c48a86a"
   },
   {
     "name": "users-likes-id",
     "path": "/users/likes/:id?",
-    "component": "/app/pages/users/likes/_id.vue",
+    "component": "/Users/ryota4729/practice/difficulty_level/level3/portfolio/portfolio/front/pages/users/likes/_id.vue",
     "chunkName": "pages/users/likes/_id",
-    "_name": "_c240fab4"
+    "_name": "_76604484"
   },
   {
     "name": "users-posts-id",
     "path": "/users/posts/:id?",
-    "component": "/app/pages/users/posts/_id.vue",
+    "component": "/Users/ryota4729/practice/difficulty_level/level3/portfolio/portfolio/front/pages/users/posts/_id.vue",
     "chunkName": "pages/users/posts/_id",
-    "_name": "_7e88b3bd"
+    "_name": "_5609759b"
   },
   {
     "name": "calendars-id",
     "path": "/calendars/:id",
-    "component": "/app/pages/calendars/_id.vue",
+    "component": "/Users/ryota4729/practice/difficulty_level/level3/portfolio/portfolio/front/pages/calendars/_id.vue",
     "chunkName": "pages/calendars/_id",
-    "_name": "_1588c226"
+    "_name": "_512738f8"
   },
   {
     "name": "posts-id",
     "path": "/posts/:id",
-    "component": "/app/pages/posts/_id.vue",
+    "component": "/Users/ryota4729/practice/difficulty_level/level3/portfolio/portfolio/front/pages/posts/_id.vue",
     "chunkName": "pages/posts/_id",
-    "_name": "_37bd3a04"
+    "_name": "_30178b3c"
   },
   {
     "name": "rooms-id",
     "path": "/rooms/:id",
-    "component": "/app/pages/rooms/_id.vue",
+    "component": "/Users/ryota4729/practice/difficulty_level/level3/portfolio/portfolio/front/pages/rooms/_id.vue",
     "chunkName": "pages/rooms/_id",
-    "_name": "_132e6429"
+    "_name": "_793536f2"
   },
   {
     "name": "users-id",
     "path": "/users/:id",
-    "component": "/app/pages/users/_id.vue",
+    "component": "/Users/ryota4729/practice/difficulty_level/level3/portfolio/portfolio/front/pages/users/_id.vue",
     "chunkName": "pages/users/_id",
-    "_name": "_1c03718e"
+    "_name": "_bb9570d2"
   },
   {
     "name": "index",
     "path": "/",
-    "component": "/app/pages/index.vue",
+    "component": "/Users/ryota4729/practice/difficulty_level/level3/portfolio/portfolio/front/pages/index.vue",
     "chunkName": "pages/index",
-    "_name": "_2dfb1658"
+    "_name": "_f9e61494"
   }
 ]

@@ -30,20 +30,15 @@
       </div>
     </div>
 
-    <div class="mind_map">
-      <Mindmap class="mindmap" style="height: 70vh" :zoomable="judge" :draggable="false" :keyboard="false" :nodeClick="false" :showUndo="false" :showNodeAdd="false" :contextMenu="false" :download="false" :strokeWidth="3" :ySpacing='40' :fitView="false"  v-model="contents"></Mindmap>
-      <div class="mind_map_move">
-        <v-icon @click="judge = !judge" v-if="judge" color="info">mdi-cursor-default</v-icon>
-        <v-icon @click="judge = !judge" v-else color="info">mdi-cursor-default-outline</v-icon>
-      </div>
-    </div>
+    
+    <rooms-mind-map :contents.sync="contents"/>
 
     <div class="post_content" v-for="(content, index) in postContents" :key="`content-${index}`">
       <h2 class="post_content_ttl mt-12 mb-10" v-if="content.kind == 'title'">{{content.title}}</h2>
       <h3 class="post_content_sub-ttl ml-1 mt-6 mb-5" v-text="content.sub_title" v-else-if="content.kind == 'sub_title'"></h3>
       <p class="post_content_txt ml-1 mt-5 mb-5" v-text="content.text" v-else-if="content.kind == 'text'"></p>
       <v-card class="mt-12 mb-12" flat v-else-if="content.kind == 'picture'">
-        <v-img contain max-height="320" :src="`http://localhost:3000${content.picture.url}`"></v-img>
+        <v-img contain max-height="320" :src="`http://localhost:5000${content.picture.url}`"></v-img>
       </v-card>
     </div>
     
@@ -53,11 +48,13 @@
 <script>
 import Mindmap from '@hellowuxin/mindmap'
 import { VueLoading } from 'vue-loading-template';
+import RoomsMindMap from '../../components/rooms/RoomsMindMap.vue';
 
 export default {
   components: {
     Mindmap,
     VueLoading,
+    RoomsMindMap,
   },
   data(){
     return{ 
@@ -71,13 +68,12 @@ export default {
       likes:0,
       currentUser_id: localStorage.getItem('id'),
 
-      judge: false,
       like_judge:false,
       submitAlert: false,
       loading: true,
     }
   },
-  created(){
+  created() {
     this.index()
   },
   methods:{
@@ -191,17 +187,10 @@ export default {
       }, 2000)
     },
   },
-
-  errorCaptured(){
-    window.location.href = `/posts/${this.$route.params.id}`
-  }
 }
 </script>
 
 <style scoped>
-.mindmap{
-  font-weight: bold !important;
-}
 .post_icon{
   position: absolute; 
   top: 10px; 
@@ -243,14 +232,6 @@ export default {
 }
 .post_header_tag_list:first-child{
   margin-left:auto;
-}
-.mind_map{
-  position: relative;
-}
-.mind_map_move{
-  position: absolute;
-  right: 5px;
-  bottom: 40px;
 }
 .post_content_ttl{
   font-weight: bold; 

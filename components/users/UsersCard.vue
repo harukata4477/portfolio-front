@@ -10,7 +10,7 @@
         <v-list-item-avatar
           @click="$router.push(`/users/${user.id}`)"
         >
-          <v-img :src="`http://localhost:3000${user.image}`"></v-img>
+          <v-img :src="`http://localhost:5000${user.image}`"></v-img>
         </v-list-item-avatar>
         <v-list-item-content
           @click="$router.push(`/users/${user.id}`)"

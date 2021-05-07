@@ -18,9 +18,9 @@
       
     <p class="menu_notice">←scroll→</p>
     <ul class="menu">
-      <li v-for="(item, i) in items" @click="$router.push(item.link)">
-        <p class="menu_link"  v-if="title == items[i].title" style="color: #2196f3; border-bottom: 2px solid #2196f3;">{{item.title}}</p>
-        <p class="menu_link" v-else>{{item.title}}</p>
+      <li v-for="(nav, i) in navs" @click="$router.push(nav.link)">
+        <p class="menu_link"  v-if="title == navs[i].title" style="color: #2196f3; border-bottom: 2px solid #2196f3;">{{nav.title}}</p>
+        <p class="menu_link" v-else>{{nav.title}}</p>
       </li>
     </ul>
 
@@ -34,7 +34,7 @@
             <v-list-item-avatar
               @click="$router.push(`/users/${following.id}`)"
             >
-              <v-img :src="`http://localhost:3000${following.image.url}`"></v-img>
+              <v-img :src="`http://localhost:5000${following.image.url}`"></v-img>
             </v-list-item-avatar>
             <v-list-item-content
               @click="$router.push(`/users/${following.id}`)"
@@ -47,7 +47,7 @@
         </template>
       </v-list>
       <template v-if="currentPage == totalPage"></template>
-      <p class="contents_more" @click="followMore" v-else>もっとみる</p>
+      <p v-else class="contents_more" @click="nextData">もっとみる</p>
     </div>
 
     <button class="user_to_index" @click="$router.push('/users/')"><v-icon class="user_to_index_icon">mdi-home</v-icon>&nbsp;User一覧</button>
@@ -64,8 +64,7 @@ export default {
   data() {
     return {
       title: 'フォロワー',
-      currentUser_id: 0,
-      items: [],
+      navs: [],
       followers: [],
  
       currentPage: 1,
@@ -75,35 +74,38 @@ export default {
     }
   },
   created() {
-    if(localStorage.getItem('X-Access-Token')){
-      this.$axios.$get(`api/follows/show_follower/${this.$route.params.id}`, {
-        headers:{
-          'X-Access-Token': localStorage.getItem('X-Access-Token')
-        }
-      }).then(res => {
-          this.followers = res.data.attributes.followers
-          this.currentUser_id = localStorage.getItem('id')
-          this.currentPage = res.pagination.current_page
-          this.totalPage = res.pagination.total_pages
-          this.loading = false
-      })
-    }else{
-      this.$axios.$get(`api/follows/show_follower/${this.$route.params.id}`).then(res => {
-          this.followers = res.data.attributes.followers
-          this.currentUser_id = localStorage.getItem('id')
-          this.currentPage = res.pagination.current_page
-          this.totalPage = res.pagination.total_pages
-          this.loading = false
-      })
-    }
+    this.data()
+    this.navData()
+  },
+  methods: {
+    async data(){
+      await this.$axios.$get(`api/follows/show_follower/${this.$route.params.id}?page=${this.currentPage}`).then(res => {
+        this.followers = res.data.attributes.followers
+        this.currentPage = res.pagination.current_page
+        this.totalPage = res.pagination.total_pages
+        this.loading = false
+      }).catch(this.loading = false)
+    },
+    navData(){
+      this.navs = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: '投稿一覧', link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`},{title: `フォロワー`, link: `/users/followers/${this.$route.params.id}`}]
 
-    if(localStorage.getItem('id') == this.$route.params.id){
-      this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: '投稿一覧', link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`},{title: `フォロワー`, link: `/users/followers/${this.$route.params.id}`},{title: `設定`, link: `/users/edits/${this.$route.params.id}`}]
-    }else{
-      this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: '投稿一覧', link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`},{title: `フォロワー`, link: `/users/followers/${this.$route.params.id}`}]
+      if(localStorage.getItem('id') == this.$route.params.id){
+        this.navs.push({title: `設定`, link: `/users/edits/${this.$route.params.id}`})
+      }
+    },
+    async nextData(){
+      if(this.currentPage == this.totalPage){}
+      else{
+        var nextPage = this.currentPage + 1
+        await this.$axios.$get(`api/follows/show_follower/${this.$route.params.id}?page=${nextPage}`).then(res => {
+          this.followers = res.data.attributes.followers
+          this.currentPage = res.pagination.current_page
+          this.totalPage = res.pagination.total_pages
+          this.loading = false
+        })
+      }
     }
   },
-
 }
 </script>
 

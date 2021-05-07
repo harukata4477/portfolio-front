@@ -35,7 +35,7 @@
           <v-list-item-avatar
             @click="$router.push(`/users/${user.id}`)"
           >
-            <v-img :src="`http://localhost:3000${user.image}`"></v-img>
+            <v-img :src="`http://localhost:5000${user.image}`"></v-img>
           </v-list-item-avatar>
           <v-list-item-content
             @click="$router.push(`/users/${user.id}`)"
@@ -138,51 +138,88 @@ export default {
     async onSearch(){
       this.loading = true
       if(this.search_name){
-        await this.$axios.$get(`api/users/search/${this.search_name}`, {
-          headers:{
-            'X-Access-Token': localStorage.getItem('X-Access-Token')
-          }
-        }).then(res => {
-          this.users = []
-
-          var contents = []
-          contents = res.data
-          for (let i = 0; i < contents.length; i++){
-          this.users.push({
-            id: contents[i].attributes.id,
-            image: contents[i].attributes.image.url,
-            name: contents[i].attributes.name,
-            profile: contents[i].attributes.profile,
-            follow_judge: contents[i].attributes.follow_judge
+        if(localStorage.getItem('id')){
+          await this.$axios.$get(`api/users/search/${this.search_name}`, {
+            headers:{
+              'X-Access-Token': localStorage.getItem('X-Access-Token')
+            }
+          }).then(res => {
+            this.users = []
+  
+            var contents = res.data
+            for (let i = 0; i < contents.length; i++){
+              this.users.push({
+                id: contents[i].attributes.id,
+                image: contents[i].attributes.image.url,
+                name: contents[i].attributes.name,
+                profile: contents[i].attributes.profile,
+                follow_judge: contents[i].attributes.follow_judge
+              })
+            }
+            this.currentPage = res.pagination.current_page
+            this.totalPage = res.pagination.total_pages
+            this.loading = false
+          })
+        }else{
+          await this.$axios.$get(`api/users/search/${this.search_name}`).then(res => {
+            this.users = []
+            var contents = res.data
+            for (let i = 0; i < contents.length; i++){
+              this.users.push({
+                id: contents[i].attributes.id,
+                image: contents[i].attributes.image.url,
+                name: contents[i].attributes.name,
+                profile: contents[i].attributes.profile,
+                follow_judge: contents[i].attributes.follow_judge
+              })
+            }
+            this.currentPage = res.pagination.current_page
+            this.totalPage = res.pagination.total_pages
+            this.loading = false
           })
         }
-          this.currentPage = res.pagination.current_page
-          this.totalPage = res.pagination.total_pages
-          this.loading = false
-      })
       }else{
-        await this.$axios.$get(`api/users/`, {
-          headers:{
-            'X-Access-Token': localStorage.getItem('X-Access-Token')
-          }
-        }).then(res => {
-          this.users = []
+        if(localStorage.getItem('id')){
+          await this.$axios.$get(`api/users/`, {
+            headers:{
+              'X-Access-Token': localStorage.getItem('X-Access-Token')
+            }
+          }).then(res => {
+            this.users = []
 
-          var contents = []
-          contents = res.data
-          for (let i = 0; i < contents.length; i++){
-            this.users.push({
-              id: contents[i].attributes.id,
-              image: contents[i].attributes.image.url,
-              name: contents[i].attributes.name,
-              profile: contents[i].attributes.profile,
-              follow_judge: contents[i].attributes.follow_judge
-            })
-          }
-          this.currentPage = res.pagination.current_page
-          this.totalPage = res.pagination.total_pages
-          this.loading = false
-        })
+            var contents = res.data
+            for (let i = 0; i < contents.length; i++){
+              this.users.push({
+                id: contents[i].attributes.id,
+                image: contents[i].attributes.image.url,
+                name: contents[i].attributes.name,
+                profile: contents[i].attributes.profile,
+                follow_judge: contents[i].attributes.follow_judge
+              })
+            }
+            this.currentPage = res.pagination.current_page
+            this.totalPage = res.pagination.total_pages
+            this.loading = false
+          })
+        }else{
+          await this.$axios.$get(`api/users/`).then(res => {
+            this.users = []
+
+            var contents = res.data
+            for (let i = 0; i < contents.length; i++){
+              this.users.push({
+                id: contents[i].attributes.id,
+                image: contents[i].attributes.image.url,
+                name: contents[i].attributes.name,
+                profile: contents[i].attributes.profile,
+                follow_judge: contents[i].attributes.follow_judge
+              })
+            }
+            this.currentPage = res.pagination.current_page
+            this.totalPage = res.pagination.total_pages
+            this.loading = false
+          })
+        }
       }
     },
 
@@ -213,48 +250,86 @@ export default {
       this.loading = true
       var next = this.currentPage + 1
       if(this.search_name){
-        await this.$axios.$get(`api/users/search/${this.search_name}?page=${next}`, {
-          headers:{
-            'X-Access-Token': localStorage.getItem('X-Access-Token')
-          }
-        }).then(res => {
-          var contents = []
-          contents = res.data
-          for (let i = 0; i < contents.length; i++){
-          this.users.push({
-            id: contents[i].attributes.id,
-            image: contents[i].attributes.image.url,
-            name: contents[i].attributes.name,
-            profile: contents[i].attributes.profile,
-            follow_judge: contents[i].attributes.follow_judge
+        if(localStorage.getItem('id')){
+          await this.$axios.$get(`api/users/search/${this.search_name}?page=${next}`, {
+            headers:{
+              'X-Access-Token': localStorage.getItem('X-Access-Token')
+            }
+          }).then(res => {
+            var contents = []
+            contents = res.data
+            for (let i = 0; i < contents.length; i++){
+              this.users.push({
+                id: contents[i].attributes.id,
+                image: contents[i].attributes.image.url,
+                name: contents[i].attributes.name,
+                profile: contents[i].attributes.profile,
+                follow_judge: contents[i].attributes.follow_judge
+              })
+            }
+            this.currentPage = res.pagination.current_page
+            this.totalPage = res.pagination.total_pages
+            this.loading = false
+          })
+        }else{
+          await this.$axios.$get(`api/users/search/${this.search_name}?page=${next}`).then(res => {
+            var contents = []
+            contents = res.data
+            for (let i = 0; i < contents.length; i++){
+              this.users.push({
+                id: contents[i].attributes.id,
+                image: contents[i].attributes.image.url,
+                name: contents[i].attributes.name,
+                profile: contents[i].attributes.profile,
+                follow_judge: contents[i].attributes.follow_judge
+              })
+            }
+            this.currentPage = res.pagination.current_page
+            this.totalPage = res.pagination.total_pages
+            this.loading = false
           })
         }
-        this.currentPage = res.pagination.current_page
-        this.totalPage = res.pagination.total_pages
-        this.loading = false
-      })
       }else{
-        await this.$axios.$get(`api/users?page=${next}`, {
-          headers:{
-            'X-Access-Token': localStorage.getItem('X-Access-Token')
-          }
-        }).then(res => {
+        if(localStorage.getItem('id')){
+          await this.$axios.$get(`api/users?page=${next}`, {
+            headers:{
+              'X-Access-Token': localStorage.getItem('X-Access-Token')
+            }
+          }).then(res => {
 
-          var contents = []
-          contents = res.data
-          for (let i = 0; i < contents.length; i++){
-            this.users.push({
-              id: contents[i].attributes.id,
-              image: contents[i].attributes.image.url,
-              name: contents[i].attributes.name,
-              profile: contents[i].attributes.profile,
-              follow_judge: contents[i].attributes.follow_judge
-            })
-          }
-          this.currentPage = res.pagination.current_page
-          this.totalPage = res.pagination.total_pages
-          this.loading = false
-        })
+            var contents = []
+            contents = res.data
+            for (let i = 0; i < contents.length; i++){
+              this.users.push({
+                id: contents[i].attributes.id,
+                image: contents[i].attributes.image.url,
+                name: contents[i].attributes.name,
+                profile: contents[i].attributes.profile,
+                follow_judge: contents[i].attributes.follow_judge
+              })
+            }
+            this.currentPage = res.pagination.current_page
+            this.totalPage = res.pagination.total_pages
+            this.loading = false
+          })
+        }else{
+          await this.$axios.$get(`api/users?page=${next}`).then(res => {
+            var contents = []
+            contents = res.data
+            for (let i = 0; i < contents.length; i++){
+              this.users.push({
+                id: contents[i].attributes.id,
+                image: contents[i].attributes.image.url,
+                name: contents[i].attributes.name,
+                profile: contents[i].attributes.profile,
+                follow_judge: contents[i].attributes.follow_judge
+              })
+            }
+            this.currentPage = res.pagination.current_page
+            this.totalPage = res.pagination.total_pages
+            this.loading = false
+          })
+        }
       }
     },
   }

@@ -8,25 +8,27 @@
         </div>
       </div>
 
-      <v-alert class="alert" color="info" type="success" v-model="saveAlert" transition="slide-y-transition">
+      <v-alert class="alert" style="top: 10px;" color="info" type="success" v-model="saveAlert" transition="slide-y-transition">
         保存されました。
       </v-alert>
-      <v-alert class="alert" color="info" type="success" v-model="doneAlert" transition="slide-y-transition">
+      <v-alert class="alert" style="top: 10px;" color="info" type="success" v-model="doneAlert" transition="slide-y-transition">
         このルームが達成されました。
       </v-alert>
-      <v-alert class="alert" color ="" type="success" v-model="notYetAlert" transition="slide-y-transition">
+      <v-alert class="alert" style="top: 10px;" color ="" type="success" v-model="notYetAlert" transition="slide-y-transition">
         このルームが未達成されました。
       </v-alert>
 
       <div class="mind_map_save">
+        <v-icon @click="$router.push('/rooms')" large class="mr-3" color="info">mdi-chevron-left</v-icon>
         <v-icon @click="notYet" class="mr-2" color="info" v-if="room.done == true">mdi-checkbox-marked-circle</v-icon>
         <v-icon @click="done" class="mr-2" v-else>mdi-checkbox-marked-circle-outline</v-icon>
         <v-btn small color="info" @click="save">SAVE</v-btn>
       </div>
-      <Mindmap class="mindmap" @click="complete = ''" :download="false" :strokeWidth="3" :ySpacing='40' :fitView="false"  v-model="contents"></Mindmap>
-
+      <Mindmap class="full_page" @click="complete = ''" :download="false" :strokeWidth="2" :ySpacing='30' :fitView="false"  v-model="contents"></Mindmap>
+      <v-icon class="help" color="gray" @click="$router.push('/help/')">mdi-help-circle</v-icon>
     </div>
 </template>
+
 <script>
 import { VueLoading } from 'vue-loading-template';
 import Mindmap from '@hellowuxin/mindmap'
@@ -57,6 +59,18 @@ export default {
       }
     }).then(res => {
       this.contents = res.data.attributes.content
+      if(this.contents.length == 0){
+        this.contents = [{"name":"タイトル入力","left":false}]
+        const params = {
+          room_id: this.$route.params.id,
+          content: this.contents
+        }
+        this.$axios.$patch(`api/contents/${this.$route.params.id}`, params, {
+          headers:{
+            'X-Access-Token': localStorage.getItem('X-Access-Token')
+          }
+        }).then(this.saveAlert = true, this.loading = false)
+      }
       this.room = res.data.attributes.room
       this.loading = false
     });
@@ -140,8 +154,8 @@ export default {
 </script>
 
 <style>
-.mindmap{
-  height: calc(100vh - 50px) !important;
+.full_page{
+  height: 100vh !important;
   font-weight: bold !important;
   position: fixed !important;
   left: 0 !important;
@@ -150,7 +164,7 @@ export default {
 }
 .mind_map_save{
   position: fixed;
-  top: 56px; 
+  top: 0;
   left: 0;
   display: flex; 
   align-items: center; 
@@ -179,15 +193,21 @@ export default {
   font-size: 12px;
   content: '展開';
 }
+.help{
+  position: fixed !important;
+  bottom: 40px !important;
+  right: 5px !important;
+  z-index: 10 !important;
+}
 
 @media (min-width: 960px){
-  .mindmap{
-    height: calc(100vh - 50px)!important;
+  .full_page{
+    height: 100vh !important;
     width: 100vw !important;
   }
   .mind_map_save{
     position: fixed;
-    top: 50px; 
+    top: 0; 
     left: 0;
     display: flex; 
     align-items: center; 

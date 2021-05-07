@@ -34,8 +34,9 @@
             <v-card-text class="grey--text pb-0">画像</v-card-text>
             <v-col
               cols="12"
+              style="position: relative;"
             >
-              <v-img contain max-height="200" :src="`http://localhost:3000${image}`">
+              <v-img contain max-height="200" :src="`http://localhost:5000${image}`">
                 <v-file-input
                   v-model="image"
                   hide-input
@@ -129,7 +130,7 @@ export default {
       this.image = res.data.attributes.image.url
       this.profile = res.data.attributes.profile
       this.loading = false
-    })
+    }).catch(this.loading = false)
     if(localStorage.getItem('id') == this.$route.params.id){
       this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: '投稿一覧', link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`},{title: `フォロワー`, link: `/users/followers/${this.$route.params.id}`},{title: `設定`, link: `/users/edits/${this.$route.params.id}`}]
     }else{
@@ -262,11 +263,11 @@ export default {
 .image_judge{
   position: absolute; 
   right: 50%; 
-  bottom: 70%; 
+  bottom: 50%; 
   z-index: 0; 
   text-align: center; 
   display: inline-block; 
-  transform: translate(50%, 70%);
+  transform: translate(50%, 50%);
 }
 .user_header_left{
   width: 40%;

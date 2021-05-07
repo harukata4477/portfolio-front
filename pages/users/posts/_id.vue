@@ -47,7 +47,7 @@
 
             <v-card-actions>
               <div @click="$router.push(`/users/${users[a].id}`)" class="contents_card_user">
-                <v-img :src="`http://localhost:3000${users[a].image.url}`" class="user_img"></v-img>
+                <v-img :src="`http://localhost:5000${users[a].image.url}`" class="user_img"></v-img>
                 <p class="user_name">{{users[a].name}}</p>
               </div>
               <v-spacer></v-spacer>
@@ -66,7 +66,7 @@
           v-model="page"
           :length="this.totalPage"
           :total-visible="7"
-          @input = "onSearch(page)"
+          @input = "morePage(page)"
         ></v-pagination>
       </div>
     </div>
@@ -124,7 +124,7 @@ export default {
         this.currentPage = res.pagination.current_page
         this.totalPage = res.pagination.total_pages
         this.loading = false
-      })
+      }).catch(this.loading = false)
     }else{
       this.$axios.$get(`api/posts/post_user/${this.$route.params.id}?page=${this.page}`).then(res => {
         for (let i = 0; i < res.data.length; i++){
@@ -142,7 +142,7 @@ export default {
         this.currentPage = res.pagination.current_page
         this.totalPage = res.pagination.total_pages
         this.loading = false
-      })
+      }).catch(this.loading = false)
     }
     
   },
@@ -200,7 +200,7 @@ export default {
       }
     },
 
-    async onSearch(page){
+    async morePage(page){
       this.loading = true
       this.page = page
       this.posts = []

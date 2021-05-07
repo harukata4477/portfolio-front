@@ -150,7 +150,7 @@
                         </v-menu>
                       </v-col>
 
-                      <v-row class="map_calendar_create_checkbox mb-5">
+                      <v-row class="map_calendar_create_checkbox mb-5 ml-3">
                         <v-checkbox
                           v-model="new_done"
                         ></v-checkbox>
@@ -240,16 +240,17 @@
 
                       <v-col
                         cols="12"
+                        class="mt-1 mb-1"
                       >
                         <v-text-field
                           label="予定"
                           required
                           v-model="name"
+                          hide-details="auto"
                         ></v-text-field>
                       </v-col>
 
-                      <p class="map_calendar_edit_title">日付</p>
-                      <v-col cols="12">
+                      <v-col cols="12" class="mt-1 mb-1">
                         <v-menu
                           v-model="menu"
                           :close-on-content-click="false"
@@ -262,10 +263,11 @@
                             <v-text-field
                               v-model="day"
                               label="日付"
-                              prepend-icon="mdi-calendar"
+                              prepend-inner-icon="mdi-calendar"
                               readonly
                               v-bind="attrs"
                               v-on="on"
+                              hide-details="auto"
                             ></v-text-field>
                           </template>
                           <v-date-picker
@@ -275,10 +277,9 @@
                         </v-menu>
                       </v-col>
 
-
-                      <p class="map_calendar_edit_title">時間</p>          
                       <v-col
                         cols="6"
+                        class="mt-1 mb-1"
                         sm="5"
                       >
                         <v-menu
@@ -296,16 +297,18 @@
                             <v-text-field
                               v-model="start_time"
                               label="開始時間"
-                              prepend-icon="mdi-clock-time-four-outline"
+                              prepend-inner-icon="mdi-clock-time-four-outline"
                               readonly
                               v-bind="attrs"
                               v-on="on"
+                              hide-details="auto"
                             ></v-text-field>
                           </template>
                           <v-time-picker
                             v-if="menu2"
                             v-model="start_time"
                             full-width
+                            hide-details="auto"
                             @click:minute="$refs.menu2.save(start_time)"
                           ></v-time-picker>
                         </v-menu>
@@ -313,6 +316,7 @@
 
                       <v-col
                         cols="6"
+                        class="mt-1 mb-1"
                         sm="5"
                       >
                         <v-menu
@@ -330,40 +334,43 @@
                             <v-text-field
                               v-model="end_time"
                               label="終了時間"
-                              prepend-icon="mdi-clock-time-four-outline"
+                              prepend-inner-icon="mdi-clock-time-four-outline"
                               readonly
                               v-bind="attrs"
                               v-on="on"
+                              hide-details="auto"
                             ></v-text-field>
                           </template>
                           <v-time-picker
                             v-if="menu3"
                             v-model="end_time"
                             full-width
+                            hide-details="auto"
                             @click:minute="$refs.menu3.save(end_time)"
                           ></v-time-picker>
                         </v-menu>
                       </v-col>
 
-                      <v-row class="map_calendar_edit_checkbox mb-5">
-                        <v-checkbox v-model="done"></v-checkbox>
-                        <p>完了</p>
+                      <v-row class="map_calendar_edit_checkbox mt-1 mb-3 ml-1">
+                        <v-checkbox class="mt-0" hide-details="auto" v-model="done"></v-checkbox>
+                        <p class="mt-1">完了</p>
                       </v-row>
 
+                      <span :style="`background-color: ${color}; width: 10px; height: 10px; border-radius: 100%;`"></span>
                       <v-select
                         v-model="color"
                         item-text="value"
                         item-value="value"
                         :items="colors"
                         label="背景色"
+                        hide-details="auto"
                       />
 
-                      <span :style="`background-color: ${color}; width: 10px; height: 10px; border-radius: 100%;`"></span>
                     </v-row>
                   </v-container>
                 </v-card-text>
 
-                <v-card-actions>
+                <v-card-actions class="pb-0">
                   <v-spacer></v-spacer>
                   <v-btn
                     text
@@ -645,6 +652,7 @@ export default {
   margin-bottom: -20px;
 }
 .map_calendar_edit_checkbox{
+  display: flex;
   align-items: center; 
   width: 100%; 
   color: rgba(0, 0, 0, 0.6);

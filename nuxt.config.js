@@ -26,6 +26,7 @@ export default {
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
     'plugins/axios',
+    { src: '~/plugins/amplify.js', ssr: false }
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -44,7 +45,7 @@ export default {
 
   server: {
     host: '0.0.0.0',
-    port: 8080
+    port: 3000
   },
 
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
@@ -67,10 +68,9 @@ export default {
   },
 
   axios:{
-    baseURL: "http://localhost:3000"
+    baseURL: 'http://' + process.env.VUE_APP_API_BASE_URL
   },
 
-  // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
   },
 }

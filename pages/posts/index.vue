@@ -94,13 +94,13 @@
           </v-img>
           <v-card-actions>
             <div @click="$router.push(`/users/${users[a].id}`)" class="post_content_user">
-              <v-img :src="`http://localhost:3000${users[a].image.url}`" class="post_content_user_img"></v-img>
+              <v-img :src="`http://localhost:5000${users[a].image.url}`" class="post_content_user_img"></v-img>
               <p class="post_content_user_name">{{users[a].name}}</p>
             </div>
             <v-spacer></v-spacer>
             {{like_counts[a]}}
             <v-btn icon v-if="paginationJudge ==  'tags'">
-              <v-icon v-if="like_judges[a]" @click="tagUnlike(posts[a].id)" color="orange">mdi-thumb-up</v-icon>
+              <v-icon v-if="like_judges[a]" @click="tagUnlike(posts[a])" color="orange">mdi-thumb-up</v-icon>
               <v-icon v-else @click="tagLike(posts[a])">mdi-thumb-up-outline</v-icon>
             </v-btn>
             <v-btn icon v-else-if="paginationJudge == 'index'">
@@ -194,7 +194,7 @@ export default {
 
   methods: {
     jump(id){
-      window.location.href = `/posts/${id}`
+      this.$router.push(`/posts/${id}`)
     },
     async index(){
       this.loading = true
@@ -596,10 +596,10 @@ export default {
   font-weight: bold;
 }
 .post_select_col{
-  width: 150px;
+  width: 150px !important;
 }
 .post_select_content{
-  width: 150px;
+  width: 150px !important;
 }
 .post_content_card_tag{
   overflow: scroll;

@@ -119,8 +119,8 @@ export default {
   created () {
     this.index()
 
-
-    const cable = ActionCable.createConsumer('ws://localhost:3000/cable');
+    const api = 'ws://' + process.env.API_URL + '/cable'
+    const cable = ActionCable.createConsumer(api);
 
     this.NotificationChannel = cable.subscriptions.create( "NotificationChannel",{
       received: (data) => { 

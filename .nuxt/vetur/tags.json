@@ -5,17 +5,17 @@
   "LazyBottomMenu": {
     "description": "Auto imported from components/BottomMenu.vue"
   },
-  "Header": {
-    "description": "Auto imported from components/Header.vue"
-  },
-  "LazyHeader": {
-    "description": "Auto imported from components/Header.vue"
-  },
   "Calendars": {
     "description": "Auto imported from components/calendars/Calendars.vue"
   },
   "LazyCalendars": {
     "description": "Auto imported from components/calendars/Calendars.vue"
+  },
+  "MessagesForm": {
+    "description": "Auto imported from components/messages/MessagesForm.vue"
+  },
+  "LazyMessagesForm": {
+    "description": "Auto imported from components/messages/MessagesForm.vue"
   },
   "ContentsFormNewContent": {
     "description": "Auto imported from components/contents/contentsFormNewContent.vue"
@@ -29,11 +29,23 @@
   "LazyNotifications": {
     "description": "Auto imported from components/notifications/Notifications.vue"
   },
-  "MessagesForm": {
-    "description": "Auto imported from components/messages/MessagesForm.vue"
+  "UserFormEmail": {
+    "description": "Auto imported from components/user/userFormEmail.vue"
   },
-  "LazyMessagesForm": {
-    "description": "Auto imported from components/messages/MessagesForm.vue"
+  "LazyUserFormEmail": {
+    "description": "Auto imported from components/user/userFormEmail.vue"
+  },
+  "UserFormPassword": {
+    "description": "Auto imported from components/user/userFormPassword.vue"
+  },
+  "LazyUserFormPassword": {
+    "description": "Auto imported from components/user/userFormPassword.vue"
+  },
+  "UsersCard": {
+    "description": "Auto imported from components/users/UsersCard.vue"
+  },
+  "LazyUsersCard": {
+    "description": "Auto imported from components/users/UsersCard.vue"
   },
   "PostsEdit": {
     "description": "Auto imported from components/posts/PostsEdit.vue"
@@ -101,22 +113,10 @@
   "LazyRoomsFormTitle": {
     "description": "Auto imported from components/rooms/RoomsFormTitle.vue"
   },
-  "UserFormEmail": {
-    "description": "Auto imported from components/user/userFormEmail.vue"
+  "RoomsMindMap": {
+    "description": "Auto imported from components/rooms/RoomsMindMap.vue"
   },
-  "LazyUserFormEmail": {
-    "description": "Auto imported from components/user/userFormEmail.vue"
-  },
-  "UserFormPassword": {
-    "description": "Auto imported from components/user/userFormPassword.vue"
-  },
-  "LazyUserFormPassword": {
-    "description": "Auto imported from components/user/userFormPassword.vue"
-  },
-  "UsersCard": {
-    "description": "Auto imported from components/users/UsersCard.vue"
-  },
-  "LazyUsersCard": {
-    "description": "Auto imported from components/users/UsersCard.vue"
+  "LazyRoomsMindMap": {
+    "description": "Auto imported from components/rooms/RoomsMindMap.vue"
   }
 }

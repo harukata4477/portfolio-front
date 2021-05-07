@@ -29,7 +29,7 @@
 
         <v-list-item>
           <v-list-item-avatar style="cursor:pointer;" @click="$router.push(`/users/${message.user_id}`)">
-            <v-img :src="`http://localhost:3000${message.user_image.url}`"></v-img>
+            <v-img :src="`http://localhost:5000${message.user_image.url}`"></v-img>
           </v-list-item-avatar>
 
           <v-list-item-content class="mt-4" style="padding: 0;">
@@ -79,7 +79,7 @@ export default {
   created(){
     this.index()
 
-    const cable = ActionCable.createConsumer('ws://localhost:3000/cable');
+    const cable = ActionCable.createConsumer('ws://localhost:5000/cable');
 
     this.messageChannel = cable.subscriptions.create( "MessageChannel",{
       received: (data) => {

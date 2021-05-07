@@ -198,7 +198,7 @@
             ></v-select>
           </v-col>
           <v-card flat class="mb-6 mt-6">
-            <v-img contain max-height="320" :src="`http://localhost:3000${content.picture.url}`">
+            <v-img contain max-height="320" :src="`http://localhost:5000${content.picture.url}`">
               <v-file-input
                 v-model="content.picture"
                 hide-input
