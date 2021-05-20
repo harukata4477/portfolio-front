@@ -1,5 +1,5 @@
 <template>
-    <v-list three-line>
+  <v-list three-line>
     <template v-for="(user, index) in users" >
       
 
@@ -10,7 +10,7 @@
         <v-list-item-avatar
           @click="$router.push(`/users/${user.id}`)"
         >
-          <v-img :src="`http://localhost:3000${user.image}`"></v-img>
+          <v-img :src="`${frontUrl}${user.image}`"></v-img>
         </v-list-item-avatar>
         <v-list-item-content
           @click="$router.push(`/users/${user.id}`)"
@@ -37,6 +37,16 @@ export default {
       type:Object,
       required: true,
       default: () => [],
+    }
+  },
+  computed: {
+    frontUrl() {
+      if(process.env.NODE_ENV === 'production'){
+        return process.env.FRONT_URL
+      }else{
+        // return 'http://localhost:3000'
+        return process.env.FRONT_URL
+      }
     }
   },
 }

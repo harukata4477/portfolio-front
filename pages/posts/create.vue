@@ -12,7 +12,7 @@
       >
         <v-col
           cols="12"
-          class="my-8 text-center"
+          class="post-header my-8 text-center"
         >
           <h1 class="text-h5 font-weight-bold">
             投稿&nbsp;作成
@@ -20,6 +20,7 @@
         </v-col>
 
         <v-card
+          class="post-content"
           flat
           width="80%"
           max-width="320"

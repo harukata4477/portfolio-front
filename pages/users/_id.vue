@@ -56,7 +56,7 @@
           <template v-if="user.name == '画像'">
 
             <td class="content">{{ user.name }}</td>
-            <td class="content"><v-img :src="`http://localhost:3000${user.content}`" class="content_img"></v-img></td>
+            <td class="content"><v-img :src="`${apiUrl}${user.content}`" class="content_img"></v-img></td>
             
           </template>
 
@@ -71,7 +71,6 @@
       </template>
     </v-simple-table>
     <button class="user_to_index" @click="$router.push('/users/')"><v-icon class="user_to_index_icon">mdi-home</v-icon>&nbsp;User一覧</button>
-
   </div>
 </template>
 
@@ -96,6 +95,16 @@ export default {
 
       loading: true,
       loginJudge: false,
+    }
+  },
+  computed: {
+    apiUrl() {
+      if(process.env.NODE_ENV === 'production'){
+        return process.env.API_URL
+      }else{
+        // return 'http://localhost:3000'
+        return process.env.API_URL
+      }
     }
   },
   created() {
@@ -138,13 +147,13 @@ export default {
             })
           }
           this.loading = false
-        })
+        }).catch(this.loading = false)
       }else{
         this.$axios.$get(`api/users/${this.$route.params.id}`).then(res => {
             this.follow_judge = res.data.attributes.follow_judge
     
             this.follower = res.data.attributes.follower
-            this.followimg = res.data.attributes.followimg
+            this.following = res.data.attributes.following
             var contents = []
             contents.push(res.data.attributes.image.url)
             contents.push(res.data.attributes.name)
@@ -157,7 +166,7 @@ export default {
             })
           }
           this.loading = false
-        })
+        }).catch(this.loading = false)
       }
     },
 

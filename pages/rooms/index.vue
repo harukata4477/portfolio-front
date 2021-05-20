@@ -148,6 +148,7 @@ export default {
       this.loginJudge = true
     }else{
       this.loginJudge = false
+      this.$router.push('/')
     }
     this.rooms = []
     this.$axios.$get('api/rooms', {
@@ -395,7 +396,7 @@ export default {
   width: 120px;
 }
 .room_select_col_select{
-  width: 100%;
+  width: 120px;
 }
 .room_content{
   list-style: none;

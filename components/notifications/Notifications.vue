@@ -114,13 +114,26 @@ export default {
       notificationForm: false,
       notificationAlert: false,
       load_judge: false,
+      apiUrlWebSocket: process.env.API_URL
+    }
+  },
+
+  computed: {
+    webSocket() {
+      if(process.env.NODE_ENV === 'production'){
+        this.apiUrlWebSocket = process.env.API_URL
+        return process.env.API_URL
+      }else{
+        // return 'ws://localhost:5000/cable'
+        this.apiUrlWebSocket = process.env.API_URL
+        return process.env.API_URL
+      }
     }
   },
   created () {
     this.index()
 
-
-    const cable = ActionCable.createConsumer('ws://localhost:3000/cable');
+    const cable = ActionCable.createConsumer('ws://54.248.224.191/cable');
 
     this.NotificationChannel = cable.subscriptions.create( "NotificationChannel",{
       received: (data) => { 

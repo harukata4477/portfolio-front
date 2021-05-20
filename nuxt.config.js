@@ -1,4 +1,8 @@
 import colors from 'vuetify/es5/util/colors'
+require('dotenv').config();
+const { API_URL } = process.env
+const { FRONT_URL } = process.env
+const { API_URL_WEB_SOCKET } = process.env
 
 export default {
   // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
@@ -20,12 +24,12 @@ export default {
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
   css: [
-    '@/assets/variables.scss'
+    // '@/assets/variables.scss'
   ],
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
-    'plugins/axios',
+    'plugins/axios'
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -41,11 +45,6 @@ export default {
   modules: [
     '@nuxtjs/axios',
   ],
-
-  server: {
-    host: '0.0.0.0',
-    port: 8080
-  },
 
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
   vuetify: {
@@ -67,10 +66,20 @@ export default {
   },
 
   axios:{
-    baseURL: "http://localhost:3000"
+    baseURL: process.env.API_URL
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
+    babel: {
+      presets({ isServer }, [preset, options]) {
+        options.loose = true
+      },
+    },
   },
+  env: {
+    API_URL,
+    FRONT_URL,
+    API_URL_WEB_SOCKET
+  }
 }

@@ -1,11 +1,17 @@
 <template>
   <div class="mt-12 mb-10 pb-5">
+
     <div v-if="loading" class="loading">
       <div class="loading_inner">
         <p class="loading_inner_text">Loading...</p>
         <vue-loading class="loading_inner_mark" type="beat" color="gold" :size="{ width: '60px', height: '60px'}"></vue-loading>
       </div>
     </div>
+
+    <v-alert class="alert" type="error" v-model="load_judge" transition="slide-y-transition">
+      ログイン失敗しました。
+    </v-alert>
+
     <v-container fluid>
       <v-row
         align="center"
@@ -63,6 +69,7 @@ export default {
       params: { user: { email: '', password: '' } },
 
       loading: false,
+      load_judge: false,
     }
   },
   methods: {
@@ -71,11 +78,22 @@ export default {
       this.$axios.post('auth/sign_in', this.params.user).then((res) => {
         localStorage.setItem("X-Access-Token", res.headers['x-access-token']);
         localStorage.setItem("id", res.data.data.id);
-        this.$refs.form.reset()
         this.loading = false
-        this.params = { user: { email: '', password: '' } }
-        window.location.href = `/`
+        window.location.href = `/posts/`
+      }).catch(error => {
+        console.log(error)
+        this.errored = true
+        this.load_judge = true
+        this.$refs.form.reset()
       })
+    }
+  },
+  watch: {
+    load_judge (val) {
+      val && setTimeout(() => {
+        this.load_judge = false
+        this.loading = false
+      }, 2000)
     },
   },
 }

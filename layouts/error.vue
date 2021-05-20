@@ -1,15 +1,19 @@
 <template>
-  <v-app dark>
-    <h1 v-if="error.statusCode === 404">
-      {{ pageNotFound }}
-    </h1>
-    <h1 v-else>
-      {{ otherError }}
-    </h1>
-    <NuxtLink to="/">
-      Home page
-    </NuxtLink>
-  </v-app>
+  <div class="errors">
+    <div class="errors_inner">
+      <v-img src="/img/errors.jpeg"></v-img>
+      <h3>リロード or 下記のリンクに飛んでください。</h3>
+      <p class="mb-0" v-if="error.statusCode === 404">
+        {{ pageNotFound }}
+      </p>
+      <p class="mb-0" v-else>
+        {{ otherError }}
+      </p>
+      <NuxtLink to="/">
+        Home page
+      </NuxtLink>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -38,7 +42,16 @@ export default {
 </script>
 
 <style scoped>
-h1 {
-  font-size: 20px;
+.errors{
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.errors_inner{
+  position: absolute;
+  right: 50%;
+  bottom: 50%;
+  transform: translate(50%, 50%);
+  text-align: center;
 }
 </style>

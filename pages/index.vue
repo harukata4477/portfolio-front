@@ -1,6 +1,8 @@
 <template>
   <div class="post_map">
+
     <div class="header">
+      <v-icon class="help mb-1" color="white" @click="$router.push('/help/')">mdi-help-circle</v-icon>
       <div class="header_bg"></div>
       <v-img class="header_img" :src="`/img/mindmap1.jpg`"></v-img>
       <p class="header_ttl">成功の地図が見れる</p>
@@ -14,23 +16,25 @@
         <p class="what_txt">マインドマップを共有し対話ができる。掲示板サービスです。</p>
       </div>
     </div>
+
     <div class="example_room">
       <div class="example_room_inner">
         <div class="left">
           <p class="display-1 font-weight-bold text-center"><v-icon class="mr-1 mb-2" x-large color="info">mdi-thumb-up</v-icon>使いやすい！</p>
           <p class="text-center">画面いっぱいの無駄のないシンプルなマインドマップ。</p>
-          <p class="text-center">Auto Center機能、Back・Prev機能等であなたをサポート。</p>
+          <p class="text-center">Layout機能、Back・Prev機能等であなたをサポート。</p>
           <p class="text-center">思考のためだけに力を使いましょう！！</p>
         </div>
         <div class="right">
-          <v-img max-width="420" class="example_img" :src="`/img/mind_map.png`"></v-img>
+          <v-img max-width="420" class="example_img" :src="`/img/mindmap.png`"></v-img>
         </div>
       </div>
     </div>
+
     <div class="example_post">
       <div class="example_post_inner">
         <div class="left">
-          <v-img max-width="420" class="example_img" :src="`/img/post.png`"></v-img>
+          <v-img max-width="420" class="example_img" :src="`/img/Readme3.png`"></v-img>
         </div>
         <div class="right">
           <p class="display-1 font-weight-bold text-center"><v-icon class="mr-1 mb-2" x-large color="info">mdi-account-multiple</v-icon>マインドマップを共有</p>
@@ -39,6 +43,7 @@
         </div>
       </div>
     </div>
+
     <div class="example_room">
       <div class="example_room_inner">
         <div class="left">
@@ -55,8 +60,8 @@
     <div class="other">
       <p class="display-1 font-weight-bold text-center mt-6 mb-6"><v-icon class="mr-1 mb-2" x-large color="info">mdi-shape-plus</v-icon>他の機能</p>
       <div class="other_inner">
+        <v-card class="other_inner_card text-center"><v-icon class="mr-1" large color="info">mdi-magnify</v-icon>検索機能</v-card>
         <v-card class="other_inner_card text-center"><v-icon class="mr-1" large color="info">mdi-message</v-icon>コメント機能</v-card>
-        <v-card class="other_inner_card text-center"><v-icon class="mr-1" large color="info">mdi-share</v-icon>SNSシェア</v-card>
         <v-card class="other_inner_card text-center"><v-icon class="mr-1" large color="info">mdi-account-multiple-plus</v-icon>フォロー機能</v-card>
         <v-card class="other_inner_card text-center"><v-icon class="mr-1" large color="info">mdi-thumb-up</v-icon>いいね機能</v-card>
         <v-card class="other_inner_card text-center"><v-icon class="mr-1" large color="info">mdi-tag</v-icon>タグ機能</v-card>
@@ -64,11 +69,12 @@
       </div>
     </div>
 
-    <div class="start pt-16 pb-16">
+    <div class="start pt-16">
       <p class="display-1 font-weight-bold text-center"><v-icon class="mr-1" x-large color="info">mdi-check-circle</v-icon>さあ、始めよう</p>
       <p class="text-center">登録に必要な時間は 30秒程度</p>
       <p class="text-center"><v-btn @click="$router.push('/signup')" large class="mr-4 font-weight-bold" style="font-size: 17px" color="info">新規作成</v-btn><v-btn @click="$router.push('/login')" style="font-size: 17px" large class="ml-4 font-weight-bold" color="white">ログイン</v-btn></p>
     </div>
+
   </div>
 </template>
 
@@ -82,7 +88,14 @@ export default {
 .post_map{
   padding-bottom: 30px;
 }
+.help{
+  position: absolute; 
+  top: 10px; 
+  right: 10px; 
+  z-index: 3;
+}
 .header{
+  position: relative;
   width: 100%;
   height: 300px;
 }
@@ -249,6 +262,7 @@ export default {
 .start{
   position: relative;
   background: #eee;
+  padding-bottom: 100px;
 }
 
 @media (min-width: 800px){
@@ -418,9 +432,12 @@ export default {
   align-items: center;
   justify-content: center;
 }
-.start{
-  position: relative;
-  background: #eee;
 }
+@media (min-width: 960px){
+  .start{
+    position: relative;
+    background: #eee;
+    padding-bottom: 50px;
+  }
 }
 </style>

@@ -29,7 +29,7 @@
 
         <v-list-item>
           <v-list-item-avatar style="cursor:pointer;" @click="$router.push(`/users/${message.user_id}`)">
-            <v-img :src="`http://localhost:3000${message.user_image.url}`"></v-img>
+            <v-img :src="`${apiUrl}${message.user_image.url}`"></v-img>
           </v-list-item-avatar>
 
           <v-list-item-content class="mt-4" style="padding: 0;">
@@ -76,20 +76,42 @@ export default {
       totalPage: 1,
     }
   },
+
+  computed: {
+    apiUrl() {
+      if(process.env.NODE_ENV === 'production'){
+        return process.env.API_URL
+      }else{
+        // return 'http://localhost:3000'
+        return process.env.API_URL
+      }
+    },
+    webSocket() {
+      if(process.env.NODE_ENV === 'production'){
+        return process.env.API_URL
+      }else{
+        return 'ws://localhost:5000/cable'
+        // return process.env.API_URL
+      }
+    }
+  },
+  
   created(){
     this.index()
 
-    const cable = ActionCable.createConsumer('ws://localhost:3000/cable');
+    const cable = ActionCable.createConsumer(this.webSocket);
 
     this.messageChannel = cable.subscriptions.create( "MessageChannel",{
       received: (data) => {
-        this.messages.unshift({
-          user_id: data['user'].id,
-          user_name: data['user'].name,
-          user_image: data['user'].image,
-          message: data['message'].message,
-          created_at: 'たった今'
-        })
+        if(this.$route.params.id == data['message'].post_id){
+          this.messages.unshift({
+            user_id: data['user'].id,
+            user_name: data['user'].name,
+            user_image: data['user'].image,
+            message: data['message'].message,
+            created_at: 'たった今'
+          })
+        }
       },
     })
   },

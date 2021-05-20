@@ -95,7 +95,7 @@ export default {
         }).then(res => {
           const params = {
               room_id: res.room_id,
-              content: [{"name": "タイトル入力"}]
+              content: [ {"key":0, "text":"Mind Map", "loc":"0 0"} ]
             }
             this.$axios.$post(`api/contents/`, params, {
               headers:{

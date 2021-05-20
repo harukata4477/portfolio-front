@@ -12,8 +12,8 @@
       {{submitContent}}
     </v-alert>
 
-    <div class="post_header">
-      <div class="post_header_search">
+    <div class="post-header">
+      <div class="post_search">
         <v-text-field
           v-model="search_title"
           placeholder="投稿 検索"
@@ -28,7 +28,7 @@
         ></v-text-field>
       </div>
 
-      <v-sheet class="mx-auto">
+      <v-sheet class="post_tag mx-auto">
         <v-slide-group
           multiple
           show-arrows
@@ -52,92 +52,94 @@
       </v-sheet>
     </div>
 
-    <v-row class="mt-4 mb-0 mr-2 ml-0">
-      <v-col class="post_select_col pb-0 pt-0 pl-0 pr-0">
-        <v-select
-          class="post_select_content"
-          :items="items"
-          v-model="select"
-          @change="selectPage"
-          solo
-          flat
-          single-line
-          return-object
-          hide-details="auto"
-          background-color="transparent"
-        ></v-select>
-      </v-col>
-      <v-spacer></v-spacer>
-      <v-icon large v-if="loginJudge" @click="$router.push('/posts/create')">mdi-pencil-box-outline</v-icon>
-    </v-row>
+    <div class="post-content">
+      <v-row class="post_select mt-4 mb-0 mr-2 ml-0">
+        <v-col class="post_select_col pb-0 pt-0 pl-0 pr-0">
+          <v-select
+            class="post_select_content"
+            :items="items"
+            v-model="select"
+            @change="selectPage"
+            solo
+            flat
+            single-line
+            return-object
+            hide-details="auto"
+            background-color="transparent"
+          ></v-select>
+        </v-col>
+        <v-spacer></v-spacer>
+        <v-icon large v-if="loginJudge" @click="$router.push('/posts/create')">mdi-pencil-box-outline</v-icon>
+      </v-row>
 
-    <v-row dense class="mt-0">
-      <v-col
-        v-for="(post, a) in posts"
-        :key="`post-${a}`"
-        :cols="6"
-        class="post_content_col mb-4"
-      >
-        <v-card>
-          <v-img
-            @click="jump(post.id)"
-            class="white--text align-end"
-            background-color="gray"
-            min-height="155px"
-            gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-            :src="`/img/img${post.kind}.svg`"
-          >
-            <div class="post_content_card_tag">
-              <p v-for="(tag, b) in post.tag_list" :key="`tag-${b}`" class="post_content_card_tag_content pl-1 pr-1 mb-0 mr-1" v-text="tag"></p>
-            </div>
-            <v-card-title class="post_content_card_title pt-0 pb-2" v-text="post.title"></v-card-title>
-          </v-img>
-          <v-card-actions>
-            <div @click="$router.push(`/users/${users[a].id}`)" class="post_content_user">
-              <v-img :src="`http://localhost:3000${users[a].image.url}`" class="post_content_user_img"></v-img>
-              <p class="post_content_user_name">{{users[a].name}}</p>
-            </div>
-            <v-spacer></v-spacer>
-            {{like_counts[a]}}
-            <v-btn icon v-if="paginationJudge ==  'tags'">
-              <v-icon v-if="like_judges[a]" @click="tagUnlike(posts[a].id)" color="orange">mdi-thumb-up</v-icon>
-              <v-icon v-else @click="tagLike(posts[a])">mdi-thumb-up-outline</v-icon>
-            </v-btn>
-            <v-btn icon v-else-if="paginationJudge == 'index'">
-              <v-icon v-if="like_judges[a]" @click="unlike(posts[a])" color="orange">mdi-thumb-up</v-icon>
-              <v-icon v-else @click="like(posts[a])">mdi-thumb-up-outline</v-icon>
-            </v-btn>
-            <v-btn icon v-else-if="paginationJudge == 'popular'">
-              <v-icon v-if="like_judges[a]" @click="popularUnlike(posts[a])" color="orange">mdi-thumb-up</v-icon>
-              <v-icon v-else @click="popularLike(posts[a])">mdi-thumb-up-outline</v-icon>
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
+      <v-row dense class="post_content mt-0">
+        <v-col
+          v-for="(post, a) in posts"
+          :key="`post-${a}`"
+          :cols="6"
+          class="post_content_col mb-4"
+        >
+          <v-card>
+            <v-img
+              @click="jump(post.id)"
+              class="white--text align-end"
+              background-color="gray"
+              min-height="155px"
+              gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+              :src="`/img/img${post.kind}.svg`"
+            >
+              <div class="post_content_card_tag">
+                <p v-for="(tag, b) in post.tag_list" :key="`tag-${b}`" class="post_content_card_tag_content pl-1 pr-1 mb-0 mr-1" v-text="tag"></p>
+              </div>
+              <v-card-title class="post_content_card_title pt-0 pb-2" v-text="post.title"></v-card-title>
+            </v-img>
+            <v-card-actions>
+              <div @click="$router.push(`/users/${users[a].id}`)" class="post_content_user">
+                <v-img :src="`${apiUrl}${users[a].image.url}`" class="post_content_user_img"></v-img>
+                <p class="post_content_user_name">{{users[a].name}}</p>
+              </div>
+              <v-spacer></v-spacer>
+              {{like_counts[a]}}
+              <v-btn icon v-if="paginationJudge ==  'tags'">
+                <v-icon v-if="like_judges[a]" @click="tagUnlike(posts[a])" color="orange">mdi-thumb-up</v-icon>
+                <v-icon v-else @click="tagLike(posts[a])">mdi-thumb-up-outline</v-icon>
+              </v-btn>
+              <v-btn icon v-else-if="paginationJudge == 'index'">
+                <v-icon v-if="like_judges[a]" @click="unlike(posts[a])" color="orange">mdi-thumb-up</v-icon>
+                <v-icon v-else @click="like(posts[a])">mdi-thumb-up-outline</v-icon>
+              </v-btn>
+              <v-btn icon v-else-if="paginationJudge == 'popular'">
+                <v-icon v-if="like_judges[a]" @click="popularUnlike(posts[a])" color="orange">mdi-thumb-up</v-icon>
+                <v-icon v-else @click="popularLike(posts[a])">mdi-thumb-up-outline</v-icon>
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
 
-    <div class="text-center mt-5">
-      <v-pagination
-        v-if="paginationJudge ==  'tags'"
-        v-model="page"
-        :length="this.totalPage"
-        :total-visible="7"
-        @input = "tagSearch(page)"
-      ></v-pagination>
-      <v-pagination
-        v-else-if="paginationJudge == 'index'"
-        v-model="page"
-        :length="this.totalPage"
-        :total-visible="7"
-        @input = "onSearch(page)"
-      ></v-pagination>
-      <v-pagination
-        v-else-if="paginationJudge == 'popular'"
-        v-model="page"
-        :length="this.totalPage"
-        :total-visible="7"
-        @input = "popularIndex(page)"
-      ></v-pagination>
+      <div class="text-center mt-5">
+        <v-pagination
+          v-if="paginationJudge ==  'tags'"
+          v-model="page"
+          :length="this.totalPage"
+          :total-visible="7"
+          @input = "tagSearch(page)"
+        ></v-pagination>
+        <v-pagination
+          v-else-if="paginationJudge == 'index'"
+          v-model="page"
+          :length="this.totalPage"
+          :total-visible="7"
+          @input = "onSearch(page)"
+        ></v-pagination>
+        <v-pagination
+          v-else-if="paginationJudge == 'popular'"
+          v-model="page"
+          :length="this.totalPage"
+          :total-visible="7"
+          @input = "popularIndex(page)"
+        ></v-pagination>
+      </div>
     </div>
 
   </div>
@@ -176,7 +178,16 @@ export default {
       submitType: 'error'
     }
   },
-
+  computed: {
+    apiUrl() {
+      if(process.env.NODE_ENV === 'production'){
+        return process.env.API_URL
+      }else{
+        // return 'http://localhost:5000'
+        return process.env.API_URL
+      }
+    },
+  },
   created() {
     if(localStorage.getItem('id')){
       this.loginJudge = true
@@ -194,7 +205,7 @@ export default {
 
   methods: {
     jump(id){
-      window.location.href = `/posts/${id}`
+      this.$router.push(`/posts/${id}`)
     },
     async index(){
       this.loading = true
@@ -588,7 +599,7 @@ export default {
 </script>
 
 <style scoped>
-.post_header_search{
+.post_search{
   width: 100%;
   margin: 0 auto;
 }
@@ -596,10 +607,10 @@ export default {
   font-weight: bold;
 }
 .post_select_col{
-  width: 150px;
+  width: 150px !important;
 }
 .post_select_content{
-  width: 150px;
+  width: 150px !important;
 }
 .post_content_card_tag{
   overflow: scroll;

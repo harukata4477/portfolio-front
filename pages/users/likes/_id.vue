@@ -49,7 +49,7 @@
 
             <v-card-actions>
               <div @click="$router.push(`/users/${users[a].id}`)" class="user">
-                <v-img :src="`http://localhost:3000${users[a].image.url}`" class="user_img"></v-img>
+                <v-img :src="`${apiUrl}${users[a].image.url}`" class="user_img"></v-img>
                 <p class="user_name">{{users[a].name}}</p>
               </div>
 
@@ -70,7 +70,7 @@
           v-model="page"
           :length="this.totalPage"
           :total-visible="7"
-          @input = "onSearch(page)"
+          @input = "morePage(page)"
         ></v-pagination>
       </div>
   </div>
@@ -109,7 +109,16 @@ export default {
     this.index()
     
   },
-
+  computed: {
+    apiUrl() {
+      if(process.env.NODE_ENV === 'production'){
+        return process.env.API_URL
+      }else{
+        // return 'http://localhost:3000'
+        return process.env.API_URL
+      }
+    }
+  },
   methods:{
     async index(){
       this.loading = true
@@ -159,6 +168,32 @@ export default {
           this.loading = false
         })
       }
+    },
+
+    async morePage(page){
+      this.loading = true
+      this.page = page
+      this.posts = []
+      this.users = []
+      this.like_counts = []
+      this.like_judges = []
+      this.$axios.$get(`api/likes/${this.$route.params.id}?page=${this.page}`).then(res => {
+        for (let i = 0; i < res.data.length; i++){
+          this.posts.push({
+            id: res.data[i].attributes.posts.id,
+            user_id: res.data[i].attributes.user_id,
+            title: res.data[i].attributes.posts.title,
+            kind: res.data[i].attributes.posts.kind,
+            tag_list: res.data[i].attributes.posts.tag_list,
+          })
+          this.like_counts.push(res.data[i].attributes.like_counts),
+          this.like_judges.push(res.data[i].attributes.like_judges),
+          this.users.push(res.data[i].attributes.users)
+        }
+        this.currentPage = res.pagination.current_page
+        this.totalPage = res.pagination.total_pages
+        this.loading = false
+      })
     },
 
     async like(post){

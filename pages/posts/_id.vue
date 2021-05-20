@@ -1,5 +1,5 @@
 <template>
-  <div class="post pb-16">
+  <div class="post">
 
     <div v-if="loading" class="loading">
       <div class="loading_inner">
@@ -12,14 +12,15 @@
       ログインが必要になります。
     </v-alert>
 
-    <v-icon class="post_icon" v-if="currentUser_id == post.user_id" @click="$router.push(`/posts/edits/${$route.params.id}`)" color="info">mdi-wrench</v-icon>
+  <div class="post-header">
+    <v-icon class="post_setting" v-if="currentUser_id == post.user_id" @click="$router.push(`/posts/edits/${$route.params.id}`)" color="info">mdi-wrench</v-icon>
     <v-row class="post_like mt-2 mr-2">
       <v-spacer></v-spacer>
       <p v-if="like_judge" @click="unlike" class="mb-0 ml-2">{{likes}}<v-icon class="pb-1 pl-1" color="orange">mdi-thumb-up</v-icon></p>
       <p v-else class="mb-0 ml-2" @click="like">{{likes}}<v-icon class="pb-1 pl-1" color="gray">mdi-thumb-up-outline</v-icon></p>
     </v-row>
 
-    <div class="post_header">
+    <div class="post_header" style="position: relative; border-bottom: solid 1px #eee; z-index: 2;">
       <h1 class="post_header_title display-1 mt-5 mb-2">{{post.title}}</h1>
       <div class="post_header_left">
         <p color="gray" class="post_header_created_at grey--text"><v-icon class=" mr-1 grey--text" x-small>mdi-autorenew</v-icon>{{post.updated_at}}</p>
@@ -29,39 +30,41 @@
         </div>
       </div>
     </div>
+  </div>
 
-    <div class="mind_map">
-      <Mindmap class="mindmap" style="height: 70vh" :zoomable="judge" :draggable="false" :keyboard="false" :nodeClick="false" :showUndo="false" :showNodeAdd="false" :contextMenu="false" :download="false" :strokeWidth="3" :ySpacing='40' :fitView="false"  v-model="contents"></Mindmap>
-      <div class="mind_map_move">
-        <v-icon @click="judge = !judge" v-if="judge" color="info">mdi-cursor-default</v-icon>
-        <v-icon @click="judge = !judge" v-else color="info">mdi-cursor-default-outline</v-icon>
-      </div>
+
+  <div class="post_content" style="transform: translateY(-70px);">
+    <div class="wrapper" style="border: solid 1px #eee;">
+      <div
+        id="myDiagramDiv"
+        style="width:100%;height:70vh;"
+      />
     </div>
-
-    <div class="post_content" v-for="(content, index) in postContents" :key="`content-${index}`">
+    <div class="post_content_inner" v-for="(content, index) in postContents" :key="`content-${index}`">
       <h2 class="post_content_ttl mt-12 mb-10" v-if="content.kind == 'title'">{{content.title}}</h2>
       <h3 class="post_content_sub-ttl ml-1 mt-6 mb-5" v-text="content.sub_title" v-else-if="content.kind == 'sub_title'"></h3>
       <p class="post_content_txt ml-1 mt-5 mb-5" v-text="content.text" v-else-if="content.kind == 'text'"></p>
       <v-card class="mt-12 mb-12" flat v-else-if="content.kind == 'picture'">
-        <v-img contain max-height="320" :src="`http://localhost:3000${content.picture.url}`"></v-img>
+        <v-img contain max-height="320" :src="`${apiUrl}${content.picture.url}`"></v-img>
       </v-card>
     </div>
+  </div>
     
   </div>
 </template>
 
 <script>
-import Mindmap from '@hellowuxin/mindmap'
 import { VueLoading } from 'vue-loading-template';
+import * as go from 'gojs'
+const $ = go.GraphObject.make
 
 export default {
   components: {
-    Mindmap,
     VueLoading,
   },
   data(){
     return{ 
-      contents: [{}],
+      contents: [],
       post: {},
       title: '',
       sub_title: '',
@@ -69,67 +72,214 @@ export default {
       picture: '',
       postContents: [],
       likes:0,
+      params: 0,
       currentUser_id: localStorage.getItem('id'),
 
-      judge: false,
       like_judge:false,
       submitAlert: false,
       loading: true,
     }
   },
-  created(){
-    this.index()
-  },
-  methods:{
-    async index(){
-      this.loading = true
-      if(localStorage.getItem('id')){
-        await this.$axios.$get(`api/posts/${this.$route.params.id}`, {
-          headers:{
-            'X-Access-Token': localStorage.getItem('X-Access-Token')
-          }
-        }).then(res => {
-          this.contents = res.data.attributes.contents.content
-          this.postContents = res.data.attributes.post_contents
-          var date = new Date(res.data.attributes.updated_at)
-          var year = date.getFullYear();
-          var month = date.getMonth() + 1 ;
-          var day = date.getDate();
-          var updated_at = year + '/' + month + '/' + day
-          this.post = {
-            id: res.data.attributes.id,
-            user_id: res.data.attributes.user_id,
-            title: res.data.attributes.title,
-            updated_at: updated_at,
-            tag_list: res.data.attributes.tag_list,
-          },
-          this.likes = res.data.attributes.likes.length
-          this.like_judge = res.data.attributes.like_judges
-          this.loading = false
-        })
-      }else{
-        this.$axios.$get(`api/posts/${this.$route.params.id}`).then(res => {
-          this.contents = res.data.attributes.contents.content
-          this.postContents = res.data.attributes.post_contents
-          var date = new Date(res.data.attributes.updated_at)
-          var year = date.getFullYear();
-          var month = date.getMonth() + 1 ;
-          var day = date.getDate();
-          var updated_at = year + '/' + month + '/' + day
-          this.post = {
-            id: res.data.attributes.id,
-            user_id: res.data.attributes.user_id,
-            title: res.data.attributes.title,
-            updated_at: updated_at,
-            tag_list: res.data.attributes.tag_list,
-          },
-          this.likes = res.data.attributes.likes.length
-          this.like_judge = res.data.attributes.like_judges
-          this.loading = false
-        })
-      }
-    },
 
+  computed: {
+    apiUrl() {
+      if(process.env.NODE_ENV === 'production'){
+        return process.env.API_URL
+      }else{
+        // return 'http://localhost:3000'
+        return process.env.API_URL
+      }
+    }
+  },
+
+  mounted() {
+    const myDiagram = $(go.Diagram, 'myDiagramDiv',
+      {
+        initialAutoScale: go.Diagram.Uniform,
+        "commandHandler.copiesTree": true,
+        "commandHandler.copiesParentKey": true,
+        "commandHandler.deletesTree": true,
+        "draggingTool.dragsTree": true,
+        'undoManager.isEnabled': true 
+      })
+    const myModel = $(go.TreeModel)
+    myModel.nodeDataArray = this.contents
+    myDiagram.model = myModel
+
+    myDiagram.nodeTemplate =
+      $(go.Node, "Vertical",
+        { selectionObjectName: "TEXT" },
+        new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
+        new go.Binding("locationSpot", "dir", function(d) { return spotConverter(d, false); }),
+        $(go.TextBlock,
+          {
+            name: "TEXT",
+            minSize: new go.Size(30, 15),
+            editable: true
+          }, 
+          new go.Binding("text", "text").makeTwoWay(),
+          new go.Binding("scale", "scale").makeTwoWay(),
+          new go.Binding("font", "font").makeTwoWay()
+        ),
+        $(go.Shape, "LineH",
+          {
+            stretch: go.GraphObject.Horizontal,
+            strokeWidth: 3, height: 3,
+            //この線の形はポートです-リンクが接続するもの
+            portId: "", fromSpot: go.Spot.LeftRightSides, toSpot: go.Spot.LeftRightSides
+          },
+          new go.Binding("stroke", "brush"),
+          //リンクが適切な方向から入り、適切に出て行くことを確認します
+          new go.Binding("fromSpot", "dir", function(d) { return spotConverter(d, true); }),
+          new go.Binding("toSpot", "dir", function(d) { return spotConverter(d, false); }),
+        ),
+      );
+
+    myDiagram.linkTemplate =
+      $(go.Link,
+        {
+          curve: go.Link.Bezier,
+          fromShortLength: -2,
+          toShortLength: -2,
+          selectable: false
+        },
+        $(go.Shape,
+          { strokeWidth: 3 },
+          new go.Binding("stroke", "toNode", function(n) {
+            if (n.data.brush) return n.data.brush;
+            return "black";
+          }).ofObject())
+      );
+
+    myDiagram.addDiagramListener("SelectionMoved", function(e) {
+      var rootX = myDiagram.findNodeForKey(0).location.x;
+      myDiagram.selection.each(function(node) {
+        if (node.data.parent !== 0) return; 
+        var nodeX = node.location.x;
+        if (rootX < nodeX && node.data.dir !== "right") {
+          updateNodeDirection(node, "right");
+        } else if (rootX > nodeX && node.data.dir !== "left") {
+          updateNodeDirection(node, "left");
+        }
+        layoutTree(node);
+      });
+    });
+
+    function spotConverter(dir, from) {
+      if (dir === "left") {
+        return (from ? go.Spot.Left : go.Spot.Right);
+      } else {
+        return (from ? go.Spot.Right : go.Spot.Left);
+      }
+    }
+
+    function layoutTree(node) {
+      if (node.data.key === 0) {  
+        layoutAll();  
+      } else {  
+        var parts = node.findTreeParts();
+        layoutAngle(parts, node.data.dir === "left" ? 180 : 0);
+      }
+    }
+
+    function layoutAngle(parts, angle) {
+      var layout = go.GraphObject.make(go.TreeLayout,
+        {
+          angle: angle,
+          arrangement: go.TreeLayout.ArrangementFixedRoots,
+          nodeSpacing: 5,
+          layerSpacing: 20,
+          setsPortSpot: false, 
+          setsChildPortSpot: false
+        });
+      layout.doLayout(parts);
+    }
+
+    function layoutAll() {
+      var root = myDiagram.findNodeForKey(0);
+      if (root === null) return;
+      myDiagram.startTransaction("Layout");
+      
+      var rightward = new go.Set(/*go.Part*/);
+      var leftward = new go.Set(/*go.Part*/);
+      root.findLinksConnected().each(function(link) {
+        var child = link.toNode;
+        if (child.data.dir === "left") {
+          leftward.add(root);  
+          leftward.add(link);
+          leftward.addAll(child.findTreeParts());
+        } else {
+          rightward.add(root);  
+          rightward.add(link);
+          rightward.addAll(child.findTreeParts());
+        }
+      });
+      
+      layoutAngle(rightward, 0);
+      layoutAngle(leftward, 180);
+      myDiagram.commitTransaction("Layout");
+    }
+
+    if(localStorage.getItem('id')){
+      this.$axios.$get(`api/posts/${this.$route.params.id}`, {
+        headers:{
+          'X-Access-Token': localStorage.getItem('X-Access-Token')
+        }
+      }).then(res => {
+        this.contents = res.data.attributes.contents.content
+        this.postContents = res.data.attributes.post_contents
+        var date = new Date(res.data.attributes.updated_at)
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1 ;
+        var day = date.getDate();
+        var updated_at = year + '/' + month + '/' + day
+        this.post = {
+          id: res.data.attributes.id,
+          user_id: res.data.attributes.user_id,
+          title: res.data.attributes.title,
+          updated_at: updated_at,
+          tag_list: res.data.attributes.tag_list,
+        },
+        this.likes = res.data.attributes.likes.length
+        this.like_judge = res.data.attributes.like_judges
+        this.loading = false
+
+        myDiagram.model = new go.Model.fromJson(
+        { "class": "go.TreeModel",
+            "nodeDataArray": this.contents
+          }
+        );
+      })
+    }else{
+      this.$axios.$get(`api/posts/${this.$route.params.id}`).then(res => {
+        this.contents = res.data.attributes.contents.content
+        this.postContents = res.data.attributes.post_contents
+        var date = new Date(res.data.attributes.updated_at)
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1 ;
+        var day = date.getDate();
+        var updated_at = year + '/' + month + '/' + day
+        this.post = {
+          id: res.data.attributes.id,
+          user_id: res.data.attributes.user_id,
+          title: res.data.attributes.title,
+          updated_at: updated_at,
+          tag_list: res.data.attributes.tag_list,
+        },
+        this.likes = res.data.attributes.likes.length
+        this.like_judge = res.data.attributes.like_judges
+        this.loading = false
+
+        myDiagram.model = new go.Model.fromJson(
+        { "class": "go.TreeModel",
+            "nodeDataArray": this.contents
+          }
+        );
+      })
+    }
+  },
+
+  methods:{
     async likeIndex(){
       if(localStorage.getItem('id')){
         this.loading = true
@@ -191,24 +341,21 @@ export default {
       }, 2000)
     },
   },
-
-  errorCaptured(){
-    window.location.href = `/posts/${this.$route.params.id}`
-  }
 }
 </script>
 
 <style scoped>
-.mindmap{
-  font-weight: bold !important;
-}
-.post_icon{
+.post_setting{
   position: absolute; 
   top: 10px; 
   left: 0;
 }
 .post_like p{
   cursor:pointer;
+}
+.post_header{
+  background: #fff;
+  z-index:2;
 }
 .post_header_title{
   text-align: center;
@@ -243,14 +390,6 @@ export default {
 }
 .post_header_tag_list:first-child{
   margin-left:auto;
-}
-.mind_map{
-  position: relative;
-}
-.mind_map_move{
-  position: absolute;
-  right: 5px;
-  bottom: 40px;
 }
 .post_content_ttl{
   font-weight: bold; 

@@ -12,7 +12,7 @@
       {{answer}}
     </v-alert>
 
-    <div class="post_header">
+    <div class="post_header" style="background: #fff; position: relative; border-bottom: solid 1px #eee; z-index: 2;">
       <h1 class="post_header_title display-1 mb-4">{{post.title}}</h1>
       <v-dialog
         v-model="editForm"
@@ -85,12 +85,14 @@
         <v-spacer></v-spacer>
         <p class="post_mindmap_tag_list">{{post.tags}}</p>
       </div>
-      <div class="mind_map">
-        <Mindmap style="height: 70vh" :zoomable="judge" :draggable="false" :keyboard="false" :nodeClick="false" :showUndo="false" :showNodeAdd="false" :contextMenu="false" :download="false" :strokeWidth="1" :fitView="false"  v-model="contents"></Mindmap>
-        <div class="mind_map_move">
-          <v-icon @click="judge = !judge" v-if="judge" color="info">mdi-cursor-default</v-icon>
-          <v-icon @click="judge = !judge" v-else color="info">mdi-cursor-default-outline</v-icon>
-        </div>
+    </div>
+    
+    <div class="mind_map">
+      <div class="wrapper" style="transform: translateY(-80px); border: solid 1px #eee; z-index: 1;">
+        <div
+          id="myDiagramDiv"
+          style="width:100%;height:70vh;"
+        />
       </div>
     </div>
 
@@ -198,7 +200,7 @@
             ></v-select>
           </v-col>
           <v-card flat class="mb-6 mt-6">
-            <v-img contain max-height="320" :src="`http://localhost:3000${content.picture.url}`">
+            <v-img contain max-height="320" :src="`${apiUrl}${content.picture.url}`">
               <v-file-input
                 v-model="content.picture"
                 hide-input
@@ -234,18 +236,18 @@
 
 <script>
 import { VueLoading } from 'vue-loading-template';
-import Mindmap from '@hellowuxin/mindmap'
 import PostsFormTitle from '../../../components/posts/PostsFormTitle.vue'
+import * as go from 'gojs'
+const $ = go.GraphObject.make
 
 export default {
   components: {
-    Mindmap,
     PostsFormTitle,
     VueLoading,
   },
   data(){
     return{ 
-      contents: [{}],
+      contents: [],
       post: {},
       kinds:["title", "sub_title", "picture", "text", "delete"],
       createKinds:["title", "sub_title", "picture", "text"],
@@ -263,12 +265,246 @@ export default {
 
       isValid: false,
       editForm: false,
-      judge: false,
       submitAlert: false,
       loading: true,
     }
   },
+  computed: {
+    apiUrl() {
+      if(process.env.NODE_ENV === 'production'){
+        return process.env.API_URL
+      }else{
+        // return 'http://localhost:3000'
+        return process.env.API_URL
+      }
+    }
+  },
   created(){
+    // if(localStorage.getItem('X-Access-Token')){
+    //   this.$axios.$get(`api/posts/${this.$route.params.id}`, {
+    //     headers:{
+    //       'X-Access-Token': localStorage.getItem('X-Access-Token')
+    //     }
+    //   }).then(res => {
+    //     this.contents = res.data.attributes.contents.content
+    //     this.postContents = res.data.attributes.post_contents
+    //     var date = new Date(res.data.attributes.updated_at)
+    //     var year = date.getFullYear();
+    //     var month = date.getMonth() + 1 ;
+    //     var day = date.getDate();
+    //     var updated_at = year + '/' + month + '/' + day
+    //     this.post = {
+    //       id: res.data.attributes.id,
+    //       title: res.data.attributes.title,
+    //       updated_at: updated_at,
+    //       tag_list: res.data.attributes.tag_list,
+    //     }
+    //     this.num = res.data.attributes.post_contents.length + 1
+    //     this.loading = false
+    //   }).catch(
+    //     this.loading = false,
+    //   )
+    // }else{
+    //   this.loading = false,
+    //   this.submitAlert = true,
+    //   this.colors = '',
+    //   this.types = 'error',
+    //   this.answer = 'ログインしてください。'
+    // }
+  },
+
+    mounted() {
+    const myDiagram = $(go.Diagram, 'myDiagramDiv',
+      {
+        initialAutoScale: go.Diagram.Uniform,
+        "commandHandler.copiesTree": true,
+        "commandHandler.copiesParentKey": true,
+        "commandHandler.deletesTree": true,
+        "draggingTool.dragsTree": true,
+        'undoManager.isEnabled': true 
+      })
+      this.diagram = myDiagram
+    const myModel = $(go.TreeModel)
+    myModel.nodeDataArray = this.contents
+    myDiagram.model = myModel
+
+    myDiagram.addDiagramListener("Modified", function(e) {
+      var button = document.getElementById("SaveButton");
+      if (button) button.disabled = !myDiagram.isModified;
+      var idx = document.title.indexOf("*");
+      if (myDiagram.isModified) {
+        if (idx < 0) document.title += "*";
+      } else {
+        if (idx >= 0) document.title = document.title.substr(0, idx);
+      }
+    });
+
+    myDiagram.nodeTemplate =
+      $(go.Node, "Vertical",
+        { selectionObjectName: "TEXT" },
+        new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
+        new go.Binding("locationSpot", "dir", function(d) { return spotConverter(d, false); }),
+        $(go.TextBlock,
+          {
+            name: "TEXT",
+            minSize: new go.Size(30, 15),
+            editable: true
+          }, 
+          new go.Binding("text", "text").makeTwoWay(),
+          new go.Binding("scale", "scale").makeTwoWay(),
+          new go.Binding("font", "font").makeTwoWay()
+        ),
+        $(go.Shape, "LineH",
+          {
+            stretch: go.GraphObject.Horizontal,
+            strokeWidth: 3, height: 3,
+            //この線の形はポートです-リンクが接続するもの
+            portId: "", fromSpot: go.Spot.LeftRightSides, toSpot: go.Spot.LeftRightSides
+          },
+          new go.Binding("stroke", "brush"),
+          //リンクが適切な方向から入り、適切に出て行くことを確認します
+          new go.Binding("fromSpot", "dir", function(d) { return spotConverter(d, true); }),
+          new go.Binding("toSpot", "dir", function(d) { return spotConverter(d, false); }),
+        ),
+      );
+
+      myDiagram.nodeTemplate.selectionAdornmentTemplate =
+      $(go.Adornment, "Spot",
+        $(go.Panel, "Auto",
+          //この装飾は、選択したノードの周りに長方形の青い形状をしています
+          $(go.Shape, { fill: null, stroke: "dodgerblue", strokeWidth: 3 }),
+          $(go.Placeholder, { margin: new go.Margin(4, 4, 0, 4) })
+        ),
+        //この装飾には、選択したノードの右側にボタンがあります
+        $("Button",
+          {
+            alignment: go.Spot.Right,
+            alignmentFocus: go.Spot.Left,
+            click: addNodeAndLink
+          },
+          $(go.TextBlock, "+",
+            { font: "bold 8pt sans-serif" }
+          )
+        )
+      );
+
+      myDiagram.linkTemplate =
+        $(go.Link,
+          {
+            curve: go.Link.Bezier,
+            fromShortLength: -2,
+            toShortLength: -2,
+            selectable: false
+          },
+          $(go.Shape,
+            { strokeWidth: 3 },
+            new go.Binding("stroke", "toNode", function(n) {
+              if (n.data.brush) return n.data.brush;
+              return "black";
+            }).ofObject())
+        );
+
+    myDiagram.addDiagramListener("SelectionMoved", function(e) {
+      var rootX = myDiagram.findNodeForKey(0).location.x;
+      myDiagram.selection.each(function(node) {
+        if (node.data.parent !== 0) return; // ルートに接続されているノードのみを考慮してください
+        var nodeX = node.location.x;
+        if (rootX < nodeX && node.data.dir !== "right") {
+          updateNodeDirection(node, "right");
+        } else if (rootX > nodeX && node.data.dir !== "left") {
+          updateNodeDirection(node, "left");
+        }
+        layoutTree(node);
+      });
+    });
+
+    function spotConverter(dir, from) {
+      if (dir === "left") {
+        return (from ? go.Spot.Left : go.Spot.Right);
+      } else {
+        return (from ? go.Spot.Right : go.Spot.Left);
+      }
+    }
+
+    function updateNodeDirection(node, dir) {
+      myDiagram.model.setDataProperty(node.data, "dir", dir);
+      // recursively update the direction of the child nodes
+      var chl = node.findTreeChildrenNodes(); // gives us an iterator of the child nodes related to this particular node
+      while (chl.next()) {
+        updateNodeDirection(chl.value, dir);
+      }
+    }
+
+    function addNodeAndLink(e, obj) {
+      var adorn = obj.part;
+      var diagram = adorn.diagram;
+      diagram.startTransaction("Add Node");
+      var oldnode = adorn.adornedPart;
+      var olddata = oldnode.data;
+      // copy the brush and direction to the new node data
+      if(olddata.key == 0){
+        var color = ["palevioletred","coral","darkseagreen", "skyblue"]
+        var selectColor = color[Math.floor(Math.random() * color.length)]
+        var newdata = { text: "idea", brush: selectColor, dir: olddata.dir, parent: olddata.key };
+      }else{
+        var newdata = { text: "idea", brush: olddata.brush, dir: olddata.dir, parent: olddata.key };
+      }
+      diagram.model.addNodeData(newdata);
+      layoutTree(oldnode);
+      diagram.commitTransaction("Add Node");
+
+      // if the new node is off-screen, scroll the diagram to show the new node
+      var newnode = diagram.findNodeForData(newdata);
+      if (newnode !== null) diagram.scrollToRect(newnode.actualBounds);
+    }
+
+    function layoutTree(node) {
+      if (node.data.key === 0) {  // adding to the root?
+        layoutAll();  // lay out everything
+      } else {  // otherwise lay out only the subtree starting at this parent node
+        var parts = node.findTreeParts();
+        layoutAngle(parts, node.data.dir === "left" ? 180 : 0);
+      }
+    }
+
+    function layoutAngle(parts, angle) {
+      var layout = go.GraphObject.make(go.TreeLayout,
+        {
+          angle: angle,
+          arrangement: go.TreeLayout.ArrangementFixedRoots,
+          nodeSpacing: 5,
+          layerSpacing: 20,
+          setsPortSpot: false, // don't set port spots since we're managing them with our spotConverter function
+          setsChildPortSpot: false
+        });
+      layout.doLayout(parts);
+    }
+
+    function layoutAll() {
+      var root = myDiagram.findNodeForKey(0);
+      if (root === null) return;
+      myDiagram.startTransaction("Layout");
+      // split the nodes and links into two collections
+      var rightward = new go.Set(/*go.Part*/);
+      var leftward = new go.Set(/*go.Part*/);
+      root.findLinksConnected().each(function(link) {
+        var child = link.toNode;
+        if (child.data.dir === "left") {
+          leftward.add(root);  // the root node is in both collections
+          leftward.add(link);
+          leftward.addAll(child.findTreeParts());
+        } else {
+          rightward.add(root);  // the root node is in both collections
+          rightward.add(link);
+          rightward.addAll(child.findTreeParts());
+        }
+      });
+      // do one layout and then the other without moving the shared root node
+      layoutAngle(rightward, 0);
+      layoutAngle(leftward, 180);
+      myDiagram.commitTransaction("Layout");
+    }
+
     if(localStorage.getItem('X-Access-Token')){
       this.$axios.$get(`api/posts/${this.$route.params.id}`, {
         headers:{
@@ -290,6 +526,12 @@ export default {
         }
         this.num = res.data.attributes.post_contents.length + 1
         this.loading = false
+
+        myDiagram.model = new go.Model.fromJson(
+          { "class": "go.TreeModel",
+            "nodeDataArray": this.contents
+          }
+        );
       }).catch(
         this.loading = false,
       )
@@ -526,6 +768,9 @@ export default {
 .post_edit_card_form{
   display: flex; 
   flex-wrap: wrap;
+}
+.post_form{
+  transform: translateY(-80px);
 }
 .post_form_file{
   margin: 0; 

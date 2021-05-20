@@ -23,15 +23,14 @@
         </v-btn>
       </template>
 
-      
-        <Mindmap style="height: 80vh;" :keyboard="false" :nodeClick="false" :showUndo="false" :showNodeAdd="false" :contextMenu="false" :download="false" :strokeWidth="1" :fitView="false"  v-model="contents"></Mindmap>
+      <mindmap />
       
     </v-dialog>
   </div>
 </template>
 
 <script>
-import Mindmap from '@hellowuxin/mindmap'
+import mindmap from '~/components/Mindmap'
 export default {
   props: {
     contents:{
@@ -40,7 +39,7 @@ export default {
     }
   },
   components: {
-    Mindmap,
+    mindmap,
   },
   data(){
     return {
@@ -54,3 +53,4 @@ export default {
   
 }
 </script>
+

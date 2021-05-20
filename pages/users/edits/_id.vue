@@ -34,8 +34,9 @@
             <v-card-text class="grey--text pb-0">画像</v-card-text>
             <v-col
               cols="12"
+              style="position: relative;"
             >
-              <v-img contain max-height="200" :src="`http://localhost:3000${image}`">
+              <v-img contain max-height="200" :src="`${apiUrl}${image}`">
                 <v-file-input
                   v-model="image"
                   hide-input
@@ -52,14 +53,6 @@
                 label="ユーザー名"
                 required
                 v-model="name"
-              ></v-text-field>
-            </v-col>
-
-            <v-col cols="12">
-              <v-text-field
-                label="メールアドレス"
-                required
-                v-model="email"
               ></v-text-field>
             </v-col>
 
@@ -108,12 +101,21 @@ export default {
       image_judge: '',
 
       name: '',
-      email: '',
       image: [],
       profile: '',
       user: '',
 
       loading: true,
+    }
+  },
+  computed: {
+    apiUrl() {
+      if(process.env.NODE_ENV === 'production'){
+        return process.env.API_URL
+      }else{
+        // return 'http://localhost:3000'
+        return process.env.API_URL
+      }
     }
   },
   created() {
@@ -125,11 +127,10 @@ export default {
       this.currentUser = {id: localStorage.getItem('id')}
 
       this.name = res.data.attributes.name
-      this.email = res.data.attributes.email
       this.image = res.data.attributes.image.url
       this.profile = res.data.attributes.profile
       this.loading = false
-    })
+    }).catch(this.loading = false)
     if(localStorage.getItem('id') == this.$route.params.id){
       this.items = [{title: `ユーザー情報`, link: `/users/${this.$route.params.id}`},{title: '投稿一覧', link: `/users/posts/${this.$route.params.id}`},{title: `いいね一覧`, link: `/users/likes/${this.$route.params.id}`},{title: `フォロー中`, link: `/users/follows/${this.$route.params.id}`},{title: `フォロワー`, link: `/users/followers/${this.$route.params.id}`},{title: `設定`, link: `/users/edits/${this.$route.params.id}`}]
     }else{
@@ -153,7 +154,6 @@ export default {
         if(this.image == '[object File]'){
           formData.append('image', this.image)
         }
-        formData.append('profile', this.profile)
 
       await this.$axios.$patch(`api/users/${this.$route.params.id}`, formData, {
         headers:{
@@ -168,7 +168,6 @@ export default {
         this.currentUser = res.data.attributes.current_user
 
         this.name = res.data.attributes.name
-        this.email = res.data.attributes.email
         this.image = res.data.attributes.image.url
         this.profile = res.data.attributes.profile
       })
@@ -262,11 +261,11 @@ export default {
 .image_judge{
   position: absolute; 
   right: 50%; 
-  bottom: 70%; 
+  bottom: 50%; 
   z-index: 0; 
   text-align: center; 
   display: inline-block; 
-  transform: translate(50%, 70%);
+  transform: translate(50%, 50%);
 }
 .user_header_left{
   width: 40%;

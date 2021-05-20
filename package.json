@@ -6,14 +6,16 @@
     "dev": "nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
-    "generate": "nuxt generate"
+    "generate": "nuxt generate",
+    "test": "jest"
   },
   "dependencies": {
-    "@hellowuxin/mindmap": "^2.1.4",
-    "@nuxtjs/auth": "^4.9.1",
+    "@nuxtjs/axios": "^5.13.1",
+    "@nuxtjs/dotenv": "^1.4.1",
     "actioncable": "^5.2.5",
     "chart.js": "^3.0.2",
     "core-js": "^3.6.5",
+    "gojs": "^2.1.39",
     "moment": "^2.29.1",
     "nuxt": "^2.14.6",
     "vue-chartjs": "^3.5.1",
@@ -21,6 +23,11 @@
     "vuedraggable": "^2.24.3"
   },
   "devDependencies": {
-    "@nuxtjs/vuetify": "^1.11.2"
+    "@nuxtjs/vuetify": "^1.11.2",
+    "@vue/test-utils": "^1.1.0",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-jest": "^26.5.0",
+    "jest": "^26.5.0",
+    "vue-jest": "^3.0.4"
   }
 }
