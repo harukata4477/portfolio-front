@@ -32,6 +32,11 @@
     </div>
   </div>
 
+<<<<<<< HEAD
+=======
+    
+    <rooms-mind-map :contents.sync="contents"/>
+>>>>>>> 182d87152c0d2c1695618708f8cf61c8837d8c18
 
   <div class="post_content" style="transform: translateY(-70px);">
     <div class="wrapper" style="border: solid 1px #eee;">
@@ -45,7 +50,11 @@
       <h3 class="post_content_sub-ttl ml-1 mt-6 mb-5" v-text="content.sub_title" v-else-if="content.kind == 'sub_title'"></h3>
       <p class="post_content_txt ml-1 mt-5 mb-5" v-text="content.text" v-else-if="content.kind == 'text'"></p>
       <v-card class="mt-12 mb-12" flat v-else-if="content.kind == 'picture'">
+<<<<<<< HEAD
         <v-img contain max-height="320" :src="`${apiUrl}${content.picture.url}`"></v-img>
+=======
+        <v-img contain max-height="320" :src="`http://localhost:5000${content.picture.url}`"></v-img>
+>>>>>>> 182d87152c0d2c1695618708f8cf61c8837d8c18
       </v-card>
     </div>
   </div>
@@ -55,12 +64,17 @@
 
 <script>
 import { VueLoading } from 'vue-loading-template';
+<<<<<<< HEAD
 import * as go from 'gojs'
 const $ = go.GraphObject.make
+=======
+import RoomsMindMap from '../../components/rooms/RoomsMindMap.vue';
+>>>>>>> 182d87152c0d2c1695618708f8cf61c8837d8c18
 
 export default {
   components: {
     VueLoading,
+    RoomsMindMap,
   },
   data(){
     return{ 
@@ -80,11 +94,44 @@ export default {
       loading: true,
     }
   },
+<<<<<<< HEAD
 
   computed: {
     apiUrl() {
       if(process.env.NODE_ENV === 'production'){
         return process.env.API_URL
+=======
+  created() {
+    this.index()
+  },
+  methods:{
+    async index(){
+      this.loading = true
+      if(localStorage.getItem('id')){
+        await this.$axios.$get(`api/posts/${this.$route.params.id}`, {
+          headers:{
+            'X-Access-Token': localStorage.getItem('X-Access-Token')
+          }
+        }).then(res => {
+          this.contents = res.data.attributes.contents.content
+          this.postContents = res.data.attributes.post_contents
+          var date = new Date(res.data.attributes.updated_at)
+          var year = date.getFullYear();
+          var month = date.getMonth() + 1 ;
+          var day = date.getDate();
+          var updated_at = year + '/' + month + '/' + day
+          this.post = {
+            id: res.data.attributes.id,
+            user_id: res.data.attributes.user_id,
+            title: res.data.attributes.title,
+            updated_at: updated_at,
+            tag_list: res.data.attributes.tag_list,
+          },
+          this.likes = res.data.attributes.likes.length
+          this.like_judge = res.data.attributes.like_judges
+          this.loading = false
+        })
+>>>>>>> 182d87152c0d2c1695618708f8cf61c8837d8c18
       }else{
         // return 'http://localhost:3000'
         return process.env.API_URL
@@ -345,7 +392,11 @@ export default {
 </script>
 
 <style scoped>
+<<<<<<< HEAD
 .post_setting{
+=======
+.post_icon{
+>>>>>>> 182d87152c0d2c1695618708f8cf61c8837d8c18
   position: absolute; 
   top: 10px; 
   left: 0;

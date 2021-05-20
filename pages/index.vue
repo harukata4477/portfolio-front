@@ -92,7 +92,11 @@ export default {
   position: absolute; 
   top: 10px; 
   right: 10px; 
+<<<<<<< HEAD
   z-index: 3;
+=======
+  z-index: 10;
+>>>>>>> 182d87152c0d2c1695618708f8cf61c8837d8c18
 }
 .header{
   position: relative;

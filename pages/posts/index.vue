@@ -72,6 +72,7 @@
         <v-icon large v-if="loginJudge" @click="$router.push('/posts/create')">mdi-pencil-box-outline</v-icon>
       </v-row>
 
+<<<<<<< HEAD
       <v-row dense class="post_content mt-0">
         <v-col
           v-for="(post, a) in posts"
@@ -116,6 +117,52 @@
           </v-card>
         </v-col>
       </v-row>
+=======
+    <v-row dense class="mt-0">
+      <v-col
+        v-for="(post, a) in posts"
+        :key="`post-${a}`"
+        :cols="6"
+        class="post_content_col mb-4"
+      >
+        <v-card>
+          <v-img
+            @click="jump(post.id)"
+            class="white--text align-end"
+            background-color="gray"
+            min-height="155px"
+            gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+            :src="`/img/img${post.kind}.svg`"
+          >
+            <div class="post_content_card_tag">
+              <p v-for="(tag, b) in post.tag_list" :key="`tag-${b}`" class="post_content_card_tag_content pl-1 pr-1 mb-0 mr-1" v-text="tag"></p>
+            </div>
+            <v-card-title class="post_content_card_title pt-0 pb-2" v-text="post.title"></v-card-title>
+          </v-img>
+          <v-card-actions>
+            <div @click="$router.push(`/users/${users[a].id}`)" class="post_content_user">
+              <v-img :src="`http://localhost:5000${users[a].image.url}`" class="post_content_user_img"></v-img>
+              <p class="post_content_user_name">{{users[a].name}}</p>
+            </div>
+            <v-spacer></v-spacer>
+            {{like_counts[a]}}
+            <v-btn icon v-if="paginationJudge ==  'tags'">
+              <v-icon v-if="like_judges[a]" @click="tagUnlike(posts[a])" color="orange">mdi-thumb-up</v-icon>
+              <v-icon v-else @click="tagLike(posts[a])">mdi-thumb-up-outline</v-icon>
+            </v-btn>
+            <v-btn icon v-else-if="paginationJudge == 'index'">
+              <v-icon v-if="like_judges[a]" @click="unlike(posts[a])" color="orange">mdi-thumb-up</v-icon>
+              <v-icon v-else @click="like(posts[a])">mdi-thumb-up-outline</v-icon>
+            </v-btn>
+            <v-btn icon v-else-if="paginationJudge == 'popular'">
+              <v-icon v-if="like_judges[a]" @click="popularUnlike(posts[a])" color="orange">mdi-thumb-up</v-icon>
+              <v-icon v-else @click="popularLike(posts[a])">mdi-thumb-up-outline</v-icon>
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+>>>>>>> 182d87152c0d2c1695618708f8cf61c8837d8c18
 
       <div class="text-center mt-5">
         <v-pagination

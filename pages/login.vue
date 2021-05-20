@@ -80,6 +80,7 @@ export default {
         localStorage.setItem("id", res.data.data.id);
         this.loading = false
         window.location.href = `/posts/`
+<<<<<<< HEAD
       }).catch(error => {
         console.log(error)
         this.errored = true
@@ -87,6 +88,11 @@ export default {
         this.$refs.form.reset()
       })
     }
+=======
+      }).catch(this.load_judge = true)
+      this.params = { user: { email: '', password: '' } }
+    },
+>>>>>>> 182d87152c0d2c1695618708f8cf61c8837d8c18
   },
   watch: {
     load_judge (val) {

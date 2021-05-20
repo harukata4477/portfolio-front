@@ -56,7 +56,11 @@
           <template v-if="user.name == '画像'">
 
             <td class="content">{{ user.name }}</td>
+<<<<<<< HEAD
             <td class="content"><v-img :src="`${apiUrl}${user.content}`" class="content_img"></v-img></td>
+=======
+            <td class="content"><v-img :src="`http://localhost:5000${user.content}`" class="content_img"></v-img></td>
+>>>>>>> 182d87152c0d2c1695618708f8cf61c8837d8c18
             
           </template>
 

@@ -82,7 +82,22 @@ export default {
         this.errored = true
         this.load_judge = true
         this.$refs.form.reset()
+<<<<<<< HEAD
       })
+=======
+        this.loading = false
+        window.location.href = `/posts/`
+      }).catch(this.load_judge = true)
+      this.params = { user: { email: '', password: '' } }
+    },
+  },
+   watch: {
+    load_judge (val) {
+      val && setTimeout(() => {
+        this.load_judge = false
+        this.loading = false
+      }, 2000)
+>>>>>>> 182d87152c0d2c1695618708f8cf61c8837d8c18
     },
   },
    watch: {

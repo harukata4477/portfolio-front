@@ -130,8 +130,12 @@ export default {
         {title: '編集', url: 'mindmap_edit.mp4'},
         {title: '削除', url: 'mindmap_delete.mp4'},
         {title: '追加', url: 'mindmap_add.mp4'},
+<<<<<<< HEAD
         {title: '太字/細字', url: 'mindmap_font_weight.mp4'},
         {title: 'レイアウト', url: 'mindmap_layout.mp4'},
+=======
+        {title: '開く & 閉じる', url: 'mindmap_open.mp4'},
+>>>>>>> 182d87152c0d2c1695618708f8cf61c8837d8c18
         {title: '保存', url: 'mindmap_save.mp4'},
       ],
       calendars: [
