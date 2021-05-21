@@ -29,11 +29,7 @@
 
         <v-list-item>
           <v-list-item-avatar style="cursor:pointer;" @click="$router.push(`/users/${message.user_id}`)">
-<<<<<<< HEAD
             <v-img :src="`${apiUrl}${message.user_image.url}`"></v-img>
-=======
-            <v-img :src="`http://localhost:5000${message.user_image.url}`"></v-img>
->>>>>>> 182d87152c0d2c1695618708f8cf61c8837d8c18
           </v-list-item-avatar>
 
           <v-list-item-content class="mt-4" style="padding: 0;">
@@ -103,11 +99,7 @@ export default {
   created(){
     this.index()
 
-<<<<<<< HEAD
     const cable = ActionCable.createConsumer(this.webSocket);
-=======
-    const cable = ActionCable.createConsumer('ws://localhost:5000/cable');
->>>>>>> 182d87152c0d2c1695618708f8cf61c8837d8c18
 
     this.messageChannel = cable.subscriptions.create( "MessageChannel",{
       received: (data) => {

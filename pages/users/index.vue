@@ -35,11 +35,7 @@
           <v-list-item-avatar
             @click="$router.push(`/users/${user.id}`)"
           >
-<<<<<<< HEAD
             <v-img :src="`${apiUrl}${user.image}`"></v-img>
-=======
-            <v-img :src="`http://localhost:5000${user.image}`"></v-img>
->>>>>>> 182d87152c0d2c1695618708f8cf61c8837d8c18
           </v-list-item-avatar>
           <v-list-item-content
             @click="$router.push(`/users/${user.id}`)"
@@ -200,7 +196,6 @@ export default {
             }
           }).then(res => {
             this.users = []
-<<<<<<< HEAD
 
             var contents = res.data
             for (let i = 0; i < contents.length; i++){
@@ -219,8 +214,6 @@ export default {
         }else{
           await this.$axios.$get(`api/users/`).then(res => {
             this.users = []
-=======
->>>>>>> 182d87152c0d2c1695618708f8cf61c8837d8c18
 
             var contents = res.data
             for (let i = 0; i < contents.length; i++){
@@ -236,27 +229,6 @@ export default {
             this.totalPage = res.pagination.total_pages
             this.loading = false
           })
-<<<<<<< HEAD
-=======
-        }else{
-          await this.$axios.$get(`api/users/`).then(res => {
-            this.users = []
-
-            var contents = res.data
-            for (let i = 0; i < contents.length; i++){
-              this.users.push({
-                id: contents[i].attributes.id,
-                image: contents[i].attributes.image.url,
-                name: contents[i].attributes.name,
-                profile: contents[i].attributes.profile,
-                follow_judge: contents[i].attributes.follow_judge
-              })
-            }
-            this.currentPage = res.pagination.current_page
-            this.totalPage = res.pagination.total_pages
-            this.loading = false
-          })
->>>>>>> 182d87152c0d2c1695618708f8cf61c8837d8c18
         }
       }
     },

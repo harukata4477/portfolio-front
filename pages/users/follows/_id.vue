@@ -34,11 +34,7 @@
             <v-list-item-avatar
               @click="$router.push(`/users/${following.id}`)"
             >
-<<<<<<< HEAD
               <v-img :src="`${apiUrl}${following.image.url}`"></v-img>
-=======
-              <v-img :src="`http://localhost:5000${following.image.url}`"></v-img>
->>>>>>> 182d87152c0d2c1695618708f8cf61c8837d8c18
             </v-list-item-avatar>
             <v-list-item-content
               @click="$router.push(`/users/${following.id}`)"
@@ -80,7 +76,6 @@ export default {
   created() {
     this.data()
     this.navData()
-<<<<<<< HEAD
   },
   computed: {
     apiUrl() {
@@ -91,8 +86,6 @@ export default {
         return process.env.API_URL
       }
     }
-=======
->>>>>>> 182d87152c0d2c1695618708f8cf61c8837d8c18
   },
   methods:{
     async data(){

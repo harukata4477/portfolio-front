@@ -36,11 +36,7 @@
               cols="12"
               style="position: relative;"
             >
-<<<<<<< HEAD
               <v-img contain max-height="200" :src="`${apiUrl}${image}`">
-=======
-              <v-img contain max-height="200" :src="`http://localhost:5000${image}`">
->>>>>>> 182d87152c0d2c1695618708f8cf61c8837d8c18
                 <v-file-input
                   v-model="image"
                   hide-input

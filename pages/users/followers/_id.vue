@@ -34,11 +34,7 @@
             <v-list-item-avatar
               @click="$router.push(`/users/${following.id}`)"
             >
-<<<<<<< HEAD
               <v-img :src="`${apiUrl}${following.image.url}`"></v-img>
-=======
-              <v-img :src="`http://localhost:5000${following.image.url}`"></v-img>
->>>>>>> 182d87152c0d2c1695618708f8cf61c8837d8c18
             </v-list-item-avatar>
             <v-list-item-content
               @click="$router.push(`/users/${following.id}`)"
@@ -81,7 +77,6 @@ export default {
     this.data()
     this.navData()
   },
-<<<<<<< HEAD
   computed: {
     apiUrl() {
       if(process.env.NODE_ENV === 'production'){
@@ -92,8 +87,6 @@ export default {
       }
     }
   },
-=======
->>>>>>> 182d87152c0d2c1695618708f8cf61c8837d8c18
   methods: {
     async data(){
       await this.$axios.$get(`api/follows/show_follower/${this.$route.params.id}?page=${this.currentPage}`).then(res => {

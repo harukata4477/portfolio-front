@@ -183,7 +183,6 @@ export default {
 </script>
 
 <style>
-<<<<<<< HEAD
 @keyframes fadeIn {
   0% {
       opacity: 0;
@@ -219,8 +218,6 @@ export default {
   width: 95%;
 }
 
-=======
->>>>>>> 182d87152c0d2c1695618708f8cf61c8837d8c18
 .toolbar_title{
   cursor: pointer; 
 }

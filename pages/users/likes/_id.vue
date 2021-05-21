@@ -49,11 +49,7 @@
 
             <v-card-actions>
               <div @click="$router.push(`/users/${users[a].id}`)" class="user">
-<<<<<<< HEAD
                 <v-img :src="`${apiUrl}${users[a].image.url}`" class="user_img"></v-img>
-=======
-                <v-img :src="`http://localhost:5000${users[a].image.url}`" class="user_img"></v-img>
->>>>>>> 182d87152c0d2c1695618708f8cf61c8837d8c18
                 <p class="user_name">{{users[a].name}}</p>
               </div>
 

@@ -133,12 +133,7 @@ export default {
   created () {
     this.index()
 
-<<<<<<< HEAD
-    const cable = ActionCable.createConsumer('ws://54.248.224.191/cable');
-=======
-    const api = 'ws://' + process.env.API_URL + '/cable'
-    const cable = ActionCable.createConsumer(api);
->>>>>>> 182d87152c0d2c1695618708f8cf61c8837d8c18
+    const cable = ActionCable.createConsumer(this.webSocket);
 
     this.NotificationChannel = cable.subscriptions.create( "NotificationChannel",{
       received: (data) => { 
