@@ -8,14 +8,14 @@
   "Calendars": {
     "description": "Auto imported from components/calendars/Calendars.vue"
   },
-  "Notifications": {
-    "description": "Auto imported from components/notifications/Notifications.vue"
+  "ContentsFormNewContent": {
+    "description": "Auto imported from components/contents/contentsFormNewContent.vue"
   },
   "MessagesForm": {
     "description": "Auto imported from components/messages/MessagesForm.vue"
   },
-  "ContentsFormNewContent": {
-    "description": "Auto imported from components/contents/contentsFormNewContent.vue"
+  "Notifications": {
+    "description": "Auto imported from components/notifications/Notifications.vue"
   },
   "PostsEdit": {
     "description": "Auto imported from components/posts/PostsEdit.vue"

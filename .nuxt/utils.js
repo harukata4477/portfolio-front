@@ -200,7 +200,7 @@ export async function setContext (app, context) {
       payload: context.payload,
       error: context.error,
       base: app.router.options.base,
-      env: {}
+      env: {"API_URL":"http://localhost:5000","FRONT_URL":"http://13.113.2.187","API_URL_WEB_SOCKET":"ws://54.248.224.191/cable"}
     }
     // Only set once
 

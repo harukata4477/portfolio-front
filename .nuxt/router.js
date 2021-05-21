@@ -4,26 +4,26 @@ import { normalizeURL, decode } from 'ufo'
 import { interopDefault } from './utils'
 import scrollBehavior from './router.scrollBehavior.js'
 
-const _446aebc8 = () => interopDefault(import('../pages/calendars/index.vue' /* webpackChunkName: "pages/calendars/index" */))
-const _0022e6e6 = () => interopDefault(import('../pages/help.vue' /* webpackChunkName: "pages/help" */))
-const _4cb498cd = () => interopDefault(import('../pages/login.vue' /* webpackChunkName: "pages/login" */))
-const _288fbd0c = () => interopDefault(import('../pages/posts/index.vue' /* webpackChunkName: "pages/posts/index" */))
-const _a0f15342 = () => interopDefault(import('../pages/rooms/index.vue' /* webpackChunkName: "pages/rooms/index" */))
-const _d38f2438 = () => interopDefault(import('../pages/signup.vue' /* webpackChunkName: "pages/signup" */))
-const _19eab56f = () => interopDefault(import('../pages/users/index.vue' /* webpackChunkName: "pages/users/index" */))
-const _99ff4ef8 = () => interopDefault(import('../pages/posts/create.vue' /* webpackChunkName: "pages/posts/create" */))
-const _6917c03f = () => interopDefault(import('../pages/rooms/create.vue' /* webpackChunkName: "pages/rooms/create" */))
-const _06a985fc = () => interopDefault(import('../pages/posts/edits/_id.vue' /* webpackChunkName: "pages/posts/edits/_id" */))
-const _1e51d11e = () => interopDefault(import('../pages/users/edits/_id.vue' /* webpackChunkName: "pages/users/edits/_id" */))
-const _82469d46 = () => interopDefault(import('../pages/users/followers/_id.vue' /* webpackChunkName: "pages/users/followers/_id" */))
-const _7c48a86a = () => interopDefault(import('../pages/users/follows/_id.vue' /* webpackChunkName: "pages/users/follows/_id" */))
-const _76604484 = () => interopDefault(import('../pages/users/likes/_id.vue' /* webpackChunkName: "pages/users/likes/_id" */))
-const _5609759b = () => interopDefault(import('../pages/users/posts/_id.vue' /* webpackChunkName: "pages/users/posts/_id" */))
-const _512738f8 = () => interopDefault(import('../pages/calendars/_id.vue' /* webpackChunkName: "pages/calendars/_id" */))
-const _30178b3c = () => interopDefault(import('../pages/posts/_id.vue' /* webpackChunkName: "pages/posts/_id" */))
-const _793536f2 = () => interopDefault(import('../pages/rooms/_id.vue' /* webpackChunkName: "pages/rooms/_id" */))
-const _bb9570d2 = () => interopDefault(import('../pages/users/_id.vue' /* webpackChunkName: "pages/users/_id" */))
-const _f9e61494 = () => interopDefault(import('../pages/index.vue' /* webpackChunkName: "pages/index" */))
+const _9c26a03a = () => interopDefault(import('../pages/calendars/index.vue' /* webpackChunkName: "pages/calendars/index" */))
+const _006b85b4 = () => interopDefault(import('../pages/help.vue' /* webpackChunkName: "pages/help" */))
+const _484efb54 = () => interopDefault(import('../pages/login.vue' /* webpackChunkName: "pages/login" */))
+const _53ea42c1 = () => interopDefault(import('../pages/posts/index.vue' /* webpackChunkName: "pages/posts/index" */))
+const _17b977a6 = () => interopDefault(import('../pages/rooms/index.vue' /* webpackChunkName: "pages/rooms/index" */))
+const _0dea5c3d = () => interopDefault(import('../pages/signup.vue' /* webpackChunkName: "pages/signup" */))
+const _fbc65294 = () => interopDefault(import('../pages/users/index.vue' /* webpackChunkName: "pages/users/index" */))
+const _5112601d = () => interopDefault(import('../pages/posts/create.vue' /* webpackChunkName: "pages/posts/create" */))
+const _0729c7d8 = () => interopDefault(import('../pages/rooms/create.vue' /* webpackChunkName: "pages/rooms/create" */))
+const _4a68a87a = () => interopDefault(import('../pages/posts/edits/_id.vue' /* webpackChunkName: "pages/posts/edits/_id" */))
+const _760d8590 = () => interopDefault(import('../pages/users/edits/_id.vue' /* webpackChunkName: "pages/users/edits/_id" */))
+const _734ec8b8 = () => interopDefault(import('../pages/users/followers/_id.vue' /* webpackChunkName: "pages/users/followers/_id" */))
+const _5f0f0f1e = () => interopDefault(import('../pages/users/follows/_id.vue' /* webpackChunkName: "pages/users/follows/_id" */))
+const _4a826a4b = () => interopDefault(import('../pages/users/likes/_id.vue' /* webpackChunkName: "pages/users/likes/_id" */))
+const _2a2b9b62 = () => interopDefault(import('../pages/users/posts/_id.vue' /* webpackChunkName: "pages/users/posts/_id" */))
+const _08c961ea = () => interopDefault(import('../pages/calendars/_id.vue' /* webpackChunkName: "pages/calendars/_id" */))
+const _1a07fd2e = () => interopDefault(import('../pages/posts/_id.vue' /* webpackChunkName: "pages/posts/_id" */))
+const _6325a8e4 = () => interopDefault(import('../pages/rooms/_id.vue' /* webpackChunkName: "pages/rooms/_id" */))
+const _a585e2c4 = () => interopDefault(import('../pages/users/_id.vue' /* webpackChunkName: "pages/users/_id" */))
+const _7ea7583d = () => interopDefault(import('../pages/index.vue' /* webpackChunkName: "pages/index" */))
 
 const emptyFn = () => {}
 
@@ -38,83 +38,83 @@ export const routerOptions = {
 
   routes: [{
     path: "/calendars",
-    component: _446aebc8,
+    component: _9c26a03a,
     name: "calendars"
   }, {
     path: "/help",
-    component: _0022e6e6,
+    component: _006b85b4,
     name: "help"
   }, {
     path: "/login",
-    component: _4cb498cd,
+    component: _484efb54,
     name: "login"
   }, {
     path: "/posts",
-    component: _288fbd0c,
+    component: _53ea42c1,
     name: "posts"
   }, {
     path: "/rooms",
-    component: _a0f15342,
+    component: _17b977a6,
     name: "rooms"
   }, {
     path: "/signup",
-    component: _d38f2438,
+    component: _0dea5c3d,
     name: "signup"
   }, {
     path: "/users",
-    component: _19eab56f,
+    component: _fbc65294,
     name: "users"
   }, {
     path: "/posts/create",
-    component: _99ff4ef8,
+    component: _5112601d,
     name: "posts-create"
   }, {
     path: "/rooms/create",
-    component: _6917c03f,
+    component: _0729c7d8,
     name: "rooms-create"
   }, {
     path: "/posts/edits/:id?",
-    component: _06a985fc,
+    component: _4a68a87a,
     name: "posts-edits-id"
   }, {
     path: "/users/edits/:id?",
-    component: _1e51d11e,
+    component: _760d8590,
     name: "users-edits-id"
   }, {
     path: "/users/followers/:id?",
-    component: _82469d46,
+    component: _734ec8b8,
     name: "users-followers-id"
   }, {
     path: "/users/follows/:id?",
-    component: _7c48a86a,
+    component: _5f0f0f1e,
     name: "users-follows-id"
   }, {
     path: "/users/likes/:id?",
-    component: _76604484,
+    component: _4a826a4b,
     name: "users-likes-id"
   }, {
     path: "/users/posts/:id?",
-    component: _5609759b,
+    component: _2a2b9b62,
     name: "users-posts-id"
   }, {
     path: "/calendars/:id",
-    component: _512738f8,
+    component: _08c961ea,
     name: "calendars-id"
   }, {
     path: "/posts/:id",
-    component: _30178b3c,
+    component: _1a07fd2e,
     name: "posts-id"
   }, {
     path: "/rooms/:id",
-    component: _793536f2,
+    component: _6325a8e4,
     name: "rooms-id"
   }, {
     path: "/users/:id",
-    component: _bb9570d2,
+    component: _a585e2c4,
     name: "users-id"
   }, {
     path: "/",
-    component: _f9e61494,
+    component: _7ea7583d,
     name: "index"
   }],
 

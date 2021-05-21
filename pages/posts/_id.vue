@@ -32,6 +32,7 @@
     </div>
   </div>
 
+
   <div class="post_content" style="transform: translateY(-70px);">
     <div class="wrapper" style="border: solid 1px #eee;">
       <div
@@ -60,7 +61,6 @@ const $ = go.GraphObject.make
 export default {
   components: {
     VueLoading,
-    RoomsMindMap,
   },
   data(){
     return{ 

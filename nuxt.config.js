@@ -46,12 +46,6 @@ export default {
     '@nuxtjs/axios',
   ],
 
-
-  server: {
-    host: '0.0.0.0',
-    port: 3000
-  },
-
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
@@ -75,6 +69,7 @@ export default {
     baseURL: process.env.API_URL
   },
 
+  // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
     babel: {
       presets({ isServer }, [preset, options]) {
