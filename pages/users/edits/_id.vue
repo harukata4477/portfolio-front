@@ -38,7 +38,6 @@
             >
               <v-img contain max-height="200" :src="`${apiUrl}${image}`">
                 <v-file-input
-                  v-model="image"
                   hide-input
                   class="mt-0 mr-0 mb-0 ml-0 pt-0 pr-0 pb-0 pl-0"
                   @change="imageChange"
@@ -143,21 +142,23 @@ export default {
   },
 
   methods:{
-    async imageChange(){
-       this.image_judge = '画像を取得しました。更新してください。'
+    async imageChange(e){
+      this.image = e
+      this.image_judge = '画像を取得しました。更新してください。'
     },
     async edit(){
       this.loading = true
       let formData = new FormData
         formData.append('name', this.name)
         formData.append('profile', this.profile)
-        if(this.image == '[object File]'){
+        if(typeof(this.image) == 'object'){
           formData.append('image', this.image)
         }
 
       await this.$axios.$patch(`api/users/${this.$route.params.id}`, formData, {
         headers:{
-          'X-Access-Token': localStorage.getItem('X-Access-Token')
+          'X-Access-Token': localStorage.getItem('X-Access-Token'),
+          'content-type': 'multipart/form-data'
         }
       })
       await this.$axios.$get(`api/users/${this.$route.params.id}`, {

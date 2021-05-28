@@ -11,6 +11,7 @@ export { default as PostsFormSelect } from '../../components/posts/PostsFormSele
 export { default as PostsFormTagList } from '../../components/posts/PostsFormTagList.vue'
 export { default as PostsFormTitle } from '../../components/posts/PostsFormTitle.vue'
 export { default as PostsModal } from '../../components/posts/PostsModal.vue'
+export { default as UsersCard } from '../../components/users/UsersCard.vue'
 export { default as RoomsRoomEditForm } from '../../components/rooms/RoomEditForm.vue'
 export { default as RoomsCard } from '../../components/rooms/RoomsCard.vue'
 export { default as RoomsDetailForm } from '../../components/rooms/RoomsDetailForm.vue'
@@ -19,7 +20,6 @@ export { default as RoomsFormDeadlineTime } from '../../components/rooms/RoomsFo
 export { default as RoomsFormTitle } from '../../components/rooms/RoomsFormTitle.vue'
 export { default as UserFormEmail } from '../../components/user/userFormEmail.vue'
 export { default as UserFormPassword } from '../../components/user/userFormPassword.vue'
-export { default as UsersCard } from '../../components/users/UsersCard.vue'
 
 export const LazyBottomMenu = import('../../components/BottomMenu.vue' /* webpackChunkName: "components/bottom-menu" */).then(c => wrapFunctional(c.default || c))
 export const LazyMindmap = import('../../components/Mindmap.vue' /* webpackChunkName: "components/mindmap" */).then(c => wrapFunctional(c.default || c))
@@ -32,6 +32,7 @@ export const LazyPostsFormSelect = import('../../components/posts/PostsFormSelec
 export const LazyPostsFormTagList = import('../../components/posts/PostsFormTagList.vue' /* webpackChunkName: "components/posts-form-tag-list" */).then(c => wrapFunctional(c.default || c))
 export const LazyPostsFormTitle = import('../../components/posts/PostsFormTitle.vue' /* webpackChunkName: "components/posts-form-title" */).then(c => wrapFunctional(c.default || c))
 export const LazyPostsModal = import('../../components/posts/PostsModal.vue' /* webpackChunkName: "components/posts-modal" */).then(c => wrapFunctional(c.default || c))
+export const LazyUsersCard = import('../../components/users/UsersCard.vue' /* webpackChunkName: "components/users-card" */).then(c => wrapFunctional(c.default || c))
 export const LazyRoomsRoomEditForm = import('../../components/rooms/RoomEditForm.vue' /* webpackChunkName: "components/rooms-room-edit-form" */).then(c => wrapFunctional(c.default || c))
 export const LazyRoomsCard = import('../../components/rooms/RoomsCard.vue' /* webpackChunkName: "components/rooms-card" */).then(c => wrapFunctional(c.default || c))
 export const LazyRoomsDetailForm = import('../../components/rooms/RoomsDetailForm.vue' /* webpackChunkName: "components/rooms-detail-form" */).then(c => wrapFunctional(c.default || c))
@@ -40,4 +41,3 @@ export const LazyRoomsFormDeadlineTime = import('../../components/rooms/RoomsFor
 export const LazyRoomsFormTitle = import('../../components/rooms/RoomsFormTitle.vue' /* webpackChunkName: "components/rooms-form-title" */).then(c => wrapFunctional(c.default || c))
 export const LazyUserFormEmail = import('../../components/user/userFormEmail.vue' /* webpackChunkName: "components/user-form-email" */).then(c => wrapFunctional(c.default || c))
 export const LazyUserFormPassword = import('../../components/user/userFormPassword.vue' /* webpackChunkName: "components/user-form-password" */).then(c => wrapFunctional(c.default || c))
-export const LazyUsersCard = import('../../components/users/UsersCard.vue' /* webpackChunkName: "components/users-card" */).then(c => wrapFunctional(c.default || c))

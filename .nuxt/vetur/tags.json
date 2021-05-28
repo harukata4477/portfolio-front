@@ -32,6 +32,9 @@
   "PostsModal": {
     "description": "Auto imported from components/posts/PostsModal.vue"
   },
+  "UsersCard": {
+    "description": "Auto imported from components/users/UsersCard.vue"
+  },
   "RoomsRoomEditForm": {
     "description": "Auto imported from components/rooms/RoomEditForm.vue"
   },
@@ -55,8 +58,5 @@
   },
   "UserFormPassword": {
     "description": "Auto imported from components/user/userFormPassword.vue"
-  },
-  "UsersCard": {
-    "description": "Auto imported from components/users/UsersCard.vue"
   }
 }

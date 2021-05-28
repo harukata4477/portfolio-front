@@ -17,6 +17,7 @@ You can directly use them in pages and other components without the need to impo
 - `<PostsFormTagList>` | `<posts-form-tag-list>` (components/posts/PostsFormTagList.vue)
 - `<PostsFormTitle>` | `<posts-form-title>` (components/posts/PostsFormTitle.vue)
 - `<PostsModal>` | `<posts-modal>` (components/posts/PostsModal.vue)
+- `<UsersCard>` | `<users-card>` (components/users/UsersCard.vue)
 - `<RoomsRoomEditForm>` | `<rooms-room-edit-form>` (components/rooms/RoomEditForm.vue)
 - `<RoomsCard>` | `<rooms-card>` (components/rooms/RoomsCard.vue)
 - `<RoomsDetailForm>` | `<rooms-detail-form>` (components/rooms/RoomsDetailForm.vue)
@@ -25,4 +26,3 @@ You can directly use them in pages and other components without the need to impo
 - `<RoomsFormTitle>` | `<rooms-form-title>` (components/rooms/RoomsFormTitle.vue)
 - `<UserFormEmail>` | `<user-form-email>` (components/user/userFormEmail.vue)
 - `<UserFormPassword>` | `<user-form-password>` (components/user/userFormPassword.vue)
-- `<UsersCard>` | `<users-card>` (components/users/UsersCard.vue)
